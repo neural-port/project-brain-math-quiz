@@ -3,7 +3,16 @@ import type { Difficulty, Question, QuestionCategory, ShapeName, ShapeSpec } fro
 const BASIC_SHAPES: ShapeName[] = [
   'circle', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'arrow', 'flag', 'l-shape',
 ];
-const ASYMMETRIC_SHAPES: ShapeName[] = ['arrow', 'flag', 'l-shape'];
+const ASYMMETRIC_SHAPES: ShapeName[] = ['arrow', 'flag', 'l-shape', 'scalene-triangle'];
+// Shapes with NO line of symmetry — safe as "not symmetrical" distractors and
+// for mirror questions (any flip on either axis is visibly different).
+// NOTE: the arrow is NOT here — it is symmetric about its long axis.
+const NO_SYMMETRY_SHAPES: ShapeName[] = ['flag', 'l-shape', 'scalene-triangle'];
+// For mirror questions: the shape must look different when flipped on either
+// axis. Arrow is excluded — it is symmetric about its own horizontal axis, so
+// a top-bottom flip (or left-right flip when rotated 90°/270°) produces an
+// image identical to the original — an unsolvable question.
+const MIRROR_SHAPES: ShapeName[] = NO_SYMMETRY_SHAPES;
 
 /** Side counts used for "which shape has N sides" questions. */
 const SIDES: Partial<Record<ShapeName, number>> = {
@@ -78,11 +87,13 @@ function generateShapeChoice(difficulty: Difficulty): Question {
 function generateOddOneOut(difficulty: Difficulty): Question {
   const same = pick(BASIC_SHAPES);
   const odd = pick(BASIC_SHAPES.filter((shape) => shape !== same));
+  // Uniform tone — the answer must be found by SHAPE, not color.
+  const tone = pick(['green', 'cream', 'peach'] as const);
   const specs = shuffle([
-    { shape: odd, tone: 'green' as const },
-    { shape: same, tone: 'cream' as const },
-    { shape: same, tone: 'cream' as const },
-    { shape: same, tone: 'cream' as const },
+    { shape: odd, tone },
+    { shape: same, tone },
+    { shape: same, tone },
+    { shape: same, tone },
   ]);
   const answerIndex = specs.findIndex((spec) => spec.shape === odd);
 
@@ -160,15 +171,17 @@ function generateMostSides(difficulty: Difficulty): Question {
   };
 }
 
-const SYMMETRIC_SHAPES: ShapeName[] = ['circle', 'square', 'rectangle', 'triangle', 'pentagon', 'hexagon', 'star'];
-const ASYMMETRIC = ASYMMETRIC_SHAPES;
+// The arrow IS symmetrical (about its long axis) — it belongs in the correct
+// pool, not the distractor pool.
+const SYMMETRIC_SHAPES: ShapeName[] = ['circle', 'square', 'rectangle', 'triangle', 'pentagon', 'hexagon', 'star', 'arrow'];
 
 function generateSymmetry(difficulty: Difficulty): Question {
   const symmetric = pick(SYMMETRIC_SHAPES);
-  const distractors = shuffle(ASYMMETRIC).slice(0, 3);
+  // Uniform tone — the answer must be found by SYMMETRY, not color.
+  const tone = pick(['green', 'cream', 'peach'] as const);
   const specs = shuffle([
-    { shape: symmetric, tone: 'green' as const },
-    ...distractors.map((shape) => ({ shape, tone: 'cream' as const })),
+    { shape: symmetric, tone },
+    ...NO_SYMMETRY_SHAPES.map((shape) => ({ shape, tone })),
   ]);
   const answerIndex = specs.findIndex((s) => s.shape === symmetric);
 
@@ -187,8 +200,11 @@ function generateSymmetry(difficulty: Difficulty): Question {
 }
 
 function generateMirror(difficulty: Difficulty): Question {
-  const shape = pick(ASYMMETRIC_SHAPES);
-  const axis = pick(['horizontal', 'vertical'] as const);
+  // Only shapes with no symmetry axis — every flip is visibly different.
+  const shape = pick(MIRROR_SHAPES);
+  // 'lr' = flip left-to-right (mirror across a vertical line),
+  // 'tb' = flip top-to-bottom (mirror across a horizontal line).
+  const flip = pick(['lr', 'tb'] as const);
   const target: ShapeSpec = {
     shape,
     rotation: pick([0, 90, 180, 270]),
@@ -196,28 +212,32 @@ function generateMirror(difficulty: Difficulty): Question {
   };
   const correct: ShapeSpec = {
     ...target,
-    mirrorX: axis === 'horizontal',
-    mirrorY: axis === 'vertical',
+    mirrorX: flip === 'lr',
+    mirrorY: flip === 'tb',
   };
   const candidates: ShapeSpec[] = shuffle([
     correct,
     { ...target },
-    { ...target, mirrorX: axis !== 'horizontal', mirrorY: axis !== 'vertical' },
+    { ...target, mirrorX: flip !== 'lr', mirrorY: flip !== 'tb' },
     { ...target, rotation: ((target.rotation ?? 0) + 180) % 360 },
   ]);
   const answerIndex = candidates.indexOf(correct);
 
+  const flipLabel = flip === 'lr' ? 'left-to-right' : 'top-to-bottom';
   return {
     id: id('visual-reasoning'),
     category: 'visual-reasoning',
     difficulty,
     source: 'generator',
-    prompt: `Which option is the ${axis} mirror image?`,
+    prompt: `Which option is the figure flipped ${flipLabel}?`,
     options: candidates.map((_, index) => `Visual option ${index + 1}`),
     answerIndex,
-    explanation: `A ${axis} mirror flips the figure across its ${axis === 'horizontal' ? 'left-to-right' : 'top-to-bottom'} axis.`,
+    explanation:
+      flip === 'lr'
+        ? 'A left-to-right flip mirrors the figure across a vertical line — the left and right sides swap.'
+        : 'A top-to-bottom flip mirrors the figure across a horizontal line — the top and bottom swap.',
     visual: { kind: 'mirror', target, options: candidates },
-    dedupeKey: `mirror:${shape}:${axis}:${target.rotation}`,
+    dedupeKey: `mirror:${shape}:${flip}:${target.rotation}`,
   };
 }
 

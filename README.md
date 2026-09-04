@@ -4,7 +4,7 @@
 
 An arcade-style mathematics and visual reasoning practice platform for **school learners, curious adults, and AI/ML engineers** — built as a fully AI-assisted coding showcase (prompt-driven development, zero hand-written code).
 
-> Thousands of unique questions powered by a **procedural question generator** (unlimited math problems + generated visual puzzles) plus a **curated AI/ML concept bank** (50 questions, loaded locally). Includes interactive SVG-based visual questions, a self-playing practice mode, persistent player identity, session resume, and 48 unit tests verifying generator correctness.
+> Thousands of unique questions powered by a **procedural question generator** (unlimited math problems + generated visual puzzles) plus a **curated AI/ML concept bank** (50 questions, loaded locally). Includes interactive SVG-based visual questions, a self-playing practice mode, persistent player identity, session resume, and 55 unit tests verifying generator correctness.
 
 Built with **React 19 + Vite + TypeScript + Vitest**. No backend, no external runtime API dependencies, no analytics, no data transmission.
 
@@ -217,7 +217,7 @@ Requires Node 18+ (developed on Node 22).
 
 ## Test Suite
 
-The project includes **48 unit tests** (`src/quiz/generators.test.ts`) verifying that the AI-generated question generators produce correct, valid output. The tests run via Vitest and cover three layers:
+The project includes **55 unit tests** (`src/quiz/generators.test.ts`) verifying that the AI-generated question generators produce correct, valid output. The tests run via Vitest and cover five layers:
 
 ### Structural invariants (32 tests)
 
@@ -243,6 +243,14 @@ The tests parse the question prompt, compute the expected answer independently, 
 - **Memory dots**: correct dot count per difficulty, valid sequence indices, no duplicate indices, dots within 0-100 bounds, non-overlapping with minimum distance check
 - **Fractions**: shaded > 0, shaded < total, correct answer matches "shaded/total"
 
+### Semantic correctness (6 tests)
+
+These verify the *meaning* of the answer, not just the structure:
+- **Mirror flip**: correct option's `mirrorX`/`mirrorY` must match the prompt wording ("left-to-right" vs "top-to-bottom"), and the correct answer must never be identical to the original figure
+- **Mode uniqueness**: parses generated data, recomputes the mode, asserts exactly one unique mode exists
+- **Probability distractor values**: parses every distractor as a fraction, asserts no distractor numerically equals the correct answer (catches "4/8" = "1/2" style collisions)
+- **Tone leak checks**: asserts all odd-one-out and symmetry options share one tone (no color giveaway), and the arrow never appears as a "not symmetrical" distractor (it is symmetric)
+
 ### Dedupe key uniqueness (2 tests)
 
 - 100 arithmetic calls → at least 80 unique dedupe keys
@@ -256,16 +264,28 @@ The tests parse the question prompt, compute the expected answer independently, 
 
 ### Bugs found by the test suite
 
-The tests caught **two real bugs** in the generators that manual playtesting missed:
+The tests caught **eight real bugs** in the generators that manual playtesting missed — two structural, six correctness-critical (wrong or ambiguous answers):
 
-1. **Duplicate option labels in visual choice questions** — the odd-one-out, symmetry, and most-sides generators used shape names as option text, producing duplicates like `["Arrow", "Circle", "Circle", "Circle"]`. Fixed by using numbered labels ("Option 1", "Option 2"...) since the shape is shown in the visual card, not the text.
+1. **TB-01: Duplicate option labels in visual choice questions** — the odd-one-out, symmetry, and most-sides generators used shape names as option text, producing duplicates like `["Arrow", "Circle", "Circle", "Circle"]`. Fixed with numbered labels since the shape is shown in the card.
 
-2. **Duplicate distractors in fraction questions** — when `shaded + 1 === total − shaded` (e.g., 2/3 appeared twice as a distractor). Fixed with proper dedup + padding fallback.
+2. **TB-02: Duplicate distractors in fraction questions** — when `shaded + 1 === total − shaded` (e.g., 2/3 appeared twice). Fixed with proper dedup + padding fallback.
+
+3. **TB-03: Ambiguous mirror-image wording + impossible flips** — "horizontal mirror" was ambiguous, and the arrow's horizontal symmetry meant a top-bottom flip produced a correct answer *identical to the original*. Fixed with "flipped left-to-right / top-to-bottom" wording and restricting mirror questions to fully-asymmetric shapes (flag, l-shape, scalene-triangle).
+
+4. **TB-04: Symmetric shape used as asymmetric distractor** — the arrow IS symmetric about its long axis, so "which shape is symmetrical?" could have two correct answers. Fixed by moving arrow to the symmetric pool and adding a new scalene-triangle shape for the asymmetric pool.
+
+5. **TB-05: Color leaked the answer** — in odd-one-out and symmetry questions, the correct shape was always green and distractors always cream — answerable by color, not shape. Fixed: all options share one random tone.
+
+6. **TB-06: Ambiguous statistics mode** — non-mode values could duplicate each other, producing two modes (e.g., `[3,3,5,5]`). Fixed by ensuring all non-mode values are distinct.
+
+7. **TB-07: Rounded mean displayed as exact answer** — mean of 19 ÷ 4 = 4.75 was shown as "4.8". Fixed by regenerating until the mean is an exact integer.
+
+8. **TB-08: Probability distractor equals correct answer in value** — "4/52" = "1/13" (same value, different form); marbles showed the unreduced "4/8" when correct was "1/2". Fixed by reducing all distractors via gcd and filtering by numeric value inequality.
 
 ### Running the tests
 
 ```bash
-npm test          # run all 48 tests
+npm test          # run all 55 tests
 npm run test:watch # watch mode
 ```
 
@@ -279,7 +299,7 @@ This repo includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) th
 1. `npm ci` — clean install
 2. `npm audit --audit-level=high` — dependency vulnerability gate
 3. `npm run lint` — code quality gate
-4. `npm test` — unit test gate (48 tests)
+4. `npm test` — unit test gate (55 tests)
 5. `npm run build` — type-check + production build
 6. Upload artifact → deploy to GitHub Pages
 
@@ -408,6 +428,8 @@ A second full audit was conducted after all features and tests were complete.
 
 ### Bugs found by the test suite
 
+The test suite caught **eight real bugs** that manual playtesting missed. TB-01 and TB-02 are structural; TB-03 through TB-08 are correctness-critical (the marked "correct" answer was wrong or ambiguous).
+
 #### TB-01: Duplicate option labels in visual choice questions [Correctness]
 
 **Finding:** The odd-one-out, symmetry, and most-sides generators used shape names as option text. When 3 of 4 shapes were the same (odd-one-out), options were `["Arrow", "Circle", "Circle", "Circle"]` — 3 duplicate strings. The `assertUniqueOptions` test caught this.
@@ -420,9 +442,45 @@ A second full audit was conducted after all features and tests were complete.
 
 **Fix:** Replaced with a `Set`-based dedup loop that checks against both the correct answer and existing distractors, with a padding fallback for edge cases.
 
+#### TB-03: Ambiguous mirror wording + impossible flips [Correctness]
+
+**Finding:** "Which option is the horizontal mirror image?" was ambiguous — "horizontal mirror" conventionally means a horizontal mirror line (top-to-bottom flip), but the code mapped it to `scaleX(-1)` (left-to-right flip). Worse: the arrow is symmetric about its horizontal axis, so a top-bottom flip produced a correct answer **visually identical to the original** — the question was unsolvable.
+
+**Fix:** Reworded to unambiguous flip directions ("flipped left-to-right" / "flipped top-to-bottom") and restricted mirror questions to shapes asymmetric on both axes (flag, l-shape, scalene-triangle).
+
+#### TB-04: Symmetric shape used as "not symmetrical" distractor [Correctness]
+
+**Finding:** The symmetry generator's distractor pool included the arrow — but the arrow IS symmetric about its long axis. "Which shape is symmetrical?" could have two correct answers.
+
+**Fix:** Moved arrow to the symmetric pool (it is, in fact, a valid symmetric answer) and added a new `scalene-triangle` SVG shape so the asymmetric pool still has 3 distractors.
+
+#### TB-05: Color leaked the answer [Correctness]
+
+**Finding:** In odd-one-out and symmetry questions, the correct shape was always `tone: 'green'` and distractors always `tone: 'cream'`. The answer could be determined by color without recognizing any shape property.
+
+**Fix:** All options in a question now share one randomly chosen tone.
+
+#### TB-06: Ambiguous statistics mode [Correctness]
+
+**Finding:** The mode generator produced `[val, val, ...others]` where `others` were only prevented from equaling `val` — they could duplicate each other, producing two modes (e.g., `[3,3,5,5]` → both 3 and 5 are modes).
+
+**Fix:** Non-mode values are now generated as a `Set` of distinct integers ≠ val, guaranteeing exactly one unique mode.
+
+#### TB-07: Rounded mean displayed as exact answer [Correctness]
+
+**Finding:** Non-integer means were displayed via `toFixed(1)` — mean of 19 ÷ 4 = **4.75** was shown as **"4.8"**, marking a mathematically wrong value as correct.
+
+**Fix:** Mean questions now regenerate the dataset until `sum % n === 0`, guaranteeing an exact integer answer.
+
+#### TB-08: Probability distractor numerically equals correct answer [Correctness]
+
+**Finding:** The marbles generator listed the unreduced `${red}/${total}` as a distractor — when the correct answer was "1/2", the distractor "4/8" is the same probability. The card generator listed "4/52" which equals the correct "1/13". String-dedup can't catch these because the strings differ.
+
+**Fix:** All probability distractors are reduced via gcd, then filtered by numeric value inequality (`a/b === correct` by cross-multiplication), not just string comparison.
+
 ### Audit verdict
 
-**PASS.** All three quality gates green (lint, build, tests). Zero critical or high findings remaining. The original audit found 7 issues (F-01 through F-09), all remediated or documented. A second final audit found 2 additional medium findings (FA-01: incomplete session field validation, FA-02: unguarded JSON parse in CDN loader), both fixed. The test suite found 2 real generator bugs (duplicate options), both fixed. Remaining conditions are the manual follow-ups (F-06 SHA-pinning, F-08 font self-hosting) which require repo-owner action.
+**PASS.** All three quality gates green (lint, build, tests). Zero critical or high findings remaining. The original audit found 7 issues (F-01 through F-09), all remediated or documented. A second final audit found 2 additional medium findings (FA-01: incomplete session field validation, FA-02: unguarded JSON parse in CDN loader), both fixed. The test suite found **8 real generator bugs** (TB-01 through TB-08 — duplicate options, ambiguous answers, color leaks, and mathematically wrong "correct" answers), all fixed. Remaining conditions are the manual follow-ups (F-06 SHA-pinning, F-08 font self-hosting) which require repo-owner action.
 
 ---
 
@@ -440,7 +498,7 @@ A second full audit was conducted after all features and tests were complete.
 - **React 19** — UI framework
 - **Vite 8** — build tool and dev server
 - **TypeScript 6** — strict typing, no `any`
-- **Vitest 5** — unit testing (48 tests, all passing)
+- **Vitest 5** — unit testing (55 tests, all passing)
 - **oxlint** — fast linter (0 errors, 0 warnings)
 - **GitHub Actions** — CI/CD with audit + lint + test + build gates
 - **Inline SVG** — all visual questions rendered as vector graphics, no image assets
@@ -487,7 +545,7 @@ Most portfolio apps demonstrate that you can wire together existing libraries. T
 - **Visual puzzle generation** — non-overlapping dot scatter via rejection sampling with grid fallback; sequence generation with difficulty scaling; fraction bar rendering with vertical/horizontal orientation.
 - **Repeat protection** — a capped FIFO history with category strikeout when pools exhaust, falling back gracefully instead of stalling.
 - **Self-playing demo mode** — auto-highlighting correct answers, auto-rotating the dial to target with a 3-phase state machine (reset → rotate → submit), auto-tapping memory dots in sequence with stale-closure-aware incremental scheduling.
-- **48 unit tests verifying the above** — the tests don't just check structure; they parse prompts, independently compute expected answers, and verify the generators match. The tests found 2 real bugs that manual playtesting missed.
+- **55 unit tests verifying the above** — the tests don't just check structure; they parse prompts, independently compute expected answers, verify distractor values differ numerically, and check that visual questions can't be answered by color alone. The tests found 8 real bugs that manual playtesting missed.
 
 These are problems you solve with thinking, not with `npm install`.
 
@@ -522,7 +580,7 @@ Being honest about what this doesn't prove:
 
 - **No backend** — there's no database, no auth, no server. If you're hiring for backend work, this shows algorithmic thinking but not backend skills. Pair it with a Supabase/Node project.
 - **No real users at scale** — the repeat-protection and session logic are designed for single-device use. Multi-device sync would need a backend.
-- **No integration/E2E tests** — the 48 unit tests cover the generators (pure functions), but there are no component or browser-level tests. For a portfolio showcase this is adequate; a production team would add Playwright/Cypress.
+- **No integration/E2E tests** — the 55 unit tests cover the generators (pure functions), but there are no component or browser-level tests. For a portfolio showcase this is adequate; a production team would add Playwright/Cypress.
 
 ### The one-line pitch
 

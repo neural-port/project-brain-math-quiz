@@ -259,6 +259,130 @@ describe('Fractions generator — payload integrity', () => {
   });
 });
 
+// ─── Mirror questions: the correct option must match the stated flip ────────
+
+describe('Mirror generator — flip correctness', () => {
+  it('correct option has mirrorX for left-to-right, mirrorY for top-to-bottom', () => {
+    repeat(50, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'medium');
+      assertValidQuestion(q);
+      if (q.visual?.kind !== 'mirror') return;
+      const correct = q.visual.options[q.answerIndex];
+      const target = q.visual.target;
+      if (!correct || !target) return;
+
+      if (q.prompt.includes('left-to-right')) {
+        expect(correct.mirrorX).toBe(true);
+        expect(correct.mirrorY).toBeFalsy();
+      } else if (q.prompt.includes('top-to-bottom')) {
+        expect(correct.mirrorY).toBe(true);
+        expect(correct.mirrorX).toBeFalsy();
+      }
+      // The correct answer must never be the original figure
+      expect(correct === target).toBe(false);
+      expect(correct.mirrorX === target.mirrorX && correct.mirrorY === target.mirrorY && correct.rotation === target.rotation).toBe(false);
+    });
+  });
+});
+
+// ─── Mode questions: the mode must be unique ────────────────────────────────
+
+describe('Statistics mode — unique mode guarantee', () => {
+  it('only one value appears more than once', () => {
+    repeat(60, () => {
+      const q = generateOne('statistics', 'easy');
+      assertValidQuestion(q);
+      if (!q.prompt.includes('mode')) return;
+      const nums = q.prompt.match(/\d+/g)?.map(Number) ?? [];
+      if (nums.length === 0) return;
+      const counts = new Map<number, number>();
+      for (const v of nums) counts.set(v, (counts.get(v) ?? 0) + 1);
+      const maxCount = Math.max(...counts.values());
+      const modes = [...counts.entries()].filter(([, c]) => c === maxCount);
+      // Exactly one value should be the unique mode
+      expect(modes.length).toBe(1);
+      expect(Number(q.options[q.answerIndex])).toBe(modes[0][0]);
+    });
+  });
+});
+
+// ─── Probability: no distractor may equal the correct answer's value ────────
+
+describe('Probability generator — distractor value inequality', () => {
+  it('marbles distractors are never numerically equal to the correct answer', () => {
+    repeat(80, () => {
+      const q = generateOne('probability', 'medium');
+      assertValidQuestion(q);
+      if (!q.prompt.includes('marble')) return;
+      const parse = (s: string) => {
+        const [n, d] = s.split('/').map(Number);
+        return d ? n / d : NaN;
+      };
+      const correctVal = parse(q.options[q.answerIndex]);
+      for (const opt of q.options) {
+        if (opt === q.options[q.answerIndex]) continue;
+        const v = parse(opt);
+        if (isNaN(v)) continue;
+        expect(Math.abs(v - correctVal)).toBeGreaterThan(1e-9);
+      }
+    });
+  });
+
+  it('card question distractors are never numerically equal to 1/13', () => {
+    repeat(100, () => {
+      const q = generateOne('probability', 'easy');
+      assertValidQuestion(q);
+      if (!q.prompt.includes('52-card')) return;
+      const parse = (s: string) => {
+        const [n, d] = s.split('/').map(Number);
+        return d ? n / d : NaN;
+      };
+      const correctVal = 4 / 52;
+      for (const opt of q.options) {
+        if (opt === q.options[q.answerIndex]) continue;
+        const v = parse(opt);
+        expect(Math.abs(v - correctVal)).toBeGreaterThan(1e-9);
+      }
+    });
+  });
+});
+
+// ─── Visual question tone leaks ─────────────────────────────────────────────
+
+describe('Visual generators — no tone leaks', () => {
+  it('odd-one-out: all option shapes share the same tone', () => {
+    repeat(30, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'easy');
+      assertValidQuestion(q);
+      if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('different')) return;
+      const tones = new Set(q.visual.options.map((s) => s.tone));
+      expect(tones.size).toBe(1);
+    });
+  });
+
+  it('symmetry: all option shapes share the same tone', () => {
+    repeat(30, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'easy');
+      assertValidQuestion(q);
+      if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('symmetrical')) return;
+      const tones = new Set(q.visual.options.map((s) => s.tone));
+      expect(tones.size).toBe(1);
+    });
+  });
+
+  it('symmetry: arrow never appears as a distractor (it is symmetric)', () => {
+    repeat(50, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'medium');
+      assertValidQuestion(q);
+      if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('symmetrical')) return;
+      const distractorShapes = q.visual.options
+        .filter((_, i) => i !== q.answerIndex)
+        .map((s) => s.shape);
+      expect(distractorShapes).not.toContain('arrow');
+    });
+  });
+});
+
 // ─── Dedupe keys: must be unique across many generations ────────────────────
 
 describe('Dedupe key uniqueness', () => {

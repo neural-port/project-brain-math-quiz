@@ -100,15 +100,21 @@ function genStatistics(difficulty: Difficulty): Question {
   data.sort((a, b) => a - b);
 
   if (type === 'mean') {
-    const sum = data.reduce((s, x) => s + x, 0);
+    // Regenerate until the mean is an exact integer — a rounded decimal like
+    // "4.8" would mark the WRONG value as correct (true mean 4.75).
+    let meanData: number[];
+    let sum: number;
+    do {
+      meanData = Array.from({ length: n }, () => randInt(1, max));
+      sum = meanData.reduce((s, x) => s + x, 0);
+    } while (sum % n !== 0);
     const answer = sum / n;
-    const isInt = Number.isInteger(answer);
-    const prompt = `What is the mean (average) of: ${data.join(', ')}?`;
+    const prompt = `What is the mean (average) of: ${meanData.join(', ')}?`;
     return mcq(
       'statistics', difficulty, prompt,
-      isInt ? answer : answer.toFixed(1),
-      isInt ? near(answer, 2) : [(answer + 0.5).toFixed(1), (answer - 0.5).toFixed(1), (answer + 1).toFixed(1)],
-      `Add them up: ${data.join(' + ')} = ${sum}. Divide by ${n}: ${sum} ÷ ${n} = ${isInt ? answer : answer.toFixed(1)}`,
+      answer,
+      near(answer, 2),
+      `Add them up: ${meanData.join(' + ')} = ${sum}. Divide by ${n}: ${sum} ÷ ${n} = ${answer}`,
     );
   }
 
@@ -128,12 +134,14 @@ function genStatistics(difficulty: Difficulty): Question {
 
   if (type === 'mode') {
     const val = randInt(1, 8);
-    const data2 = [val, val, ...Array.from({ length: n - 2 }, () => {
-      let v = randInt(1, 8);
-      if (v === val) v = v + 1;
-      return v;
-    })];
-    data2.sort((a, b) => a - b);
+    // All other values must be distinct AND different from val — otherwise the
+    // data could have two modes (e.g. [3,3,5,5] → 3 and 5 are both modes).
+    const others = new Set<number>();
+    while (others.size < n - 2) {
+      const v = randInt(1, 8);
+      if (v !== val) others.add(v);
+    }
+    const data2 = [val, val, ...others].sort((a, b) => a - b);
     const prompt = `What is the mode (most frequent value) of: ${data2.join(', ')}?`;
     return mcq(
       'statistics', difficulty, prompt,
@@ -338,16 +346,37 @@ function genProbability(difficulty: Difficulty): Question {
     const blue = randInt(1, 8);
     const green = type === 'marbles-2color' ? 0 : randInt(1, 6);
     const total = red + blue + green;
-    const g = gcd(red, total);
+    const frac = (num: number, den: number) => {
+      const g = gcd(num, den);
+      return `${num / g}/${den / g}`;
+    };
+    const correctStr = frac(red, total);
+    const correctVal = red / total;
+    // Distractors must differ in VALUE, not just in string form — an
+    // unreduced "4/8" is the same probability as the correct "1/2".
+    const pool = [
+      frac(blue, total), frac(red + 1, total), red - 1 >= 1 ? frac(red - 1, total) : '',
+      frac(red, total + 1), frac(red + 2, total), frac(blue + 1, total + 1),
+    ];
+    const seen = new Set<string>([correctStr]);
+    const distractors: string[] = [];
+    for (const c of pool) {
+      if (!c) continue;
+      const [cn, cd] = c.split('/').map(Number);
+      if (cn / cd === correctVal || seen.has(c)) continue;
+      seen.add(c);
+      distractors.push(c);
+      if (distractors.length === 3) break;
+    }
     const colorLabel = green > 0
       ? `${red} red, ${blue} blue, and ${green} green marbles`
       : `${red} red and ${blue} blue marbles`;
     const prompt = `A bag has ${colorLabel}. What is the probability of picking a red marble?`;
     return mcq(
       'probability', difficulty, prompt,
-      `${red / g}/${total / g}`,
-      [`${red}/${total}`, `${blue}/${total}`, `${red + 1}/${total}`],
-      `${red} red out of ${total} total = ${red / g}/${total / g}`,
+      correctStr,
+      distractors,
+      `${red} red out of ${total} total = ${red}/${total} = ${correctStr}`,
     );
   }
 
@@ -356,7 +385,7 @@ function genProbability(difficulty: Difficulty): Question {
   return mcq(
     'probability', difficulty, prompt,
     '1/13',
-    ['1/52', '4/52', '1/4'],
+    ['1/52', '1/26', '1/4'],
     `4 kings out of 52 cards = 4/52 = 1/13`,
   );
 }

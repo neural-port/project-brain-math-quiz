@@ -28,7 +28,8 @@ export type ShapeName =
   | 'star'
   | 'arrow'
   | 'flag'
-  | 'l-shape';
+  | 'l-shape'
+  | 'scalene-triangle';
 
 export interface ShapeSpec {
   shape: ShapeName;

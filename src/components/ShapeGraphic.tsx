@@ -50,5 +50,8 @@ function renderShape(shape: ShapeSpec['shape']) {
       );
     case 'l-shape':
       return <path d="M18 12h25v52h40v24H18V12z" />;
+    case 'scalene-triangle':
+      // Scalene right triangle — no axis of symmetry, safe for mirror/symmetry questions
+      return <polygon points="14,12 14,88 66,88" />;
   }
 }
