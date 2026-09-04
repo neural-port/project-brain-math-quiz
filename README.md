@@ -1,5 +1,7 @@
 # Brain Math Quiz — Math for Every Mind
 
+> **Live: https://neural-port.github.io/project-brain-math-quiz/**
+
 An arcade-style mathematics and visual reasoning practice platform for **school learners, curious adults, and AI/ML engineers** — built as a fully AI-assisted coding showcase (prompt-driven development, zero hand-written code).
 
 > Thousands of unique questions powered by a **procedural question generator** (unlimited math problems + generated visual puzzles) plus a **curated AI/ML concept bank** (50 questions, loaded locally). Includes interactive SVG-based visual questions, a self-playing practice mode, persistent player identity, session resume, and 48 unit tests verifying generator correctness.
