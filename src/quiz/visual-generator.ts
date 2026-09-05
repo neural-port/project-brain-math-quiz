@@ -501,81 +501,137 @@ function distanceToShapeBoundary(
   );
 }
 
+// Minimum distance from dot center to any shape boundary.
+// Dot radius is 3 and stroke width is 2 (extending 1 unit outside the
+// mathematical boundary), so a clearance of 8 guarantees a visible gap
+// of at least 8 - 3 - 1 = 4 SVG units between the dot edge and the
+// visible stroke — unambiguous even on small mobile screens.
+const DOT_REGION_CLEARANCE = 8;
+
+type DotRegionShape = {
+  type: 'circle' | 'square' | 'triangle';
+  label: string;
+  cx: number;
+  cy: number;
+  r?: number;
+  w?: number;
+  h?: number;
+};
+
+function isInsideShape(x: number, y: number, shape: DotRegionShape): boolean {
+  if (shape.type === 'circle') return isInsideCircle(x, y, shape.cx, shape.cy, shape.r ?? 25);
+  if (shape.type === 'square') return isInsideSquare(x, y, shape.cx, shape.cy, shape.w ?? 40);
+  return isInsideTriangle(x, y, shape.cx, shape.cy, shape.h ?? 40);
+}
+
 function generateDotRegion(difficulty: Difficulty): Question {
-  // 2 shapes for easy, 3 for medium/hard
   const useThree = difficulty !== 'easy';
-  // Fixed shape configurations with known overlap regions
-  const configs = useThree
+
+  // Multiple shape arrangements so the answer isn't always the same shape.
+  // Each config is designed so that every shape has a substantial "only"
+  // region and every pairwise overlap has valid positions.
+  const baseConfigs = useThree
     ? [
-        // Circle + Square + Triangle all overlapping in center
-        {
-          shapes: [
-            { type: 'circle' as const, label: 'A', cx: 35, cy: 45, r: 28 },
-            { type: 'square' as const, label: 'B', cx: 60, cy: 55, w: 40 },
-            { type: 'triangle' as const, label: 'C', cx: 50, cy: 60, h: 45 },
-          ],
-        },
+        // Arrangement 1: circle left, square right, triangle bottom-center
+        [
+          { type: 'circle' as const, cx: 32, cy: 42, r: 26 },
+          { type: 'square' as const, cx: 65, cy: 48, w: 38 },
+          { type: 'triangle' as const, cx: 50, cy: 62, h: 42 },
+        ],
+        // Arrangement 2: square left, triangle right, circle bottom-center
+        [
+          { type: 'square' as const, cx: 32, cy: 45, w: 38 },
+          { type: 'triangle' as const, cx: 62, cy: 50, h: 42 },
+          { type: 'circle' as const, cx: 48, cy: 65, r: 24 },
+        ],
+        // Arrangement 3: triangle left, circle right, square bottom-center
+        [
+          { type: 'triangle' as const, cx: 32, cy: 48, h: 42 },
+          { type: 'circle' as const, cx: 65, cy: 42, r: 26 },
+          { type: 'square' as const, cx: 50, cy: 65, w: 38 },
+        ],
       ]
     : [
         // Circle + Square overlapping
-        {
-          shapes: [
-            { type: 'circle' as const, label: 'A', cx: 35, cy: 50, r: 28 },
-            { type: 'square' as const, label: 'B', cx: 60, cy: 50, w: 40 },
-          ],
-        },
+        [
+          { type: 'circle' as const, cx: 35, cy: 50, r: 27 },
+          { type: 'square' as const, cx: 62, cy: 50, w: 38 },
+        ],
         // Circle + Triangle overlapping
-        {
-          shapes: [
-            { type: 'circle' as const, label: 'A', cx: 38, cy: 48, r: 26 },
-            { type: 'triangle' as const, label: 'B', cx: 58, cy: 55, h: 42 },
-          ],
-        },
+        [
+          { type: 'circle' as const, cx: 38, cy: 48, r: 26 },
+          { type: 'triangle' as const, cx: 60, cy: 55, h: 42 },
+        ],
+        // Square + Triangle overlapping
+        [
+          { type: 'square' as const, cx: 35, cy: 48, w: 38 },
+          { type: 'triangle' as const, cx: 60, cy: 55, h: 42 },
+        ],
+        // Square left + Circle right (swapped from config 1)
+        [
+          { type: 'square' as const, cx: 35, cy: 50, w: 38 },
+          { type: 'circle' as const, cx: 62, cy: 50, r: 27 },
+        ],
       ];
-  const config = pick(configs);
-  const shapes = config.shapes;
 
-  // Try to place a dot in a specific region
-  // Regions: for 2 shapes: A only, B only, A∩B, neither
-  // For 3 shapes: A only, B only, C only, A∩B, A∩C, B∩C, A∩B∩C, neither
-  const candidates: Array<{ dot: { x: number; y: number }; containing: string[] }> = [];
+  const baseShapes = pick(baseConfigs);
+  // Randomize labels so the answer isn't always "Only A"
+  const labels = shuffle(['A', 'B', 'C'].slice(0, baseShapes.length));
+  const shapes: DotRegionShape[] = baseShapes.map((s, i) => ({ ...s, label: labels[i] }));
+
+  // Scan all positions and group candidates by their containing set.
+  // This lets us pick a region uniformly, preventing answer bias.
+  const candidatesByRegion = new Map<string, Array<{ x: number; y: number }>>();
   for (let x = 5; x <= 95; x++) {
     for (let y = 5; y <= 95; y++) {
-      if (shapes.some((shape) => distanceToShapeBoundary(x, y, shape) < 5)) continue;
-      const containing = shapes.filter((shape) => {
-        if (shape.type === 'circle') return isInsideCircle(x, y, shape.cx, shape.cy, shape.r ?? 25);
-        if (shape.type === 'square') return isInsideSquare(x, y, shape.cx, shape.cy, shape.w ?? 40);
-        return isInsideTriangle(x, y, shape.cx, shape.cy, shape.h ?? 40);
-      }).map((shape) => shape.label);
+      // Reject positions too close to ANY shape boundary
+      if (shapes.some((shape) => distanceToShapeBoundary(x, y, shape) < DOT_REGION_CLEARANCE)) continue;
+      const containing = shapes.filter((shape) => isInsideShape(x, y, shape)).map((shape) => shape.label);
+      // Only accept positions inside at least 1 shape but not all shapes
       if (containing.length >= 1 && containing.length < shapes.length) {
-        candidates.push({ dot: { x, y }, containing });
+        // Sort labels for consistent region keys and answer text
+        const key = containing.sort().join(',');
+        const arr = candidatesByRegion.get(key);
+        if (arr) arr.push({ x, y });
+        else candidatesByRegion.set(key, [{ x, y }]);
       }
     }
   }
-  if (candidates.length === 0) {
+
+  if (candidatesByRegion.size === 0) {
     throw new Error('Dot-region configuration has no visually unambiguous positions');
   }
-  const { dot, containing } = pick(candidates);
+
+  // Pick a region uniformly at random, then pick a position within it
+  const regions = Array.from(candidatesByRegion.keys());
+  const regionKey = pick(regions);
+  const positions = candidatesByRegion.get(regionKey)!;
+  const pos = pick(positions);
+  const dot = { x: pos.x, y: pos.y };
+  const containing = regionKey.split(',');
 
   // Build the answer
   const allLabels = shapes.map((s) => s.label);
-  let answer: string;
-  let explanation: string;
-  if (containing.length === 0) {
-    answer = 'None of the shapes';
-    explanation = `Step 1: Check if the dot is inside shape ${allLabels.join(', ')}.\nStep 2: The dot is outside all shapes.\nAnswer: None of the shapes.`;
-  } else if (containing.length === shapes.length) {
-    answer = `All shapes (${allLabels.join(', ')})`;
-    explanation = `Step 1: Check each shape.\nStep 2: The dot is inside all ${shapes.length} shapes.\nAnswer: All shapes.`;
-  } else {
-    answer = `Only ${containing.join(' and ')}`;
-    explanation = `Step 1: Check if the dot is inside each shape.\nStep 2: The dot is inside ${containing.join(' and ')}, but outside ${allLabels.filter((l) => !containing.includes(l)).join(' and ') || 'none'}.\nAnswer: Only ${containing.join(' and ')}.`;
-  }
+  const answer = `Only ${containing.join(' and ')}`;
+  const outsideLabels = allLabels.filter((l) => !containing.includes(l));
+  const explanation = `Step 1: Check if the dot is inside each shape.\nStep 2: The dot is inside ${containing.join(' and ')}, but outside ${outsideLabels.join(' and ') || 'none'}.\nAnswer: Only ${containing.join(' and ')}.`;
 
-  // Build distractors
+  // Build distractors — pick relevant ones that are close to the answer
   const distractorSet = new Set<string>([answer]);
   const distractors: string[] = [];
-  // "Only X" for each single shape
+
+  // For 3 shapes: include pair distractors that share a shape with the answer
+  if (shapes.length === 3) {
+    for (const label of containing) {
+      for (const other of allLabels) {
+        if (other === label) continue;
+        const pair = [label, other].sort();
+        const d = `Only ${pair.join(' and ')}`;
+        if (!distractorSet.has(d)) { distractorSet.add(d); distractors.push(d); }
+      }
+    }
+  }
+  // Single-shape distractors
   for (const label of allLabels) {
     const d = `Only ${label}`;
     if (!distractorSet.has(d)) { distractorSet.add(d); distractors.push(d); }
@@ -586,16 +642,17 @@ function generateDotRegion(difficulty: Difficulty): Question {
   // "None"
   const noneD = 'None of the shapes';
   if (!distractorSet.has(noneD)) { distractorSet.add(noneD); distractors.push(noneD); }
-  // Pairs for 3 shapes
+  // Remaining pairs (sorted for consistency)
   if (shapes.length === 3) {
     for (let i = 0; i < shapes.length; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
-        const d = `Only ${shapes[i].label} and ${shapes[j].label}`;
+        const pair = [shapes[i].label, shapes[j].label].sort();
+        const d = `Only ${pair.join(' and ')}`;
         if (!distractorSet.has(d)) { distractorSet.add(d); distractors.push(d); }
       }
     }
   }
-  // Take first 3 distractors
+
   const finalDistractors = distractors.slice(0, 3);
   const allOptions = shuffle([answer, ...finalDistractors]);
   const answerIndex = allOptions.indexOf(answer);

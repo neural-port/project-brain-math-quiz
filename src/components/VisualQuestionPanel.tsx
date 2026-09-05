@@ -144,9 +144,26 @@ export function VisualQuestionPanel({ question, selectedAnswer, answered, practi
             const halfBase = h / 2;
             return <polygon key={i} points={`${s.cx},${top} ${s.cx - halfBase},${bottom} ${s.cx + halfBase},${bottom}`} fill="none" stroke={stroke} strokeWidth="2" />;
           })}
-          {visual.shapes.map((s, i) => (
-            <text key={`label-${i}`} x={s.type === 'circle' ? s.cx - (s.r ?? 25) - 4 : s.cx - (s.w ?? 40) / 2 - 4} y={s.type === 'circle' ? s.cy - (s.r ?? 25) : s.cy - (s.h ?? 40) / 2} fontSize="8" fontWeight="bold" fill="#333">{s.label}</text>
-          ))}
+          {visual.shapes.map((s, i) => {
+            const top = s.type === 'circle'
+              ? s.cy - (s.r ?? 25)
+              : s.type === 'square'
+                ? s.cy - (s.w ?? 40) / 2
+                : s.cy - (s.h ?? 40) / 2;
+            return (
+              <text
+                key={`label-${i}`}
+                x={s.cx}
+                y={top - 3}
+                textAnchor="middle"
+                fontSize="8"
+                fontWeight="bold"
+                fill="#333"
+              >
+                {s.label}
+              </text>
+            );
+          })}
           <circle cx={visual.dot.x} cy={visual.dot.y} r="3" fill="#e63946" />
         </svg>
       </div>

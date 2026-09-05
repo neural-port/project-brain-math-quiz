@@ -39,7 +39,7 @@ export function NamePrompt({ onSubmit }: Props) {
             onChange={(e) => setCurrency(e.target.value as CurrencySymbol)}
           >
             {CURRENCY_OPTIONS.map((opt) => (
-              <option key={opt.symbol} value={opt.symbol}>
+              <option key={opt.label} value={opt.symbol}>
                 {opt.label}
               </option>
             ))}

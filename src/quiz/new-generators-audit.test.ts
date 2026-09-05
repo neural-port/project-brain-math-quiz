@@ -254,7 +254,7 @@ describe('AUDIT: Dot region (visual-reasoning)', () => {
         ? 'None of the shapes'
         : containing.length === shapes.length
           ? `All shapes (${allLabels.join(', ')})`
-          : `Only ${containing.join(' and ')}`;
+          : `Only ${containing.sort().join(' and ')}`;
       if (answer !== expected) bad++;
     });
     expect(checked).toBeGreaterThan(10);
