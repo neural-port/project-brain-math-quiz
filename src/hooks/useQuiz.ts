@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { loadCuratedBank } from '../quiz/cdn';
+import { loadCuratedBank, loadFigureClassificationBank } from '../quiz/cdn';
 import { generateQuestions } from '../quiz/generator';
 import { generateVisualQuestion } from '../quiz/visual-generator';
 import { getSeenHistory } from '../quiz/seen-history';
@@ -8,13 +8,15 @@ import {
   loadSession,
   saveSession,
   SESSION_VERSION,
+  type CurrencySymbol,
   type SavedSession,
 } from '../quiz/session';
+import { CURRENCY_SCALE } from '../quiz/session';
 import {
   DIFFICULTY_BASE_POINTS,
   DIFFICULTY_LIVES,
-  DIFFICULTY_TIME,
   GENERATOR_CATEGORIES,
+  getTimeLimit,
 } from '../quiz/categories';
 import type {
   AnswerRecord,
@@ -79,9 +81,12 @@ function shuffleArray<T>(arr: T[]): T[] {
 function buildQuestionSet(
   config: QuizConfig,
   curated: Question[],
+  figClass: Question[],
+  currency: CurrencySymbol,
 ): Question[] {
   const { difficulty, totalQuestions, categories } = config;
   const wantsCurated = categories.includes('ai-ml-concepts');
+  const wantsFigClass = categories.includes('visual-reasoning');
   const genCats = categories.filter((c) => GENERATOR_CATEGORIES.includes(c));
   const history = getSeenHistory();
   const seen = history.asSet();
@@ -92,14 +97,26 @@ function buildQuestionSet(
   if (wantsCurated && curated.length > 0) {
     const byDifficulty = curated.filter((q) => q.difficulty === difficulty);
     const basePool = byDifficulty.length >= 3 ? byDifficulty : curated;
-    // Split into unseen and seen — prioritize unseen
-    const unseen = basePool.filter((q) => !seen.has(q.prompt));
-    const seenOnes = basePool.filter((q) => seen.has(q.prompt));
-    curatedPool = shuffleArray([...unseen, ...seenOnes]);
+    // Use the same key everywhere: dedupeKey ?? prompt
+    const getKey = (q: Question) => q.dedupeKey ?? q.prompt;
+    const unseen = basePool.filter((q) => !seen.has(getKey(q)));
+    const seenOnes = basePool.filter((q) => seen.has(getKey(q)));
+    // Keep unseen first, then seen — don't shuffle them together
+    curatedPool = [...shuffleArray(unseen), ...shuffleArray(seenOnes)];
+  }
+  // Add figure classification curated questions for visual-reasoning
+  if (wantsFigClass && figClass.length > 0) {
+    const byDifficulty = figClass.filter((q) => q.difficulty === difficulty);
+    const basePool = byDifficulty.length >= 2 ? byDifficulty : figClass;
+    const getKey = (q: Question) => q.dedupeKey ?? q.prompt;
+    const unseen = basePool.filter((q) => !seen.has(getKey(q)));
+    const seenOnes = basePool.filter((q) => seen.has(getKey(q)));
+    const figPool = [...shuffleArray(unseen), ...shuffleArray(seenOnes)];
+    curatedPool = [...curatedPool, ...figPool];
   }
 
   // Aim for ~30% curated, ~70% generated (if curated available)
-  const curatedCount = wantsCurated
+  const curatedCount = (wantsCurated || wantsFigClass)
     ? Math.min(curatedPool.length, Math.ceil(totalQuestions * 0.3))
     : 0;
   const genCount = totalQuestions - curatedCount;
@@ -110,32 +127,59 @@ function buildQuestionSet(
   const generated = generateQuestions(genCount, genCats, difficulty, seen);
   const selected = [...curatedPool.slice(0, curatedCount), ...generated];
 
-  // Record all selected prompts as seen for future sessions
-  history.addAll(selected.map((q) => q.dedupeKey ?? q.prompt));
+  // Apply currency substitution + scaling.
+  // Generators produce amounts in INR magnitude with ₹ prefix.
+  // We replace ₹ with the user's symbol AND scale monetary amounts so
+  // they feel realistic in the user's local currency.
+  //   e.g. ₹500 → $500 (1×), ¥5000 (10×), IDR 50000 (100×)
+  const scale = CURRENCY_SCALE[currency] ?? 1;
+  const currencyAdjusted = currency === '₹' && scale === 1
+    ? selected
+    : selected.map((q) => {
+        const applyScale = (text: string): string =>
+          text.replace(/₹(\d[\d,]*(?:\.\d+)?)/g, (_, digits: string) => {
+            const scaled = Number(digits.replace(/,/g, '')) * scale;
+            return `${currency}${scaled.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+          });
+        return {
+          ...q,
+          prompt: applyScale(q.prompt),
+          explanation: q.explanation ? applyScale(q.explanation) : q.explanation,
+          options: q.options.map((o) => applyScale(o)),
+        };
+      });
 
-  return shuffleArray(selected);
+  // Record all selected prompts as seen for future sessions
+  history.addAll(currencyAdjusted.map((q) => q.dedupeKey ?? q.prompt));
+
+  return shuffleArray(currencyAdjusted);
 }
 
-export function useQuiz() {
+export function useQuiz(currency: CurrencySymbol = '₹') {
   const [state, setState] = useState<QuizState>(createInitialState);
   const [savedSession, setSavedSession] = useState<SavedSession | null>(() => loadSession());
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const curatedRef = useRef<Question[]>([]);
+  const figClassRef = useRef<Question[]>([]);
 
-  // ─── Load curated bank on mount ───────────────────────────────────────────
+  // ─── Load curated banks on mount ───────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
 
     async function init() {
       setState((s) => ({ ...s, phase: 'loading' }));
-      const { questions, count } = await loadCuratedBank();
+      const [aiMl, figClass] = await Promise.all([
+        loadCuratedBank(),
+        loadFigureClassificationBank(),
+      ]);
       if (cancelled) return;
-      curatedRef.current = questions;
+      curatedRef.current = aiMl.questions;
+      figClassRef.current = figClass.questions;
       setState((s) => ({
         ...s,
         phase: 'start',
-        curatedLoaded: count,
-        curatedTotal: count,
+        curatedLoaded: aiMl.count + figClass.count,
+        curatedTotal: aiMl.count + figClass.count,
       }));
     }
 
@@ -198,9 +242,11 @@ export function useQuiz() {
   const startQuiz = useCallback(
     (learnerPath: LearnerPath, difficulty: Difficulty, totalQuestions: number, categories: QuestionCategory[]) => {
       const config: QuizConfig = { learnerPath, difficulty, totalQuestions, categories };
-      const questions = buildQuestionSet(config, curatedRef.current);
+      const questions = buildQuestionSet(config, curatedRef.current, figClassRef.current, currency);
       const lives = DIFFICULTY_LIVES[difficulty];
-      const timeLimit = DIFFICULTY_TIME[difficulty];
+      // Set the initial time limit based on the FIRST question's category
+      const firstQ = questions[0];
+      const timeLimit = firstQ ? getTimeLimit(difficulty, firstQ.category) : 30;
 
       setState({
         ...createInitialState(),
@@ -215,7 +261,7 @@ export function useQuiz() {
         curatedTotal: state.curatedTotal,
       });
     },
-    [state.curatedLoaded, state.curatedTotal],
+    [state.curatedLoaded, state.curatedTotal, currency],
   );
 
   const startPractice = useCallback(() => {
@@ -322,10 +368,12 @@ export function useQuiz() {
         return { ...s, phase: 'results' as QuizPhase };
       }
 
-      const timeLimit = DIFFICULTY_TIME[s.config.difficulty];
+      const nextIdx = s.currentIndex + 1;
+      const nextQ = s.questions[nextIdx];
+      const timeLimit = nextQ ? getTimeLimit(s.config.difficulty, nextQ.category) : s.timeLimit;
       return {
         ...s,
-        currentIndex: s.currentIndex + 1,
+        currentIndex: nextIdx,
         selectedAnswer: null,
         answered: false,
         timeLeft: timeLimit,
@@ -366,7 +414,8 @@ export function useQuiz() {
   const resumeQuiz = useCallback(() => {
     const s = loadSession();
     if (!s) return;
-    const timeLimit = DIFFICULTY_TIME[s.config.difficulty];
+    const currentQ = s.questions[s.currentIndex];
+    const timeLimit = currentQ ? getTimeLimit(s.config.difficulty, currentQ.category) : 30;
     setState((prev) => ({
       ...createInitialState(),
       phase: 'playing',
@@ -386,6 +435,14 @@ export function useQuiz() {
     }));
   }, []);
 
+  const [seenCount, setSeenCount] = useState(() => getSeenHistory().size);
+
+  const resetProgress = useCallback(() => {
+    const history = getSeenHistory();
+    history.clear();
+    setSeenCount(0);
+  }, []);
+
   return {
     state,
     savedSession,
@@ -396,6 +453,8 @@ export function useQuiz() {
     retryQuestion,
     backToStart,
     resumeQuiz,
+    resetProgress,
+    seenCount,
   };
 }
 

@@ -1,6 +1,6 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
-export type LearnerPath = 'foundation' | 'school' | 'everyday' | 'ai-ml';
+export type LearnerPath = 'foundation' | 'school' | 'everyday' | 'ai-ml' | 'competitive-exams';
 
 export type QuestionCategory =
   | 'arithmetic'
@@ -14,7 +14,11 @@ export type QuestionCategory =
   | 'calculus'
   | 'probability'
   | 'statistics'
-  | 'ai-ml-concepts';
+  | 'ai-ml-concepts'
+  | 'competitive-math'
+  | 'number-series'
+  | 'letter-coding'
+  | 'logical-reasoning';
 
 export type QuestionSource = 'generator' | 'curated';
 
@@ -72,6 +76,25 @@ export type VisualQuestion =
       total: number;
       shaded: number;
       vertical: boolean;
+    }
+  | {
+      kind: 'text-mirror';
+      word: string;
+      options: { text: string; mirrorX?: boolean; mirrorY?: boolean; rotate180?: boolean }[];
+    }
+  | {
+      kind: 'dot-region';
+      shapes: { type: 'circle' | 'square' | 'triangle'; label: string; cx: number; cy: number; r?: number; w?: number; h?: number }[];
+      dot: { x: number; y: number };
+    }
+  | {
+      kind: 'composite-rotate';
+      base: { shape: 'square' | 'circle'; dots: { x: number; y: number }[]; lines?: { x1: number; y1: number; x2: number; y2: number }[] };
+      options: { rotation: number; mirrorX?: boolean }[];
+    }
+  | {
+      kind: 'figure-classification';
+      figures: ShapeSpec[];
     };
 
 export interface Question {

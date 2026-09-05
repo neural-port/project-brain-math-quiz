@@ -1,5 +1,9 @@
 import type { Difficulty, Question, QuestionCategory } from './types';
 import { generateVisualQuestion } from './visual-generator';
+import { generateCompetitiveMath } from './competitive-generator';
+import { generateNumberSeries } from './series-generator';
+import { generateLetterCoding } from './coding-generator';
+import { generateLogicalReasoning } from './logic-generator';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────
 
@@ -30,6 +34,16 @@ function gcd(a: number, b: number): number {
   return b === 0 ? a : gcd(b, a % b);
 }
 
+/** Convert digits/letters to Unicode superscripts for math notation (x^4 → x⁴). */
+function sup(value: number | string): string {
+  const map: Record<string, string> = {
+    '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+    '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+    'n': 'ⁿ', 'T': 'ᵀ', '-': '⁻',
+  };
+  return String(value).split('').map((ch) => map[ch] ?? ch).join('');
+}
+
 /** Build a multiple-choice question. Distractors are always unique + != correct. */
 function mcq(
   category: QuestionCategory,
@@ -38,6 +52,7 @@ function mcq(
   correct: number | string,
   distractors: (number | string)[],
   explanation: string,
+  dedupeKey?: string,
 ): Question {
   const correctStr = String(correct);
   const seen = new Set<string>([correctStr]);
@@ -50,10 +65,14 @@ function mcq(
     }
     if (uniqueDistractors.length === 3) break;
   }
-  // Pad if needed
+  // Pad if needed. Extract the numeric prefix so unit-suffixed or
+  // text answers don't produce "NaN" fallback distractors.
+  const numericMatch = correctStr.match(/-?\d+(\.\d+)?/);
+  const baseNum = numericMatch ? Number(numericMatch[0]) : 0;
+  const suffix = numericMatch ? correctStr.slice(numericMatch[0].length) : '';
   let pad = 1;
   while (uniqueDistractors.length < 3) {
-    const d = String(Number(correctStr) + pad);
+    const d = `${baseNum + pad}${suffix}`;
     if (!seen.has(d)) {
       seen.add(d);
       uniqueDistractors.push(d);
@@ -70,6 +89,7 @@ function mcq(
     options,
     answerIndex: options.indexOf(correctStr),
     explanation,
+    dedupeKey,
   };
 }
 
@@ -114,7 +134,8 @@ function genStatistics(difficulty: Difficulty): Question {
       'statistics', difficulty, prompt,
       answer,
       near(answer, 2),
-      `Add them up: ${meanData.join(' + ')} = ${sum}. Divide by ${n}: ${sum} ÷ ${n} = ${answer}`,
+      `Step 1: Add all values: ${meanData.join(' + ')} = ${sum}.\nStep 2: Count the values: ${n}.\nStep 3: Mean = sum ÷ count = ${sum} ÷ ${n} = ${answer}.\nAnswer: ${answer}`,
+      `stats-mean:${sum}:${n}`,
     );
   }
 
@@ -128,7 +149,8 @@ function genStatistics(difficulty: Difficulty): Question {
       'statistics', difficulty, prompt,
       isInt ? answer : answer.toFixed(1),
       isInt ? near(answer, 2) : [data[n / 2 - 1], data[n / 2], (answer + 1).toFixed(1)],
-      `Sorted: ${data.join(', ')}. The median is the middle value = ${isInt ? answer : answer.toFixed(1)}`,
+      `Step 1: Arrange the data in order: ${data.join(', ')}.\nStep 2: ${n % 2 === 0 ? `With ${n} values (even), the median is the average of the two middle values: positions ${n / 2} and ${n / 2 + 1} (${data[n / 2 - 1]} and ${data[n / 2]}).` : `With ${n} values (odd), the median is the middle value at position ${Math.floor(n / 2) + 1}.`}\nStep 3: Median = ${isInt ? answer : answer.toFixed(1)}.\nAnswer: ${isInt ? answer : answer.toFixed(1)}`,
+      `stats-median:${data.join(',')}`,
     );
   }
 
@@ -147,7 +169,8 @@ function genStatistics(difficulty: Difficulty): Question {
       'statistics', difficulty, prompt,
       val,
       near(val, 2),
-      `The mode is the value that appears most often. ${val} appears twice = ${val}`,
+      `Step 1: Count how many times each value appears.\nStep 2: ${val} appears twice — more than any other value.\nStep 3: Mode = ${val}.\nAnswer: ${val}`,
+      `stats-mode:${val}`,
     );
   }
 
@@ -158,33 +181,35 @@ function genStatistics(difficulty: Difficulty): Question {
     'statistics', difficulty, prompt,
     answer,
     near(answer, 3),
-    `Range = biggest − smallest = ${data[n - 1]} − ${data[0]} = ${answer}`,
+    `Step 1: Identify the largest value: ${data[n - 1]}.\nStep 2: Identify the smallest value: ${data[0]}.\nStep 3: Range = largest − smallest = ${data[n - 1]} − ${data[0]} = ${answer}.\nAnswer: ${answer}`,
+    `stats-range:${data[0]}:${data[n - 1]}`,
   );
 }
 
 // ─── Derivatives (basic power rule only) ─────────────────────────────────────
 
 function genCalculus(difficulty: Difficulty): Question {
-  // Only power rule: d/dx [ax^n] = a*n*x^(n-1)
+  // Only power rule: d/dx [axⁿ] = a·n·xⁿ⁻¹
   const n = difficulty === 'easy' ? randInt(2, 4) : randInt(2, 6);
   const a = randInt(1, difficulty === 'hard' ? 8 : 5);
   const coef = a * n;
   const exp = n - 1;
 
-  const prompt = `What is the derivative of  ${a}x^${n}  ?`;
+  const prompt = `What is the derivative of  ${a}x${sup(n)}  ?`;
 
   // Correct answer
-  const correct = exp === 1 ? `${coef}x` : `${coef}x^${exp}`;
+  const correct = exp === 1 ? `${coef}x` : `${coef}x${sup(exp)}`;
 
   // Common mistakes as distractors
   const distractors = [
-    `${a}x^${n}`,      // forgot to apply power rule
-    `${a * n}x^${n}`,  // didn't reduce exponent
-    `${a}x^${exp}`,    // didn't multiply coefficient
+    `${a}x${sup(n)}`,      // forgot to apply power rule
+    `${a * n}x${sup(n)}`,  // didn't reduce exponent
+    `${a}x${sup(exp)}`,    // didn't multiply coefficient
   ];
 
   return mcq('calculus', difficulty, prompt, correct, distractors,
-    `Power rule: d/dx[ax^n] = a×n×x^(n-1) = ${a}×${n}×x^${exp} = ${correct}`,
+    `Step 1: Apply the power rule: d/dx[axⁿ] = a × n × xⁿ⁻¹.\nStep 2: Multiply coefficient by exponent: ${a} × ${n} = ${coef}.\nStep 3: Reduce exponent by 1: ${n} − 1 = ${exp}.\nAnswer: ${correct}`,
+    `calculus-power:${a}:${n}`,
   );
 }
 
@@ -204,7 +229,8 @@ function genLinearAlgebra(difficulty: Difficulty): Question {
       'linear-algebra', difficulty, prompt,
       answer,
       near(answer, 5),
-      `det = (${a}×${d}) − (${b}×${c}) = ${a * d} − ${b * c} = ${answer}`,
+      `Step 1: For a 2×2 matrix | a b |   the determinant = (a × d) − (b × c).\n                                     | c d |\nStep 2: Calculate: (${a} × ${d}) − (${b} × ${c}) = ${a * d} − ${b * c}.\nStep 3: det = ${answer}.\nAnswer: ${answer}`,
+      `la-det:${a}:${b}:${c}:${d}`,
     );
   }
 
@@ -219,7 +245,8 @@ function genLinearAlgebra(difficulty: Difficulty): Question {
       'linear-algebra', difficulty, prompt,
       answer,
       near(answer, 3),
-      `Trace = sum of diagonal = ${a} + ${d} = ${answer}`,
+      `Step 1: The trace of a matrix is the sum of its diagonal elements (top-left to bottom-right).\nStep 2: Diagonal elements are ${a} (top-left) and ${d} (bottom-right).\nStep 3: Trace = ${a} + ${d} = ${answer}.\nAnswer: ${answer}`,
+      `la-trace:${a}:${d}`,
     );
   }
 
@@ -244,7 +271,8 @@ function genLinearAlgebra(difficulty: Difficulty): Question {
     'linear-algebra', difficulty, prompt,
     answer,
     near(answer, 3),
-    `Add the ${posLabel} entries together. Answer = ${answer}`,
+    `Step 1: To add two matrices, add corresponding entries.\nStep 2: The ${posLabel} entries are ${pos === 'top-left' ? a1 + ' and ' + a2 : pos === 'top-right' ? b1 + ' and ' + b2 : pos === 'bottom-left' ? c1 + ' and ' + c2 : d1 + ' and ' + d2}.\nStep 3: ${pos === 'top-left' ? a1 + ' + ' + a2 : pos === 'top-right' ? b1 + ' + ' + b2 : pos === 'bottom-left' ? c1 + ' + ' + c2 : d1 + ' + ' + d2} = ${answer}.\nAnswer: ${answer}`,
+    `la-add:${posLabel}:${a1}:${b1}:${c1}:${d1}:${a2}:${b2}:${c2}:${d2}`,
   );
 }
 
@@ -263,7 +291,8 @@ function genAlgebra(difficulty: Difficulty): Question {
     'algebra', difficulty, prompt,
     x,
     near(x, 2),
-    `${a}x + ${b} = ${c}  →  ${a}x = ${c - b}  →  x = ${c - b} ÷ ${a} = ${x}`,
+    `Step 1: Start with the equation: ${a}x + ${b} = ${c}.\nStep 2: Subtract ${b} from both sides: ${a}x = ${c} − ${b} = ${c - b}.\nStep 3: Divide both sides by ${a}: x = ${c - b} ÷ ${a} = ${x}.\nAnswer: x = ${x}`,
+    `algebra-linear:${a}:${b}:${c}`,
   );
 }
 
@@ -282,24 +311,24 @@ function genArithmetic(difficulty: Difficulty): Question {
     case '+':
       answer = a + b;
       prompt = `What is ${a} + ${b}?`;
-      work = `${a} + ${b} = ${answer}`;
+      work = `Step 1: Add the two numbers: ${a} + ${b}.\nStep 2: ${a} + ${b} = ${answer}.\nAnswer: ${answer}`;
       break;
     case '-':
       if (b > a) [a, b] = [b, a];
       answer = a - b;
       prompt = `What is ${a} − ${b}?`;
-      work = `${a} − ${b} = ${answer}`;
+      work = `Step 1: Subtract the smaller from the larger: ${a} − ${b}.\nStep 2: ${a} − ${b} = ${answer}.\nAnswer: ${answer}`;
       break;
     default: // ×
       a = randInt(2, difficulty === 'hard' ? 15 : difficulty === 'medium' ? 12 : 9);
       b = randInt(2, difficulty === 'hard' ? 15 : difficulty === 'medium' ? 12 : 9);
       answer = a * b;
       prompt = `What is ${a} × ${b}?`;
-      work = `${a} × ${b} = ${answer}`;
+      work = `Step 1: Multiply the two numbers: ${a} × ${b}.\nStep 2: ${a} × ${b} = ${answer}.\nAnswer: ${answer}`;
       break;
   }
 
-  return mcq('arithmetic', difficulty, prompt, answer, near(answer, Math.max(3, Math.floor(answer * 0.1))), work);
+  return mcq('arithmetic', difficulty, prompt, answer, near(answer, Math.max(3, Math.floor(answer * 0.1))), work, `arith-${op}:${a}:${b}`);
 }
 
 // ─── Probability (basic: dice, coins, simple fractions) ──────────────────────
@@ -314,7 +343,8 @@ function genProbability(difficulty: Difficulty): Question {
       'probability', difficulty, prompt,
       '1/6',
       ['1/3', '1/2', '1/12'],
-      `There's 1 favorable outcome (${target}) out of 6 possible outcomes = 1/6`,
+      `Step 1: A standard die has 6 faces: 1, 2, 3, 4, 5, 6.\nStep 2: Only 1 face shows ${target} — that's 1 favorable outcome.\nStep 3: Probability = favorable ÷ total = 1 ÷ 6 = 1/6.\nAnswer: 1/6`,
+      `prob-dice:${target}`,
     );
   }
 
@@ -325,7 +355,8 @@ function genProbability(difficulty: Difficulty): Question {
       'probability', difficulty, prompt,
       '1/6',
       ['1/12', '1/36', '7/36'],
-      `There are 6 ways to get sum 7 out of 36 total outcomes = 6/36 = 1/6`,
+      `Step 1: Two dice → 6 × 6 = 36 total outcomes.\nStep 2: Ways to get sum 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) = 6 ways.\nStep 3: Probability = 6 ÷ 36 = 1/6.\nAnswer: 1/6`,
+      `prob-dice-sum:7`,
     );
   }
 
@@ -336,8 +367,9 @@ function genProbability(difficulty: Difficulty): Question {
     return mcq(
       'probability', difficulty, prompt,
       `1/${total}`,
-      [`1/${total / 2}`, `1/${total * 2}`, `${n}/${total}`],
-      `Each coin has 1/2 chance. So (1/2)^${n} = 1/${total}`,
+      [`1/${total + 1}`, `1/${total * 2}`, `1/${total - 1}`],
+      `Step 1: Each coin has 2 outcomes (heads or tails). With ${n} coins, total outcomes = 2${sup(n)} = ${total}.\nStep 2: Only 1 outcome has all heads: HHH${n > 2 ? '…' : ''} (all ${n} coins show heads).\nStep 3: Probability = 1 ÷ ${total} = 1/${total}.\nAnswer: 1/${total}`,
+      `prob-coins:${n}`,
     );
   }
 
@@ -376,7 +408,8 @@ function genProbability(difficulty: Difficulty): Question {
       'probability', difficulty, prompt,
       correctStr,
       distractors,
-      `${red} red out of ${total} total = ${red}/${total} = ${correctStr}`,
+      `Step 1: Count the red marbles: ${red}.\nStep 2: Count the total marbles: ${red} + ${blue}${green > 0 ? ' + ' + green : ''} = ${total}.\nStep 3: Probability = red ÷ total = ${red} ÷ ${total} = ${red}/${total} = ${correctStr}.\nAnswer: ${correctStr}`,
+      `prob-marbles:${red}:${blue}:${green}`,
     );
   }
 
@@ -386,7 +419,8 @@ function genProbability(difficulty: Difficulty): Question {
     'probability', difficulty, prompt,
     '1/13',
     ['1/52', '1/26', '1/4'],
-    `4 kings out of 52 cards = 4/52 = 1/13`,
+    `Step 1: A standard deck has 52 cards, with 4 kings (one per suit).\nStep 2: Favorable outcomes = 4 (the 4 kings).\nStep 3: Probability = 4 ÷ 52 = 1/13.\nAnswer: 1/13`,
+    `prob-card:king`,
   );
 }
 
@@ -411,7 +445,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       answer,
       near(answer, Math.min(d, 8)),
-      `Each step ${type === 'add' ? 'adds' : 'subtracts'} ${d}. So ${seq[3]} ${type === 'add' ? '+' : '−'} ${d} = ${answer}`,
+      `Step 1: Find the difference between consecutive terms: ${type === 'add' ? `${seq[1]} − ${seq[0]} = ${d}, ${seq[2]} − ${seq[1]} = ${d}` : `${seq[0]} − ${seq[1]} = ${d}, ${seq[1]} − ${seq[2]} = ${d}`}.\nStep 2: The pattern ${type === 'add' ? 'adds' : 'subtracts'} ${d} each time.\nStep 3: Next = ${seq[3]} ${type === 'add' ? '+' : '−'} ${d} = ${answer}.\nAnswer: ${answer}`,
+      `pat-${type}:${s}:${d}`,
     );
   }
 
@@ -425,7 +460,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       answer,
       near(answer, Math.max(4, r * 3)),
-      `Each term is ×${r}. So ${seq[3]} × ${r} = ${answer}`,
+      `Step 1: Check the ratio: ${seq[1]} ÷ ${seq[0]} = ${r}, ${seq[2]} ÷ ${seq[1]} = ${r}.\nStep 2: Each term is multiplied by ${r}.\nStep 3: Next = ${seq[3]} × ${r} = ${answer}.\nAnswer: ${answer}`,
+      `pat-${type}:${s}:${r}`,
     );
   }
 
@@ -438,7 +474,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       answer,
       near(answer, 4),
-      `These are consecutive squares: ${b}², ${b + 1}², ${b + 2}², ${b + 3}², so next is ${b + 4}² = ${answer}`,
+      `Step 1: Check if terms are perfect squares: ${seq[0]} = ${b}², ${seq[1]} = ${b + 1}², ${seq[2]} = ${b + 2}², ${seq[3]} = ${b + 3}².\nStep 2: The pattern is consecutive squares.\nStep 3: Next = ${b + 4}² = ${answer}.\nAnswer: ${answer}`,
+      `pat-square:${b}`,
     );
   }
 
@@ -451,7 +488,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       b,
       [a, a + 1, b + 1],
-      `The pattern alternates: ${a}, ${b}, ${a}, ${b}… so next is ${b}`,
+      `Step 1: Look at the sequence: ${seq.join(', ')}.\nStep 2: The pattern alternates between ${a} and ${b}.\nStep 3: Following the pattern, the next value is ${b}.\nAnswer: ${b}`,
+      `pat-alt:${a}:${b}`,
     );
   }
 
@@ -465,7 +503,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       answer,
       near(answer, 4),
-      `Each term is the sum of the two before it (Fibonacci-style): ${seq[3]} + ${seq[4]} = ${answer}`,
+      `Step 1: Check if each term = sum of the two before it.\nStep 2: ${seq[2]} = ${seq[0]} + ${seq[1]}, ${seq[3]} = ${seq[1]} + ${seq[2]}, ${seq[4]} = ${seq[2]} + ${seq[3]} — confirmed.\nStep 3: Next = ${seq[3]} + ${seq[4]} = ${answer}.\nAnswer: ${answer}`,
+      `pat-fib:${a}:${b}`,
     );
   }
 
@@ -478,7 +517,8 @@ function genPatterns(difficulty: Difficulty): Question {
       `What number comes next? ${seq.join(', ')}, ?`,
       answer,
       near(answer, 5),
-      `Each step adds 5. So ${s + 15} + 5 = ${answer}`,
+      `Step 1: Find the difference: ${seq[1]} − ${seq[0]} = 5, ${seq[2]} − ${seq[1]} = 5 — constant.\nStep 2: The pattern adds 5 each step.\nStep 3: Next = ${s + 15} + 5 = ${answer}.\nAnswer: ${answer}`,
+      `pat-step5:${s}`,
     );
   }
 
@@ -492,7 +532,8 @@ function genPatterns(difficulty: Difficulty): Question {
     `What number comes next? ${seq.join(', ')}, ?`,
     answer,
     near(answer, 4),
-    `Two interleaved patterns: ${a}, ${a + 2}, ${a + 4}… and ${b}, ${b - 4}, ${b - 8}. So next is ${answer}`,
+    `Step 1: Split into two interleaved sequences.\nStep 2: Odd positions: ${a}, ${a + 2}, ${a + 4}… (adding 2). Even positions: ${b}, ${b - 4}… (subtracting 4).\nStep 3: Next is an even position: ${b - 4} − 4 = ${answer}.\nAnswer: ${answer}`,
+    `pat-mixed:${a}:${b}`,
   );
 }
 
@@ -510,7 +551,15 @@ const GENERATORS: Record<string, (d: Difficulty) => Question> = {
   calculus: genCalculus,
   probability: genProbability,
   statistics: genStatistics,
+  'competitive-math': generateCompetitiveMath,
+  'number-series': generateNumberSeries,
+  'letter-coding': generateLetterCoding,
+  'logical-reasoning': generateLogicalReasoning,
 };
+
+function getConceptFamily(category: QuestionCategory): string {
+  return category === 'patterns' || category === 'number-series' ? 'sequences' : category;
+}
 
 export function generateQuestions(
   count: number,
@@ -520,41 +569,85 @@ export function generateQuestions(
 ): Question[] {
   const seen = existingPrompts ?? new Set<string>();
   const result: Question[] = [];
-  const genCats = categories.filter((c) => GENERATORS[c]);
-  if (genCats.length === 0) return result;
+  const genCats = [...new Set(categories.filter((category) => GENERATORS[category]))];
+  if (genCats.length === 0 || count <= 0) return result;
 
-  // Phase 1: generate unseen questions. A category is dropped after too many
-  // consecutive "already seen" misses, so exhausted pools don't stall the loop.
+  const batchKeys = new Set<string>();
+  const categoryCounts = new Map<QuestionCategory, number>();
+  const subtypeCounts = new Map<string, number>();
+  const familyCounts = new Map<string, number>();
+  // Count how many categories belong to each family so multi-category
+  // families (e.g. "sequences" = patterns + number-series) get a
+  // proportionally larger cap instead of the same quota as a single
+  // category family.
+  const familySizes = new Map<string, number>();
+  for (const cat of genCats) {
+    const f = getConceptFamily(cat);
+    familySizes.set(f, (familySizes.get(f) ?? 0) + 1);
+  }
+  const familyTotal = familySizes.size;
+  const categoryLimit = Math.ceil(count / genCats.length);
+  const familyLimit = (family: string) =>
+    familyTotal > 1
+      ? Math.ceil((count * (familySizes.get(family) ?? 1)) / genCats.length) + 1
+      : count;
+  let subtypeLimit = genCats.length > 1 ? 1 : Math.max(2, Math.ceil(count / 8));
+  let allowPreviouslySeen = false;
   let attempts = 0;
-  const maxAttempts = count * 20;
-  const alive = new Set(genCats);
-  const catMisses = new Map<string, number>();
+  const maxAttempts = Math.max(500, count * 300);
 
-  while (result.length < count && attempts < maxAttempts && alive.size > 0) {
-    const cat = pick([...alive]);
-    const q = GENERATORS[cat](difficulty);
-    const key = q.dedupeKey ?? q.prompt;
-    if (!seen.has(key)) {
+  while (result.length < count && attempts < maxAttempts) {
+    const eligible = genCats.filter((category) => {
+      const categoryCount = categoryCounts.get(category) ?? 0;
+      const family = getConceptFamily(category);
+      const familyCount = familyCounts.get(family) ?? 0;
+      return categoryCount < categoryLimit && familyCount < familyLimit(family);
+    });
+
+    if (eligible.length === 0) break;
+    const lowestCount = Math.min(...eligible.map((category) => categoryCounts.get(category) ?? 0));
+    const category = pick(eligible.filter((item) => (categoryCounts.get(item) ?? 0) === lowestCount));
+    const question = GENERATORS[category](difficulty);
+    const key = question.dedupeKey ?? question.prompt;
+    const subtype = question.dedupeKey?.split(':')[0] ?? category;
+
+    if (
+      !batchKeys.has(key)
+      && (allowPreviouslySeen || !seen.has(key))
+      && (subtypeCounts.get(subtype) ?? 0) < subtypeLimit
+    ) {
+      const family = getConceptFamily(category);
+      batchKeys.add(key);
       seen.add(key);
-      result.push(q);
-      catMisses.delete(cat);
-    } else {
-      const misses = (catMisses.get(cat) ?? 0) + 1;
-      catMisses.set(cat, misses);
-      if (misses >= 6 && alive.size > 1) alive.delete(cat);
+      result.push(question);
+      categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1);
+      subtypeCounts.set(subtype, (subtypeCounts.get(subtype) ?? 0) + 1);
+      familyCounts.set(family, (familyCounts.get(family) ?? 0) + 1);
     }
+
     attempts++;
+    if (attempts % Math.max(100, count * 20) === 0) subtypeLimit++;
+    if (attempts >= Math.max(300, count * 150)) allowPreviouslySeen = true;
   }
 
-  // Phase 2: if we couldn't get enough unseen questions, fill the rest
-  // with any questions (including seen ones) so the game always works.
   let fallbackAttempts = 0;
-  while (result.length < count && fallbackAttempts < count * 5) {
-    const cat = pick(genCats);
-    const q = GENERATORS[cat](difficulty);
-    const key = q.dedupeKey ?? q.prompt;
-    if (!result.some((item) => (item.dedupeKey ?? item.prompt) === key)) {
-      result.push(q);
+  while (result.length < count && fallbackAttempts < count * 100) {
+    // Respect family limits in fallback too, but with +2 headroom
+    const eligible = genCats.filter((category) => {
+      const family = getConceptFamily(category);
+      return (familyCounts.get(family) ?? 0) < familyLimit(family) + 2;
+    });
+    const pool = eligible.length > 0 ? eligible : genCats;
+    const lowestCount = Math.min(...pool.map((category) => categoryCounts.get(category) ?? 0));
+    const category = pick(pool.filter((item) => (categoryCounts.get(item) ?? 0) === lowestCount));
+    const question = GENERATORS[category](difficulty);
+    const key = question.dedupeKey ?? question.prompt;
+    if (!batchKeys.has(key)) {
+      batchKeys.add(key);
+      result.push(question);
+      categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1);
+      const family = getConceptFamily(category);
+      familyCounts.set(family, (familyCounts.get(family) ?? 0) + 1);
     }
     fallbackAttempts++;
   }

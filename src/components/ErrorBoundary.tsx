@@ -32,6 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
       localStorage.removeItem('quiz-session');
       localStorage.removeItem('quiz-seen-prompts');
       localStorage.removeItem('quiz-player-name');
+      localStorage.removeItem('quiz-currency');
     } catch {
       // storage may be unavailable — the reload still recovers the session
     }

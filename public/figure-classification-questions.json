@@ -1,0 +1,276 @@
+{
+  "version": "1.1.0",
+  "description": "Curated figure classification questions for visual reasoning practice. Each question is designed so exactly ONE option is correct: the intended criterion produces a clean partition while every distractor lists a partition that matches no visible criterion.",
+  "questions": [
+    {
+      "id": "fc-001",
+      "category": "visual-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by fill: (1,6,8), (2,4,9), (3,5,7)",
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by shape: (1,6,8), (2,4,9), (3,5,7)"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: The circles are at positions 1, 6, and 8; the squares at 2, 4, and 9; the triangles at 3, 5, and 7. Step 2: Grouping by shape gives circles (1,6,8), squares (2,4,9), triangles (3,5,7). Step 3: Each row and column mixes shapes and fills, so no listed fill, row, or column partition is valid. Answer: Group by shape: (1,6,8), (2,4,9), (3,5,7).",
+      "dedupeKey": "fig-class-001",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "green" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "square", "tone": "peach" },
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "circle", "tone": "outline" },
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "circle", "tone": "outline" },
+          { "shape": "square", "tone": "peach" }
+        ]
+      }
+    },
+    {
+      "id": "fc-002",
+      "category": "visual-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by size: (1,5,9), (2,6,7), (3,4,8)",
+        "Group by rows: (1,4,7), (2,5,8), (3,6,9)"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: All 9 figures are different shapes, so shape cannot group them. Step 2: Row 1 is all green, row 2 is all outline, row 3 is all peach. Step 3: Grouping by fill gives green (1,2,3), outline (4,5,6), peach (7,8,9). The size partition lists groups that share no attribute, and (1,4,7),(2,5,8),(3,6,9) are the columns, which mix fills. Answer: Group by fill: (1,2,3), (4,5,6), (7,8,9).",
+      "dedupeKey": "fig-class-002",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "green" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "pentagon", "tone": "outline" },
+          { "shape": "hexagon", "tone": "outline" },
+          { "shape": "star", "tone": "outline" },
+          { "shape": "rectangle", "tone": "peach" },
+          { "shape": "arrow", "tone": "peach" },
+          { "shape": "flag", "tone": "peach" }
+        ]
+      }
+    },
+    {
+      "id": "fc-003",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by rows: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by number of sides: (1,6,9), (2,5,8), (3,4,7)",
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: The triangles (3 sides) are at positions 1, 6, 9; the squares (4 sides) at 2, 5, 8; the pentagons (5 sides) at 3, 4, 7. Step 2: Grouping by side count gives triangles (1,6,9), squares (2,5,8), pentagons (3,4,7). Step 3: Every row and every column mixes shapes and fills, so the row, column, and listed fill partitions are all invalid. Answer: Group by number of sides: (1,6,9), (2,5,8), (3,4,7).",
+      "dedupeKey": "fig-class-003",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "pentagon", "tone": "outline" },
+          { "shape": "square", "tone": "peach" },
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "square", "tone": "outline" },
+          { "shape": "triangle", "tone": "peach" }
+        ]
+      }
+    },
+    {
+      "id": "fc-004",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,4,8), (2,5,9), (3,6,7)",
+        "Group by fill: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by size: (1,4,8), (2,5,9), (3,6,7)"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: The triangles are at positions 1, 4, 8; the squares at 2, 5, 9; the circles at 3, 6, 7. Step 2: Grouping by shape gives triangles (1,4,8), squares (2,5,9), circles (3,6,7). Step 3: Each row and column mixes shapes and fills, and all figures are the same size — so the other listed partitions are invalid. Answer: Group by shape: (1,4,8), (2,5,9), (3,6,7).",
+      "dedupeKey": "fig-class-004",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "square", "tone": "outline" },
+          { "shape": "circle", "tone": "peach" },
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "square", "tone": "peach" },
+          { "shape": "circle", "tone": "green" },
+          { "shape": "circle", "tone": "peach" },
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "square", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-005",
+      "category": "visual-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by shape: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape and fill together: (1,5,9), (2,6,7), (3,4,8)",
+        "No valid grouping exists"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: Column 1 has 3 hexagons, column 2 has 3 stars, column 3 has 3 rectangles. Step 2: Grouping by shape gives hexagons (1,4,7), stars (2,5,8), rectangles (3,6,9). Step 3: The fills are scrambled so no listed fill or combined partition matches. Answer: Group by shape: (1,4,7), (2,5,8), (3,6,9).",
+      "dedupeKey": "fig-class-005",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "hexagon", "tone": "green" },
+          { "shape": "star", "tone": "outline" },
+          { "shape": "rectangle", "tone": "peach" },
+          { "shape": "hexagon", "tone": "outline" },
+          { "shape": "star", "tone": "peach" },
+          { "shape": "rectangle", "tone": "green" },
+          { "shape": "hexagon", "tone": "peach" },
+          { "shape": "star", "tone": "green" },
+          { "shape": "rectangle", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-006",
+      "category": "visual-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by fill: (1,6,8), (2,4,9), (3,5,7)",
+        "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by fill: (1,5,9), (2,4,8), (3,6,7)",
+        "Group by rotation: (1,5,9), (2,6,7), (3,4,8)"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: All 9 figures are different shapes, so no shape grouping exists. Step 2: The outline figures are at 1, 5, 9; the green figures at 2, 4, 8; the peach figures at 3, 6, 7. Step 3: Grouping by fill gives outline (1,5,9), green (2,4,8), peach (3,6,7). The other listed partitions do not match the actual fill or shape positions. Answer: Group by fill: (1,5,9), (2,4,8), (3,6,7).",
+      "dedupeKey": "fig-class-006",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "outline" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "hexagon", "tone": "outline" },
+          { "shape": "star", "tone": "peach" },
+          { "shape": "rectangle", "tone": "peach" },
+          { "shape": "arrow", "tone": "green" },
+          { "shape": "flag", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-007",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,5,9), (2,6,7), (3,4,8)",
+        "Group by rows: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by fill: (1,5,9), (2,6,7), (3,4,8)"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: The triangles are at positions 1, 5, 9; the squares at 2, 6, 7; the pentagons at 3, 4, 8. Step 2: Grouping by shape gives triangles (1,5,9), squares (2,6,7), pentagons (3,4,8). Step 3: Every row and column mixes shapes and fills — (1,5,9) are peach, outline, and outline, so the same partition does not work for fill. Answer: Group by shape: (1,5,9), (2,6,7), (3,4,8).",
+      "dedupeKey": "fig-class-007",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "pentagon", "tone": "outline" },
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "square", "tone": "peach" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "pentagon", "tone": "peach" },
+          { "shape": "triangle", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-008",
+      "category": "visual-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Which figure does NOT belong to the group?",
+      "options": ["Figure 1 (circle)", "Figure 2 (square)", "Figure 3 (triangle)", "Figure 4 (hexagon)"],
+      "answerIndex": 0,
+      "explanation": "Step 1: Observe the 4 figures — circle, square, triangle, hexagon, all with the same fill. Step 2: The square, triangle, and hexagon are all polygons (closed shapes with straight sides). Step 3: The circle has no straight sides — it is the only non-polygon. Answer: Figure 1 (circle) does not belong.",
+      "dedupeKey": "fig-class-008",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "green" },
+          { "shape": "square", "tone": "green" },
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "hexagon", "tone": "green" }
+        ]
+      }
+    },
+    {
+      "id": "fc-009",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Which figure does NOT belong to the group?",
+      "options": ["Figure 1 (triangle)", "Figure 2 (triangle)", "Figure 3 (square)", "Figure 4 (triangle)"],
+      "answerIndex": 2,
+      "explanation": "Step 1: All 4 figures share the same outline fill, so fill is not a distinguishing feature. Step 2: Figures 1, 2, and 4 are triangles (3 sides). Step 3: Figure 3 is a square (4 sides) — it is the only non-triangle. Answer: Figure 3 (square) does not belong.",
+      "dedupeKey": "fig-class-009",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "triangle", "tone": "outline" },
+          { "shape": "square", "tone": "outline" },
+          { "shape": "triangle", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-010",
+      "category": "visual-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Which figure does NOT belong to the group?",
+      "options": ["Figure 1 (circle)", "Figure 2 (star)", "Figure 3 (l-shape)", "Figure 4 (square)"],
+      "answerIndex": 2,
+      "explanation": "Step 1: The circle, star, and square all have at least one axis of mirror symmetry — a circle has infinitely many, a star has five, a square has four. Step 2: The l-shape has no axis of symmetry — no line through it splits it into two mirror halves. Answer: Figure 3 (l-shape) does not belong.",
+      "dedupeKey": "fig-class-010",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "green" },
+          { "shape": "star", "tone": "green" },
+          { "shape": "l-shape", "tone": "green" },
+          { "shape": "square", "tone": "green" }
+        ]
+      }
+    }
+  ]
+}

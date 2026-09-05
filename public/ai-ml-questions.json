@@ -8,450 +8,750 @@
       "difficulty": "easy",
       "source": "curated",
       "prompt": "What does the sigmoid function output when the input is 0?",
-      "options": ["0.5", "0", "1", "-1"],
+      "options": [
+        "0.5",
+        "0",
+        "1",
+        "-1"
+      ],
       "answerIndex": 0,
-      "explanation": "sigmoid(0) = 1/(1+e^0) = 1/(1+1) = 1/2 = 0.5. At zero, it's exactly 50%."
+      "explanation": "sigmoid(0) = 1/(1+e^0) = 1/(1+1) = 1/2 = 0.5. At zero, it's exactly 50%.",
+      "dedupeKey": "ai-ml:ai-001"
     },
     {
       "id": "ai-002",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the output range of the sigmoid function?",
-      "options": ["0 to 1", "-1 to 1", "0 to infinity", "Negative infinity to positive infinity"],
+      "options": [
+        "0 to 1",
+        "-1 to 1",
+        "0 to infinity",
+        "Negative infinity to positive infinity"
+      ],
       "answerIndex": 0,
-      "explanation": "Sigmoid always outputs between 0 and 1, which is why it's used for probability predictions."
+      "explanation": "Sigmoid always outputs between 0 and 1, which is why it's used for probability predictions.",
+      "dedupeKey": "ai-ml:ai-002"
     },
     {
       "id": "ai-003",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What does ReLU(x) output when x = -5?",
-      "options": ["0", "-5", "5", "1"],
+      "options": [
+        "0",
+        "-5",
+        "5",
+        "1"
+      ],
       "answerIndex": 0,
-      "explanation": "ReLU(x) = max(0, x). For any negative input, the output is 0. max(0, -5) = 0."
+      "explanation": "ReLU(x) = max(0, x). For any negative input, the output is 0. max(0, -5) = 0.",
+      "dedupeKey": "ai-ml:ai-003"
     },
     {
       "id": "ai-004",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What does ReLU(x) output when x = 7?",
-      "options": ["7", "0", "1", "0.7"],
+      "options": [
+        "7",
+        "0",
+        "1",
+        "0.7"
+      ],
       "answerIndex": 0,
-      "explanation": "ReLU(x) = max(0, x). For positive inputs, it returns the input itself. max(0, 7) = 7."
+      "explanation": "ReLU(x) = max(0, x). For positive inputs, it returns the input itself. max(0, 7) = 7.",
+      "dedupeKey": "ai-ml:ai-004"
     },
     {
       "id": "ai-005",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "In gradient descent, which direction do we move?",
-      "options": ["Opposite to the gradient (downhill)", "Same as the gradient (uphill)", "Random direction", "Always left"],
+      "options": [
+        "Opposite to the gradient (downhill)",
+        "Same as the gradient (uphill)",
+        "Random direction",
+        "Always left"
+      ],
       "answerIndex": 0,
-      "explanation": "We move opposite to the gradient to go downhill and minimize the loss."
+      "explanation": "We move opposite to the gradient to go downhill and minimize the loss.",
+      "dedupeKey": "ai-ml:ai-005"
     },
     {
       "id": "ai-006",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the learning rate in gradient descent?",
-      "options": ["How big each step is", "How many times we train", "The number of layers", "The dataset size"],
+      "options": [
+        "How big each step is",
+        "How many times we train",
+        "The number of layers",
+        "The dataset size"
+      ],
       "answerIndex": 0,
-      "explanation": "The learning rate controls step size. Too big = overshoot. Too small = slow."
+      "explanation": "The learning rate controls step size. Too big = overshoot. Too small = slow.",
+      "dedupeKey": "ai-ml:ai-006"
     },
     {
       "id": "ai-007",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What does MSE stand for in machine learning?",
-      "options": ["Mean Squared Error", "Multiple Sample Estimation", "Model Standard Error", "Mean Sample Evaluation"],
+      "options": [
+        "Mean Squared Error",
+        "Multiple Sample Estimation",
+        "Model Standard Error",
+        "Mean Sample Evaluation"
+      ],
       "answerIndex": 0,
-      "explanation": "MSE = Mean Squared Error. It's the average of (prediction - actual)² across all samples."
+      "explanation": "MSE = Mean Squared Error. It's the average of (prediction - actual)² across all samples.",
+      "dedupeKey": "ai-ml:ai-007"
     },
     {
       "id": "ai-008",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "If a model predicts 3 and the actual value is 5, what is the squared error for this single sample?",
-      "options": ["4", "2", "8", "15"],
+      "options": [
+        "4",
+        "2",
+        "8",
+        "15"
+      ],
       "answerIndex": 0,
-      "explanation": "Squared error = (actual - prediction)² = (5 - 3)² = 2² = 4."
+      "explanation": "Squared error = (actual - prediction)² = (5 - 3)² = 2² = 4.",
+      "dedupeKey": "ai-ml:ai-008"
     },
     {
       "id": "ai-009",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "If predictions are [2, 4] and actual values are [3, 5], what is the MSE?",
-      "options": ["1", "2", "4", "0.5"],
+      "options": [
+        "1",
+        "2",
+        "4",
+        "0.5"
+      ],
       "answerIndex": 0,
-      "explanation": "Errors: (3-2)=1 and (5-4)=1. Squared: 1 and 1. MSE = (1+1)/2 = 1."
+      "explanation": "Errors: (3-2)=1 and (5-4)=1. Squared: 1 and 1. MSE = (1+1)/2 = 1.",
+      "dedupeKey": "ai-ml:ai-009"
     },
     {
       "id": "ai-010",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What does a weight in a neural network represent?",
-      "options": ["How important an input is", "The learning rate", "The number of neurons", "The training time"],
+      "options": [
+        "How important an input is",
+        "The learning rate",
+        "The number of neurons",
+        "The training time"
+      ],
       "answerIndex": 0,
-      "explanation": "Weights determine how much each input contributes to the output. Bigger weight = more important input."
+      "explanation": "Weights determine how much each input contributes to the output. Bigger weight = more important input.",
+      "dedupeKey": "ai-ml:ai-010"
     },
     {
       "id": "ai-011",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the dot product of vectors (1, 2) and (3, 4)?",
-      "options": ["11", "7", "14", "10"],
+      "options": [
+        "11",
+        "7",
+        "14",
+        "10"
+      ],
       "answerIndex": 0,
-      "explanation": "Dot product = (1×3) + (2×4) = 3 + 8 = 11."
+      "explanation": "Dot product = (1×3) + (2×4) = 3 + 8 = 11.",
+      "dedupeKey": "ai-ml:ai-011"
     },
     {
       "id": "ai-012",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the dot product of vectors (2, 0) and (0, 3)?",
-      "options": ["0", "6", "5", "2"],
+      "options": [
+        "0",
+        "6",
+        "5",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "Dot product = (2×0) + (0×3) = 0 + 0 = 0. Perpendicular vectors have zero dot product."
+      "explanation": "Dot product = (2×0) + (0×3) = 0 + 0 = 0. Perpendicular vectors have zero dot product.",
+      "dedupeKey": "ai-ml:ai-012"
     },
     {
       "id": "ai-013",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the derivative of x²?",
-      "options": ["2x", "x", "x²", "2"],
+      "options": [
+        "2x",
+        "x",
+        "x²",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "Power rule: d/dx[x^n] = n×x^(n-1). So d/dx[x²] = 2x."
+      "explanation": "Power rule: d/dx[x^n] = n×x^(n-1). So d/dx[x²] = 2x.",
+      "dedupeKey": "ai-ml:ai-013"
     },
     {
       "id": "ai-014",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the derivative of x³?",
-      "options": ["3x²", "3x", "x²", "3"],
+      "options": [
+        "3x²",
+        "3x",
+        "x²",
+        "3"
+      ],
       "answerIndex": 0,
-      "explanation": "Power rule: d/dx[x³] = 3×x² = 3x²."
+      "explanation": "Power rule: d/dx[x³] = 3×x² = 3x².",
+      "dedupeKey": "ai-ml:ai-014"
     },
     {
       "id": "ai-015",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the derivative of 5x²?",
-      "options": ["10x", "5x", "10", "5x²"],
+      "options": [
+        "10x",
+        "5x",
+        "10",
+        "5x²"
+      ],
       "answerIndex": 0,
-      "explanation": "Power rule: d/dx[5x²] = 5×2×x = 10x."
+      "explanation": "Power rule: d/dx[5x²] = 5×2×x = 10x.",
+      "dedupeKey": "ai-ml:ai-015"
     },
     {
       "id": "ai-016",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the derivative of a constant, like 7?",
-      "options": ["0", "7", "1", "7x"],
+      "options": [
+        "0",
+        "7",
+        "1",
+        "7x"
+      ],
       "answerIndex": 0,
-      "explanation": "The derivative of any constant is 0, because a constant doesn't change."
+      "explanation": "The derivative of any constant is 0, because a constant doesn't change.",
+      "dedupeKey": "ai-ml:ai-016"
     },
     {
       "id": "ai-017",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the derivative of 3x?",
-      "options": ["3", "3x", "0", "x"],
+      "options": [
+        "3",
+        "3x",
+        "0",
+        "x"
+      ],
       "answerIndex": 0,
-      "explanation": "d/dx[3x] = 3. The derivative of ax is just a."
+      "explanation": "d/dx[3x] = 3. The derivative of ax is just a.",
+      "dedupeKey": "ai-ml:ai-017"
     },
     {
       "id": "ai-018",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "In a 2×2 matrix, the determinant is calculated as:",
-      "options": ["ad - bc", "a + b + c + d", "ad + bc", "ab - cd"],
+      "options": [
+        "ad - bc",
+        "a + b + c + d",
+        "ad + bc",
+        "ab - cd"
+      ],
       "answerIndex": 0,
-      "explanation": "For matrix [[a,b],[c,d]], det = ad - bc. Multiply the diagonal, subtract the anti-diagonal."
+      "explanation": "For matrix [[a,b],[c,d]], det = ad - bc. Multiply the diagonal, subtract the anti-diagonal.",
+      "dedupeKey": "ai-ml:ai-018"
     },
     {
       "id": "ai-019",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the trace of a matrix?",
-      "options": ["Sum of diagonal elements", "Sum of all elements", "Product of diagonal", "The determinant"],
+      "options": [
+        "Sum of diagonal elements",
+        "Sum of all elements",
+        "Product of diagonal",
+        "The determinant"
+      ],
       "answerIndex": 0,
-      "explanation": "The trace is the sum of the diagonal elements (top-left to bottom-right)."
+      "explanation": "The trace is the sum of the diagonal elements (top-left to bottom-right).",
+      "dedupeKey": "ai-ml:ai-019"
     },
     {
       "id": "ai-020",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the trace of [[3, 0], [0, 5]]?",
-      "options": ["8", "15", "3", "5"],
+      "options": [
+        "8",
+        "15",
+        "3",
+        "5"
+      ],
       "answerIndex": 0,
-      "explanation": "Trace = sum of diagonal = 3 + 5 = 8."
+      "explanation": "Trace = sum of diagonal = 3 + 5 = 8.",
+      "dedupeKey": "ai-ml:ai-020"
     },
     {
       "id": "ai-021",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the determinant of [[2, 0], [0, 3]]?",
-      "options": ["6", "5", "0", "2"],
+      "options": [
+        "6",
+        "5",
+        "0",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "det = (2×3) - (0×0) = 6 - 0 = 6."
+      "explanation": "det = (2×3) - (0×0) = 6 - 0 = 6.",
+      "dedupeKey": "ai-ml:ai-021"
     },
     {
       "id": "ai-022",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the determinant of [[1, 2], [3, 4]]?",
-      "options": ["-2", "2", "10", "12"],
+      "options": [
+        "-2",
+        "2",
+        "10",
+        "12"
+      ],
       "answerIndex": 0,
-      "explanation": "det = (1×4) - (2×3) = 4 - 6 = -2."
+      "explanation": "det = (1×4) - (2×3) = 4 - 6 = -2.",
+      "dedupeKey": "ai-ml:ai-022"
     },
     {
       "id": "ai-023",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What does 'epoch' mean in machine learning training?",
-      "options": ["One full pass through the entire dataset", "One single training example", "One layer of the network", "One weight update"],
+      "options": [
+        "One full pass through the entire dataset",
+        "One single training example",
+        "One layer of the network",
+        "One weight update"
+      ],
       "answerIndex": 0,
-      "explanation": "An epoch is one complete pass through all the training data."
+      "explanation": "An epoch is one complete pass through all the training data.",
+      "dedupeKey": "ai-ml:ai-023"
     },
     {
       "id": "ai-024",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the mean of [10, 20, 30]?",
-      "options": ["20", "10", "30", "60"],
+      "options": [
+        "20",
+        "10",
+        "30",
+        "60"
+      ],
       "answerIndex": 0,
-      "explanation": "Mean = (10 + 20 + 30) / 3 = 60 / 3 = 20."
+      "explanation": "Mean = (10 + 20 + 30) / 3 = 60 / 3 = 20.",
+      "dedupeKey": "ai-ml:ai-024"
     },
     {
       "id": "ai-025",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the mean of [4, 8, 6, 2]?",
-      "options": ["5", "4", "6", "8"],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "8"
+      ],
       "answerIndex": 0,
-      "explanation": "Mean = (4 + 8 + 6 + 2) / 4 = 20 / 4 = 5."
+      "explanation": "Mean = (4 + 8 + 6 + 2) / 4 = 20 / 4 = 5.",
+      "dedupeKey": "ai-ml:ai-025"
     },
     {
       "id": "ai-026",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the median of [1, 3, 5, 7, 9]?",
-      "options": ["5", "3", "7", "4"],
+      "options": [
+        "5",
+        "3",
+        "7",
+        "4"
+      ],
       "answerIndex": 0,
-      "explanation": "The median is the middle value. With 5 numbers, the middle (3rd) is 5."
+      "explanation": "The median is the middle value. With 5 numbers, the middle (3rd) is 5.",
+      "dedupeKey": "ai-ml:ai-026"
     },
     {
       "id": "ai-027",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the mode of [2, 2, 3, 4, 5]?",
-      "options": ["2", "3", "4", "5"],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
       "answerIndex": 0,
-      "explanation": "The mode is the most frequent value. 2 appears twice, others once. Mode = 2."
+      "explanation": "The mode is the most frequent value. 2 appears twice, others once. Mode = 2.",
+      "dedupeKey": "ai-ml:ai-027"
     },
     {
       "id": "ai-028",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the range of [3, 7, 1, 9, 4]?",
-      "options": ["8", "5", "9", "4"],
+      "options": [
+        "8",
+        "5",
+        "9",
+        "4"
+      ],
       "answerIndex": 0,
-      "explanation": "Range = max - min = 9 - 1 = 8."
+      "explanation": "Range = max - min = 9 - 1 = 8.",
+      "dedupeKey": "ai-ml:ai-028"
     },
     {
       "id": "ai-029",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "If you flip 1 coin, what is the probability of getting heads?",
-      "options": ["1/2", "1/4", "1/1", "1/3"],
+      "options": [
+        "1/2",
+        "1/4",
+        "1/1",
+        "1/3"
+      ],
       "answerIndex": 0,
-      "explanation": "1 favorable outcome (heads) out of 2 possible (heads or tails) = 1/2."
+      "explanation": "1 favorable outcome (heads) out of 2 possible (heads or tails) = 1/2.",
+      "dedupeKey": "ai-ml:ai-029"
     },
     {
       "id": "ai-030",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
       "prompt": "What is the probability of rolling a 6 on a standard die?",
-      "options": ["1/6", "1/3", "6/6", "1/2"],
+      "options": [
+        "1/6",
+        "1/3",
+        "6/6",
+        "1/2"
+      ],
       "answerIndex": 0,
-      "explanation": "1 favorable outcome (rolling 6) out of 6 possible outcomes = 1/6."
+      "explanation": "1 favorable outcome (rolling 6) out of 6 possible outcomes = 1/6.",
+      "dedupeKey": "ai-ml:ai-030"
     },
     {
       "id": "ai-031",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the derivative of 4x³?",
-      "options": ["12x²", "4x²", "12x", "4x"],
+      "options": [
+        "12x²",
+        "4x²",
+        "12x",
+        "4x"
+      ],
       "answerIndex": 0,
-      "explanation": "Power rule: d/dx[4x³] = 4×3×x² = 12x²."
+      "explanation": "Power rule: d/dx[4x³] = 4×3×x² = 12x².",
+      "dedupeKey": "ai-ml:ai-031"
     },
     {
       "id": "ai-032",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the derivative of x² + 3x?",
-      "options": ["2x + 3", "2x", "3", "x + 3"],
+      "options": [
+        "2x + 3",
+        "2x",
+        "3",
+        "x + 3"
+      ],
       "answerIndex": 0,
-      "explanation": "Derivative of x² = 2x. Derivative of 3x = 3. So d/dx[x² + 3x] = 2x + 3."
+      "explanation": "Derivative of x² = 2x. Derivative of 3x = 3. So d/dx[x² + 3x] = 2x + 3.",
+      "dedupeKey": "ai-ml:ai-032"
     },
     {
       "id": "ai-033",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the dot product of (1, 2, 3) and (4, 5, 6)?",
-      "options": ["32", "20", "14", "6"],
+      "options": [
+        "32",
+        "20",
+        "14",
+        "6"
+      ],
       "answerIndex": 0,
-      "explanation": "Dot product = (1×4) + (2×5) + (3×6) = 4 + 10 + 18 = 32."
+      "explanation": "Dot product = (1×4) + (2×5) + (3×6) = 4 + 10 + 18 = 32.",
+      "dedupeKey": "ai-ml:ai-033"
     },
     {
       "id": "ai-034",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the determinant of [[3, 1], [1, 3]]?",
-      "options": ["8", "9", "6", "0"],
+      "options": [
+        "8",
+        "9",
+        "6",
+        "0"
+      ],
       "answerIndex": 0,
-      "explanation": "det = (3×3) - (1×1) = 9 - 1 = 8."
+      "explanation": "det = (3×3) - (1×1) = 9 - 1 = 8.",
+      "dedupeKey": "ai-ml:ai-034"
     },
     {
       "id": "ai-035",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "If a model predicts [1, 2, 3] and actual values are [1, 2, 5], what is the MSE?",
-      "options": ["4/3", "2", "4", "1"],
+      "options": [
+        "4/3",
+        "2",
+        "4",
+        "1"
+      ],
       "answerIndex": 0,
-      "explanation": "Errors: 0, 0, 2. Squared: 0, 0, 4. MSE = (0+0+4)/3 = 4/3 ≈ 1.33."
+      "explanation": "Errors: 0, 0, 2. Squared: 0, 0, 4. MSE = (0+0+4)/3 = 4/3 ≈ 1.33.",
+      "dedupeKey": "ai-ml:ai-035"
     },
     {
       "id": "ai-036",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the output of tanh(0)?",
-      "options": ["0", "0.5", "1", "-1"],
+      "options": [
+        "0",
+        "0.5",
+        "1",
+        "-1"
+      ],
       "answerIndex": 0,
-      "explanation": "tanh(0) = 0. Unlike sigmoid (which gives 0.5 at 0), tanh is centered at zero."
+      "explanation": "tanh(0) = 0. Unlike sigmoid (which gives 0.5 at 0), tanh is centered at zero.",
+      "dedupeKey": "ai-ml:ai-036"
     },
     {
       "id": "ai-037",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the output range of the tanh function?",
-      "options": ["-1 to 1", "0 to 1", "0 to infinity", "-infinity to infinity"],
+      "options": [
+        "-1 to 1",
+        "0 to 1",
+        "0 to infinity",
+        "-infinity to infinity"
+      ],
       "answerIndex": 0,
-      "explanation": "tanh outputs between -1 and 1, centered at zero. This helps with gradient flow in hidden layers."
+      "explanation": "tanh outputs between -1 and 1, centered at zero. This helps with gradient flow in hidden layers.",
+      "dedupeKey": "ai-ml:ai-037"
     },
     {
       "id": "ai-038",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "In the weight update rule w = w - α × gradient, what is α?",
-      "options": ["Learning rate", "Weight", "Loss", "Bias"],
+      "options": [
+        "Learning rate",
+        "Weight",
+        "Loss",
+        "Bias"
+      ],
       "answerIndex": 0,
-      "explanation": "α (alpha) is the learning rate — it controls how big each update step is."
+      "explanation": "α (alpha) is the learning rate — it controls how big each update step is.",
+      "dedupeKey": "ai-ml:ai-038"
     },
     {
       "id": "ai-039",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the derivative of 2x² + 1?",
-      "options": ["4x", "2x", "4x + 1", "2"],
+      "options": [
+        "4x",
+        "2x",
+        "4x + 1",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "d/dx[2x²] = 4x. d/dx[1] = 0 (constant). So the answer is 4x."
+      "explanation": "d/dx[2x²] = 4x. d/dx[1] = 0 (constant). So the answer is 4x.",
+      "dedupeKey": "ai-ml:ai-039"
     },
     {
       "id": "ai-040",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the mean of [10, 20, 30, 40, 50]?",
-      "options": ["30", "25", "35", "20"],
+      "options": [
+        "30",
+        "25",
+        "35",
+        "20"
+      ],
       "answerIndex": 0,
-      "explanation": "Mean = (10+20+30+40+50)/5 = 150/5 = 30."
+      "explanation": "Mean = (10+20+30+40+50)/5 = 150/5 = 30.",
+      "dedupeKey": "ai-ml:ai-040"
     },
     {
       "id": "ai-041",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the variance of [2, 4, 6]? (Mean = 4)",
-      "options": ["8/3", "4", "2", "8"],
+      "options": [
+        "8/3",
+        "4",
+        "2",
+        "8"
+      ],
       "answerIndex": 0,
-      "explanation": "Deviations: -2, 0, 2. Squared: 4, 0, 4. Variance = (4+0+4)/3 = 8/3 ≈ 2.67."
+      "explanation": "Deviations: -2, 0, 2. Squared: 4, 0, 4. Variance = (4+0+4)/3 = 8/3 ≈ 2.67.",
+      "dedupeKey": "ai-ml:ai-041"
     },
     {
       "id": "ai-042",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the trace of [[1, 2, 3], [4, 5, 6], [7, 8, 9]]?",
-      "options": ["15", "9", "45", "5"],
+      "options": [
+        "15",
+        "9",
+        "45",
+        "5"
+      ],
       "answerIndex": 0,
-      "explanation": "Trace = sum of diagonal = 1 + 5 + 9 = 15."
+      "explanation": "Trace = sum of diagonal = 1 + 5 + 9 = 15.",
+      "dedupeKey": "ai-ml:ai-042"
     },
     {
       "id": "ai-043",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the derivative of x⁴?",
-      "options": ["4x³", "x³", "4x", "4"],
+      "options": [
+        "4x³",
+        "x³",
+        "4x",
+        "4"
+      ],
       "answerIndex": 0,
-      "explanation": "Power rule: d/dx[x⁴] = 4×x³ = 4x³."
+      "explanation": "Power rule: d/dx[x⁴] = 4×x³ = 4x³.",
+      "dedupeKey": "ai-ml:ai-043"
     },
     {
       "id": "ai-044",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "If you flip 2 coins, what is the probability of getting both heads?",
-      "options": ["1/4", "1/2", "1/3", "2/4"],
+      "options": [
+        "1/4",
+        "1/2",
+        "1/3",
+        "2/4"
+      ],
       "answerIndex": 0,
-      "explanation": "Each coin has 1/2 chance. (1/2)×(1/2) = 1/4."
+      "explanation": "Each coin has 1/2 chance. (1/2)×(1/2) = 1/4.",
+      "dedupeKey": "ai-ml:ai-044"
     },
     {
       "id": "ai-045",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "A bag has 3 red and 2 blue marbles. What is the probability of picking red?",
-      "options": ["3/5", "2/5", "3/2", "1/2"],
+      "options": [
+        "3/5",
+        "2/5",
+        "3/2",
+        "1/2"
+      ],
       "answerIndex": 0,
-      "explanation": "3 red out of 5 total = 3/5."
+      "explanation": "3 red out of 5 total = 3/5.",
+      "dedupeKey": "ai-ml:ai-045"
     },
     {
       "id": "ai-046",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the dot product of (2, 3) and (2, 3)?",
-      "options": ["13", "12", "6", "10"],
+      "options": [
+        "13",
+        "12",
+        "6",
+        "10"
+      ],
       "answerIndex": 0,
-      "explanation": "Dot product = (2×2) + (3×3) = 4 + 9 = 13."
+      "explanation": "Dot product = (2×2) + (3×3) = 4 + 9 = 13.",
+      "dedupeKey": "ai-ml:ai-046"
     },
     {
       "id": "ai-047",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the determinant of [[5, 0], [0, 5]]?",
-      "options": ["25", "5", "0", "10"],
+      "options": [
+        "25",
+        "5",
+        "0",
+        "10"
+      ],
       "answerIndex": 0,
-      "explanation": "det = (5×5) - (0×0) = 25 - 0 = 25."
+      "explanation": "det = (5×5) - (0×0) = 25 - 0 = 25.",
+      "dedupeKey": "ai-ml:ai-047"
     },
     {
       "id": "ai-048",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "Solve for x:  2x + 3 = 11",
-      "options": ["4", "7", "14", "3"],
+      "options": [
+        "4",
+        "7",
+        "14",
+        "3"
+      ],
       "answerIndex": 0,
-      "explanation": "2x + 3 = 11 → 2x = 8 → x = 4."
+      "explanation": "2x + 3 = 11 → 2x = 8 → x = 4.",
+      "dedupeKey": "ai-ml:ai-048"
     },
     {
       "id": "ai-049",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "Solve for x:  3x - 5 = 10",
-      "options": ["5", "3", "15", "2"],
+      "options": [
+        "5",
+        "3",
+        "15",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "3x - 5 = 10 → 3x = 15 → x = 5."
+      "explanation": "3x - 5 = 10 → 3x = 15 → x = 5.",
+      "dedupeKey": "ai-ml:ai-049"
     },
     {
       "id": "ai-050",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
       "prompt": "What is the standard deviation of [4, 4, 4, 4]? (Mean = 4)",
-      "options": ["0", "4", "1", "2"],
+      "options": [
+        "0",
+        "4",
+        "1",
+        "2"
+      ],
       "answerIndex": 0,
-      "explanation": "All values equal the mean, so all deviations are 0. Standard deviation = 0."
+      "explanation": "All values equal the mean, so all deviations are 0. Standard deviation = 0.",
+      "dedupeKey": "ai-ml:ai-050"
     }
   ]
 }

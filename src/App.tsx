@@ -7,21 +7,26 @@ import { ScoreBar } from './components/ScoreBar';
 import { StartScreen } from './components/StartScreen';
 import { Timer } from './components/Timer';
 import { useQuiz } from './hooks/useQuiz';
-import { clearPlayerName, getPlayerName, setPlayerName } from './quiz/session';
+import { clearCurrency, clearPlayerName, getCurrency, getPlayerName, setCurrency, setPlayerName, type CurrencySymbol } from './quiz/session';
 import type { QuizState } from './quiz/types';
 
 export default function App() {
-  const { state, savedSession, startQuiz, startPractice, selectAnswer, nextQuestion, retryQuestion, backToStart, resumeQuiz } = useQuiz();
   const [playerName, setPlayerNameState] = useState<string | null>(() => getPlayerName());
+  const [currency, setCurrencyState] = useState<CurrencySymbol>(() => getCurrency());
+  const { state, savedSession, startQuiz, startPractice, selectAnswer, nextQuestion, retryQuestion, backToStart, resumeQuiz, resetProgress, seenCount } = useQuiz(currency);
 
-  const handleNameSubmit = (name: string) => {
+  const handleNameSubmit = (name: string, curr: CurrencySymbol) => {
     setPlayerName(name);
     setPlayerNameState(name);
+    setCurrency(curr);
+    setCurrencyState(curr);
   };
 
   const handleChangeName = () => {
     clearPlayerName();
+    clearCurrency();
     setPlayerNameState(null);
+    setCurrencyState('₹');
   };
 
   return (
@@ -47,6 +52,8 @@ export default function App() {
             onPractice={startPractice}
             onResume={resumeQuiz}
             onChangeName={handleChangeName}
+            onResetProgress={resetProgress}
+            seenCount={seenCount}
           />
         )}
 
@@ -66,8 +73,8 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
-        <p>Developed by: NeuralWeb Solutions, Goa — 2026</p>
-        <p className="app-footer__tagline"><em>Fully AI-Assisted Work</em></p>
+        <p className="app-footer__credit">Developed by: Gauresh Chari — NeuralWeb Solutions, Goa © 2026</p>
+        <p className="app-footer__tagline"><em>Built with AI</em></p>
       </footer>
     </div>
   );

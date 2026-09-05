@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { CURRENCY_OPTIONS, type CurrencySymbol, getCurrency } from '../quiz/session';
 
 interface Props {
-  onSubmit: (name: string) => void;
+  onSubmit: (name: string, currency: CurrencySymbol) => void;
 }
 
 export function NamePrompt({ onSubmit }: Props) {
   const [name, setName] = useState('');
+  const [currency, setCurrency] = useState<CurrencySymbol>(() => getCurrency());
 
   const submit = () => {
     const trimmed = name.trim();
-    if (trimmed) onSubmit(trimmed);
+    if (trimmed) onSubmit(trimmed, currency);
   };
 
   return (
@@ -27,6 +29,26 @@ export function NamePrompt({ onSubmit }: Props) {
           autoFocus
           maxLength={30}
         />
+
+        <div className="currency-select">
+          <p className="hero-subtitle">Where are you from?</p>
+          <select
+            id="currency"
+            className="currency-select__dropdown"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value as CurrencySymbol)}
+          >
+            {CURRENCY_OPTIONS.map((opt) => (
+              <option key={opt.symbol} value={opt.symbol}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <p className="currency-select__hint">
+            Questions will use your local currency
+          </p>
+        </div>
+
         <button
           className="start-btn"
           onClick={submit}
@@ -35,9 +57,10 @@ export function NamePrompt({ onSubmit }: Props) {
           Continue
         </button>
         <p className="name-prompt__notice">
-          Your name is stored only in this browser's local storage on your
-          device. It is never sent anywhere and never leaves this app. You can
-          remove it anytime using "Not you?" on the start screen.
+          Your name and currency preference are stored only in this browser's
+          local storage on your device. They are never sent anywhere and never
+          leave this app. You can remove them anytime using "Not you?" on the
+          start screen.
         </p>
       </div>
     </div>

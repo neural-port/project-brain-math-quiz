@@ -1,14 +1,10 @@
 import type { Question } from './types';
 
 /**
- * Load the curated AI/ML question bank from the local static asset.
+ * Load curated question banks from local static assets.
  *
- * The JSON file is served from /public/ai-ml-questions.json by Vite.
- * In production (GitHub Pages), it's served from the same origin.
- *
- * To enable CDN delivery later, host the JSON on jsDelivr pointing at
- * your GitHub repo and swap this fetch URL for:
- *   https://cdn.jsdelivr.net/gh/your-username/your-repo@main/public/ai-ml-questions.json
+ * The JSON files are served from /public/ by Vite.
+ * In production (GitHub Pages), they're served from the same origin.
  */
 
 interface CuratedBank {
@@ -17,14 +13,15 @@ interface CuratedBank {
   questions: Question[];
 }
 
-const LOCAL_URL = './ai-ml-questions.json';
+const AI_ML_URL = './ai-ml-questions.json';
+const FIGURE_CLASS_URL = './figure-classification-questions.json';
 
 export async function loadCuratedBank(): Promise<{
   questions: Question[];
   count: number;
 }> {
   try {
-    const res = await fetch(LOCAL_URL);
+    const res = await fetch(AI_ML_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const bank = (await res.json()) as CuratedBank;
     if (bank && Array.isArray(bank.questions) && bank.questions.length > 0) {
@@ -32,6 +29,23 @@ export async function loadCuratedBank(): Promise<{
     }
   } catch {
     // Network or parse error — return empty, app will use generator only
+  }
+  return { questions: [], count: 0 };
+}
+
+export async function loadFigureClassificationBank(): Promise<{
+  questions: Question[];
+  count: number;
+}> {
+  try {
+    const res = await fetch(FIGURE_CLASS_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const bank = (await res.json()) as CuratedBank;
+    if (bank && Array.isArray(bank.questions) && bank.questions.length > 0) {
+      return { questions: bank.questions, count: bank.questions.length };
+    }
+  } catch {
+    // Network or parse error — return empty
   }
   return { questions: [], count: 0 };
 }

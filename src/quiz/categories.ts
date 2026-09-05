@@ -13,6 +13,10 @@ export const CATEGORY_LABELS: Record<QuestionCategory, string> = {
   probability: 'Probability',
   statistics: 'Statistics',
   'ai-ml-concepts': 'AI/ML Concepts',
+  'competitive-math': 'Competitive Math',
+  'number-series': 'Number Series',
+  'letter-coding': 'Letter Coding',
+  'logical-reasoning': 'Logical Reasoning',
 };
 
 export const CATEGORY_SHORT: Record<QuestionCategory, string> = {
@@ -28,6 +32,10 @@ export const CATEGORY_SHORT: Record<QuestionCategory, string> = {
   probability: 'Prob',
   statistics: 'Stats',
   'ai-ml-concepts': 'AI/ML',
+  'competitive-math': 'Comp Math',
+  'number-series': 'Series',
+  'letter-coding': 'Coding',
+  'logical-reasoning': 'Logic',
 };
 
 export const LEARNER_PATHS: Record<LearnerPath, {
@@ -60,6 +68,12 @@ export const LEARNER_PATHS: Record<LearnerPath, {
     categories: ['algebra', 'patterns', 'linear-algebra', 'calculus', 'probability', 'statistics', 'ai-ml-concepts'],
     difficulty: 'medium',
   },
+  'competitive-exams': {
+    label: 'Competitive Exams',
+    description: 'Exam-style quantitative aptitude, coding and logical reasoning',
+    categories: ['competitive-math', 'number-series', 'letter-coding', 'logical-reasoning', 'patterns', 'arithmetic'],
+    difficulty: 'medium',
+  },
 };
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
@@ -73,6 +87,50 @@ export const DIFFICULTY_TIME: Record<Difficulty, number> = {
   medium: 30,
   hard: 20,
 };
+
+/**
+ * Per-category time multiplier. Some categories require manual calculation
+ * (compound interest, train crossing, mixture, etc.) and need more time
+ * than quick-recall categories like arithmetic or memory.
+ *
+ * Base time = DIFFICULTY_TIME[difficulty]
+ * Actual time = base × multiplier (rounded up)
+ */
+export const CATEGORY_TIME_MULTIPLIER: Partial<Record<QuestionCategory, number>> = {
+  // Quick recall — default 1× (no change)
+  arithmetic: 1,
+  memory: 1,
+  'visual-reasoning': 1,
+  geometry: 1,
+  fractions: 1,
+
+  // Moderate calculation — 1.5×
+  algebra: 1.5,
+  patterns: 1.5,
+  'number-series': 1.5,
+  'letter-coding': 1.5,
+  probability: 1.5,
+  statistics: 1.5,
+
+  // Heavy calculation — 3× (need paper/pencil, up to 120s cap)
+  'competitive-math': 3,
+  'logical-reasoning': 3,
+  calculus: 3,
+  'linear-algebra': 3,
+
+  // Curated AI/ML — moderate
+  'ai-ml-concepts': 1.5,
+};
+
+/**
+ * Get the time limit for a specific question, factoring in both difficulty
+ * and category. Calculation-heavy categories get more time.
+ */
+export function getTimeLimit(difficulty: Difficulty, category: QuestionCategory): number {
+  const base = DIFFICULTY_TIME[difficulty];
+  const multiplier = CATEGORY_TIME_MULTIPLIER[category] ?? 1;
+  return Math.min(120, Math.ceil(base * multiplier));
+}
 
 export const DIFFICULTY_LIVES: Record<Difficulty, number> = {
   easy: 5,
@@ -98,6 +156,10 @@ export const GENERATOR_CATEGORIES: QuestionCategory[] = [
   'calculus',
   'probability',
   'statistics',
+  'competitive-math',
+  'number-series',
+  'letter-coding',
+  'logical-reasoning',
 ];
 
 export const CURATED_CATEGORY: QuestionCategory = 'ai-ml-concepts';

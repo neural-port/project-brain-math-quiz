@@ -125,7 +125,7 @@ function QuestionCardInner({
         />
       )}
 
-      {(!question.visual || question.visual.kind === 'count' || question.visual.kind === 'fraction') && (
+      {(!question.visual || question.visual.kind === 'count' || question.visual.kind === 'fraction' || question.visual.kind === 'dot-region' || question.visual.kind === 'figure-classification') && (
         <div className="question-card__options">
           {question.options.map((option, i) => {
             const isSelected = selectedAnswer === i;

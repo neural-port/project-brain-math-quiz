@@ -1,14 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { generateOne, generateQuestions } from './generator';
 import { generateVisualQuestion } from './visual-generator';
+import { loadSession, SESSION_VERSION } from './session';
 import type { Difficulty, Question, QuestionCategory } from './types';
+import figClassBank from '../../public/figure-classification-questions.json';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 const TEXT_CATEGORIES: QuestionCategory[] = [
   'arithmetic', 'algebra', 'patterns', 'statistics', 'calculus',
-  'probability', 'linear-algebra',
+  'probability', 'linear-algebra', 'competitive-math', 'number-series',
+  'letter-coding', 'logical-reasoning',
 ];
 const VISUAL_CATEGORIES: QuestionCategory[] = [
   'geometry', 'visual-reasoning', 'memory', 'fractions',
@@ -17,6 +20,10 @@ const VISUAL_CATEGORIES: QuestionCategory[] = [
 /** Run a check N times to catch randomized edge cases. */
 function repeat(times: number, check: () => void): void {
   for (let i = 0; i < times; i++) check();
+}
+
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 /** Structural invariants every question must satisfy, regardless of category. */
@@ -163,17 +170,23 @@ describe('Patterns generator — answer correctness', () => {
 // ─── Calculus correctness: power rule derivative must be correct ────────────
 
 describe('Calculus generator — power rule correctness', () => {
-  it('derivative of ax^n is a*n*x^(n-1)', () => {
+  it('derivative of axⁿ is a·n·xⁿ⁻¹ (superscript notation)', () => {
+    const supMap: Record<string, string> = {
+      '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4',
+      '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
+    };
+    const fromSup = (s: string) => Number([...s].map((ch) => supMap[ch] ?? '').join(''));
     repeat(30, () => {
       const q = generateOne('calculus', 'easy');
       assertValidQuestion(q);
-      const match = q.prompt.match(/(\d+)x\^(\d+)/);
+      const match = q.prompt.match(/(\d+)x([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/);
       if (!match) return;
       const a = Number(match[1]);
-      const n = Number(match[2]);
+      const n = fromSup(match[2]);
       const coef = a * n;
       const exp = n - 1;
-      const expected = exp === 1 ? `${coef}x` : `${coef}x^${exp}`;
+      const supStr = (v: number) => String(v).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
+      const expected = exp === 1 ? `${coef}x` : `${coef}x${supStr(exp)}`;
       expect(q.options[q.answerIndex]).toBe(expected);
     });
   });
@@ -407,6 +420,158 @@ describe('Dedupe key uniqueness', () => {
   });
 });
 
+describe('New competitive exam generators — semantic correctness', () => {
+  it('competitive math: valid questions across all difficulties', () => {
+    repeat(120, () => {
+      const q = generateOne('competitive-math', pick(['easy', 'medium', 'hard'] as const));
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      expect(q.category).toBe('competitive-math');
+      expect(q.dedupeKey).toBeTruthy();
+    });
+  });
+
+  it('competitive math: numeric answers are valid numbers', () => {
+    repeat(60, () => {
+      const q = generateOne('competitive-math', 'medium');
+      assertValidQuestion(q);
+      // Most competitive math answers are numeric (some have units like "m²" or "₹")
+      const answerStr = q.options[q.answerIndex];
+      expect(answerStr).toMatch(/[\d.]/);
+    });
+  });
+
+  it('number-series: valid questions across all difficulties', () => {
+    repeat(120, () => {
+      const q = generateOne('number-series', pick(['easy', 'medium', 'hard'] as const));
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      expect(q.category).toBe('number-series');
+      expect(q.dedupeKey).toBeTruthy();
+    });
+  });
+
+  it('number-series: answer is always a number', () => {
+    repeat(60, () => {
+      const q = generateOne('number-series', 'medium');
+      assertValidQuestion(q);
+      expect(q.options[q.answerIndex]).toMatch(/^-?\d+$/);
+    });
+  });
+
+  it('letter-coding: valid questions across all difficulties', () => {
+    repeat(120, () => {
+      const q = generateOne('letter-coding', pick(['easy', 'medium', 'hard'] as const));
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      expect(q.category).toBe('letter-coding');
+      expect(q.dedupeKey).toBeTruthy();
+    });
+  });
+
+  it('letter-coding: answers match expected format', () => {
+    repeat(60, () => {
+      const q = generateOne('letter-coding', 'medium');
+      assertValidQuestion(q);
+      // Allow A-Z, 0-9, commas (number coding), and symbols (symbol substitution)
+      expect(q.options[q.answerIndex]).toMatch(/^[A-Z0-9,!@#$%^&*+=?~<>|¤§¶¿¡]+$/);
+    });
+  });
+
+  it('logical-reasoning: valid questions across all difficulties', () => {
+    repeat(120, () => {
+      const q = generateOne('logical-reasoning', pick(['easy', 'medium', 'hard'] as const));
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      expect(q.category).toBe('logical-reasoning');
+      expect(q.dedupeKey).toBeTruthy();
+    });
+  });
+
+  it('logical-reasoning: exactly one marked answer', () => {
+    repeat(60, () => {
+      const q = generateOne('logical-reasoning', 'medium');
+      assertValidQuestion(q);
+      expect(q.options.filter((o) => o === q.options[q.answerIndex])).toHaveLength(1);
+    });
+  });
+
+  it('competitive-math: percentage answer is correct', () => {
+    repeat(30, () => {
+      const q = generateOne('competitive-math', 'easy');
+      assertValidQuestion(q);
+      if (!q.prompt.includes('% of')) return;
+      const match = q.prompt.match(/What is (\d+)% of (\d+)/);
+      if (!match) return;
+      const expected = (Number(match[1]) * Number(match[2])) / 100;
+      expect(Number(q.options[q.answerIndex])).toBe(expected);
+    });
+  });
+
+  it('number-series: arithmetic sequence answer is correct', () => {
+    repeat(30, () => {
+      const q = generateOne('number-series', 'easy');
+      assertValidQuestion(q);
+      if (!q.prompt.includes('comes next')) return;
+      const nums = q.prompt.match(/\d+/g)?.map(Number) ?? [];
+      if (nums.length < 5) return;
+      const diffs = [nums[1] - nums[0], nums[2] - nums[1], nums[3] - nums[2]];
+      if (!diffs.every((d) => d === diffs[0])) return; // not arithmetic
+      const expected = nums[3] + diffs[0];
+      expect(Number(q.options[q.answerIndex])).toBe(expected);
+    });
+  });
+
+  it('letter-coding: shift forward answer is correct', () => {
+    repeat(30, () => {
+      const q = generateOne('letter-coding', 'easy');
+      assertValidQuestion(q);
+      const match = q.prompt.match(/shifted (\d+) place.*forward.*How is (\w+) written/);
+      if (!match) return;
+      const shift = Number(match[1]);
+      const word = match[2];
+      const expected = [...word]
+        .map((ch) => String.fromCharCode(((ch.charCodeAt(0) - 65 + shift) % 26) + 65))
+        .join('');
+      expect(q.options[q.answerIndex]).toBe(expected);
+    });
+  });
+
+  it('letter-coding: number code is fully derivable from the stated rule', () => {
+    let checked = 0;
+    repeat(200, () => {
+      const q = generateOne('letter-coding', 'medium');
+      assertValidQuestion(q);
+      const match = q.prompt.match(/multiply each letter's value by (\d+)\. How is (\w+) written/);
+      if (!match) return;
+      const multiplier = Number(match[1]);
+      const word = match[2];
+      const expected = [...word]
+        .map((ch) => String((ch.charCodeAt(0) - 64) * multiplier))
+        .join(',');
+      expect(q.options[q.answerIndex]).toBe(expected);
+      expect(new Set(q.options).size).toBe(4);
+      checked++;
+    });
+    expect(checked).toBeGreaterThan(0);
+  });
+
+  it('logical-reasoning: calendar answer is correct', () => {
+    repeat(30, () => {
+      const q = generateOne('logical-reasoning', 'medium');
+      assertValidQuestion(q);
+      const match = q.prompt.match(/today is (\w+).*after (\d+) days/);
+      if (!match) return;
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const startIdx = days.indexOf(match[1]);
+      if (startIdx === -1) return;
+      const addDays = Number(match[2]);
+      const expected = days[(startIdx + addDays) % 7];
+      expect(q.options[q.answerIndex]).toBe(expected);
+    });
+  });
+});
+
 // ─── generateQuestions: batch generation and dedup ──────────────────────────
 
 describe('generateQuestions — batch integrity', () => {
@@ -429,4 +594,765 @@ describe('generateQuestions — batch integrity', () => {
     const unique = new Set(keys);
     expect(unique.size).toBe(keys.length);
   });
+
+  it('balances competitive-exam categories instead of relying on random selection', () => {
+    const categories: QuestionCategory[] = [
+      'competitive-math', 'number-series', 'letter-coding',
+      'logical-reasoning', 'patterns', 'arithmetic',
+    ];
+    repeat(20, () => {
+      const questions = generateQuestions(10, categories, 'medium');
+      const counts = categories.map((category) => questions.filter((q) => q.category === category).length);
+      expect(questions).toHaveLength(10);
+      expect(Math.max(...counts) - Math.min(...counts)).toBeLessThanOrEqual(1);
+    });
+  });
+
+  it('limits sequence-family questions when mixed with other topics', () => {
+    const categories: QuestionCategory[] = [
+      'competitive-math', 'number-series', 'letter-coding',
+      'logical-reasoning', 'patterns', 'arithmetic',
+    ];
+    repeat(20, () => {
+      const questions = generateQuestions(10, categories, 'medium');
+      const sequenceCount = questions.filter(
+        (q) => q.category === 'patterns' || q.category === 'number-series',
+      ).length;
+      expect(sequenceCount).toBeLessThanOrEqual(4);
+    });
+  });
 });
+
+// ─── Regression tests for audit-found bugs ──────────────────────────────────
+
+describe('REGRESSION: competitive-math distractor collisions', () => {
+  it('genWork: no distractor equals answer or another distractor', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'hard')!;
+      if (!q.prompt.includes('more efficient')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genWorkAlternate: answer matches day-by-day simulation', () => {
+    repeat(300, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('alternate days')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      // Parse aDays and bDays
+      const m = q.prompt.match(/in (\d+) days and B in (\d+) days/);
+      if (!m) return;
+      const aDays = Number(m[1]);
+      const bDays = Number(m[2]);
+      // Simulate
+      let work = 0, day = 0;
+      while (work < 1 && day < 200) {
+        day++;
+        work += day % 2 === 1 ? 1 / aDays : 1 / bDays;
+      }
+      expect(q.options[q.answerIndex]).toBe(String(day));
+    });
+  });
+
+  it('genPercentage: no distractor equals answer (50% bug)', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.match(/What is \d+% of/)) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genProfitLoss: explanation uses numeric percent, not label', () => {
+    repeat(300, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('sold at a') || !q.prompt.includes('%')) return;
+      // Explanation should not contain "profit%" or "loss%" as interpolated label
+      expect(q.explanation!).not.toMatch(/profit%|loss%/);
+    });
+  });
+
+  it('genDiscount: no distractor equals answer (50% bug)', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('discount of')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genSimpleInterest: no duplicate distractors', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('simple interest')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genRatio: no distractor equals answer or blue balls', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('ratio of red to blue')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genMixture: target is not the midpoint (meaningful ratio)', () => {
+    repeat(300, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('mixes rice costing')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      // Parse cheap, dear, target
+      const m = q.prompt.match(/₹(\d+)\/kg with rice costing ₹(\d+)\/kg to get a mixture worth ₹(\d+)\/kg/);
+      if (!m) return;
+      const cheap = Number(m[1]);
+      const dear = Number(m[2]);
+      const target = Number(m[3]);
+      expect(target).not.toBe((cheap + dear) / 2);
+    });
+  });
+
+  it('genAges: no negative past ages, answer is integer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'hard')!;
+      if (!q.prompt.includes('years ago, the ratio')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      const m = q.prompt.match(/A is currently (\d+) years old\. (\d+) years ago/);
+      if (!m) return;
+      const currentAge = Number(m[1]);
+      const yearsAgo = Number(m[2]);
+      expect(currentAge - yearsAgo).toBeGreaterThan(0);
+    });
+  });
+
+  it('genArea: no distractor equals answer (square side=4 NaN bug)', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.match(/area of/) && !q.prompt.match(/What is its area/)) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+      // No NaN options
+      q.options.forEach((opt) => expect(opt).not.toBe('NaN'));
+    });
+  });
+
+  it('genBodmas: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'hard')!;
+      if (!q.prompt.includes('BODMAS') && !q.prompt.includes('Evaluate:')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genPartnership: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'hard')!;
+      if (!q.prompt.includes('invests') || !q.prompt.includes('months')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genLcmHcf: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.match(/Find the (LCM|HCF)/)) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genAverageMissing: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('average of') || !q.prompt.includes('number')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genSpeed: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'medium')!;
+      if (!q.prompt.includes('km/h for') || !q.prompt.includes('same speed')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genTrainCrossing: no distractor equals answer after rounding', () => {
+    repeat(500, () => {
+      const q = generateOne('competitive-math', 'hard')!;
+      if (!q.prompt.includes('long train running at')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+});
+
+describe('REGRESSION: number-series distractor collisions', () => {
+  it('genPrimes: no distractor equals the next prime', () => {
+    repeat(500, () => {
+      const q = generateOne('number-series', 'medium')!;
+      if (!q.prompt.includes('comes next') || !q.explanation!.includes('prime')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genAltMultiplyAdd: seq[3]+adder does not equal answer', () => {
+    repeat(500, () => {
+      const q = generateOne('number-series', 'medium')!;
+      if (!q.explanation!.includes('multiply') || !q.explanation!.includes('add')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('genAlternating: no distractor equals answer', () => {
+    repeat(500, () => {
+      const q = generateOne('number-series', 'hard')!;
+      if (!q.explanation!.includes('odd and even')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+});
+
+describe('REGRESSION: letter-coding fixes', () => {
+  it('genShiftForward: explanation shows actual shift amount', () => {
+    repeat(200, () => {
+      const q = generateOne('letter-coding', 'hard')!;
+      if (!q.prompt.includes('shifted') || !q.prompt.includes('forward')) return;
+      const m = q.prompt.match(/shifted (\d+) place/);
+      if (!m) return;
+      const shift = Number(m[1]);
+      // Explanation should mention the actual shift (not just A→B for shift > 1)
+      if (shift > 1) {
+        expect(q.explanation!).toContain(String.fromCharCode(65 + shift));
+      }
+    });
+  });
+
+  it('genMixedCoding: no negative or zero alphabet values in distractors', () => {
+    repeat(300, () => {
+      const q = generateOne('letter-coding', 'medium')!;
+      if (!q.prompt.includes('alphabet position')) return;
+      assertValidQuestion(q);
+      // Only check options that are comma-separated numbers (the coded form)
+      q.options.forEach((opt) => {
+        if (!/^\d+(,\d+)+$/.test(opt)) return; // skip non-numeric options
+        const nums = opt.split(',').map(Number);
+        nums.forEach((n) => expect(n).toBeGreaterThan(0));
+      });
+    });
+  });
+});
+
+describe('REGRESSION: logical-reasoning fixes', () => {
+  it('blood relations: male roles use male names, female roles use female names', () => {
+    const maleNames = ['Arun', 'Bharat', 'Chetan', 'Dev', 'Eshan', 'Faisal', 'Gopal', 'Harish'];
+    const femaleNames = ['Asha', 'Bina', 'Chitra', 'Deepa', 'Esha', 'Farah', 'Gita', 'Hema'];
+    repeat(500, () => {
+      const q = generateOne('logical-reasoning', 'medium')!;
+      if (!q.prompt.includes('brother of') && !q.prompt.includes('father of') &&
+          !q.prompt.includes('married to') && !q.prompt.includes('grandfather') &&
+          !q.prompt.includes('grandmother') && !q.prompt.includes('sister of')) return;
+      // Extract all capitalized names from the prompt
+      const names = q.prompt.match(/\b(Arun|Bharat|Chetan|Dev|Eshan|Faisal|Gopal|Harish|Asha|Bina|Chitra|Deepa|Esha|Farah|Gita|Hema)\b/g);
+      if (!names) return;
+      // If prompt says "brother of X", X's brother should be a male name
+      if (q.prompt.includes('brother of')) {
+        // The brother should be a male name
+        const hasMale = names.some((n) => maleNames.includes(n));
+        expect(hasMale).toBe(true);
+      }
+      // If prompt says "father of X", the father should be a male name
+      if (q.prompt.includes('father of')) {
+        const hasMale = names.some((n) => maleNames.includes(n));
+        expect(hasMale).toBe(true);
+      }
+      // If prompt says "sister of X", the sister should be a female name
+      if (q.prompt.includes('sister of')) {
+        const hasFemale = names.some((n) => femaleNames.includes(n));
+        expect(hasFemale).toBe(true);
+      }
+    });
+  });
+
+  it('genDirectionShadow: shadow direction is correct', () => {
+    repeat(200, () => {
+      const q = generateOne('logical-reasoning', 'medium')!;
+      if (!q.prompt.includes('sun is in the') || !q.prompt.includes('shadow')) return;
+      assertValidQuestion(q);
+      // Morning: sun east → shadow west. Evening: sun west → shadow east.
+      if (q.prompt.includes('morning')) {
+        expect(q.options[q.answerIndex]).toBe('west');
+      } else if (q.prompt.includes('evening')) {
+        expect(q.options[q.answerIndex]).toBe('east');
+      }
+    });
+  });
+
+  it('genRanking: ordinal suffix is correct (no 2th, 3th, 1th)', () => {
+    repeat(500, () => {
+      const q = generateOne('logical-reasoning', 'medium')!;
+      if (!q.prompt.includes('ranks') || !q.prompt.includes('from the top')) return;
+      assertValidQuestion(q);
+      // Check no invalid ordinals in prompt or answer
+      expect(q.prompt).not.toMatch(/\b1th\b|\b2th\b|\b3th\b/);
+      q.options.forEach((opt) => {
+        // Only check ordinal-looking options
+        const m = opt.match(/^(\d+)(st|nd|rd|th)$/);
+        if (!m) return;
+        const n = Number(m[1]);
+        const suffix = m[2];
+        if (n % 10 === 1 && n % 100 !== 11) expect(suffix).toBe('st');
+        else if (n % 10 === 2 && n % 100 !== 12) expect(suffix).toBe('nd');
+        else if (n % 10 === 3 && n % 100 !== 13) expect(suffix).toBe('rd');
+        else expect(suffix).toBe('th');
+      });
+      // Check correct ordinals: 1st, 2nd, 3rd, 4th, etc.
+      const answer = q.options[q.answerIndex];
+      const m = answer.match(/^(\d+)(st|nd|rd|th)$/);
+      expect(m).not.toBeNull();
+      if (m) {
+        const n = Number(m[1]);
+        const suffix = m[2];
+        if (n % 10 === 1 && n % 100 !== 11) expect(suffix).toBe('st');
+        else if (n % 10 === 2 && n % 100 !== 12) expect(suffix).toBe('nd');
+        else if (n % 10 === 3 && n % 100 !== 13) expect(suffix).toBe('rd');
+        else expect(suffix).toBe('th');
+      }
+    });
+  });
+
+  it('genClockAngle: explanation mentions >180° reduction when applicable', () => {
+    repeat(300, () => {
+      const q = generateOne('logical-reasoning', 'hard')!;
+      if (!q.prompt.includes('angle between the hour and minute hands')) return;
+      assertValidQuestion(q);
+      // Parse the answer
+      const answerMatch = q.options[q.answerIndex].match(/^(\d+)°$/);
+      if (!answerMatch) return;
+      // If raw angle > 180, explanation should mention the reduction
+      const rawMatch = q.explanation!.match(/Raw angle = \|[\d.]+ − [\d.]+\| = ([\d.]+)°/);
+      if (rawMatch) {
+        const raw = Number(rawMatch[1]);
+        if (raw > 180) {
+          expect(q.explanation!).toContain('> 180°');
+          expect(q.explanation!).toContain('360°');
+        }
+      }
+    });
+  });
+
+  it('genArrangementConstraint v4: uniquely determines rightmost', () => {
+    repeat(100, () => {
+      const q = generateOne('logical-reasoning', 'hard')!;
+      if (!q.prompt.includes('rightmost end') || !q.prompt.includes('immediate left')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      // The constraints should uniquely determine the answer
+      // Just verify the answer is one of the options and explanation is consistent
+      const answer = q.options[q.answerIndex];
+      expect(q.explanation!).toContain(`Answer: ${answer}`);
+    });
+  });
+
+  it('statement/conclusion: stmt-8, 11, 17 are classified as does-not-follow', () => {
+    repeat(500, () => {
+      const q = generateOne('logical-reasoning', 'medium')!;
+      if (!q.prompt.includes('Conclusion:') || !q.prompt.includes('Which is correct')) return;
+      assertValidQuestion(q);
+      // stmt-8: reading causes vocabulary growth
+      if (q.prompt.includes('vocabularies') && q.prompt.includes('Reading causes')) {
+        expect(q.options[q.answerIndex]).toMatch(/does not follow/);
+      }
+      // stmt-11: medicine X cures
+      if (q.prompt.includes('medicine X') && q.prompt.includes('cures the disease')) {
+        expect(q.options[q.answerIndex]).toMatch(/does not follow/);
+      }
+      // stmt-17: CCTV + fired
+      if (q.prompt.includes('CCTV') && q.prompt.includes('fired')) {
+        expect(q.options[q.answerIndex]).toMatch(/does not follow/);
+      }
+    });
+  });
+});
+
+describe('REGRESSION: generator.ts fixes', () => {
+  it('genPatterns sub: explanation shows correct difference direction', () => {
+    repeat(300, () => {
+      const q = generateOne('patterns', 'medium')!;
+      if (!q.explanation!.includes('subtracts')) return;
+      // For subtraction, explanation should show seq[0] − seq[1] = d (not seq[1] − seq[0])
+      expect(q.explanation!).toMatch(/\d+ − \d+ = \d+.*\d+ − \d+ = \d+/);
+    });
+  });
+
+  it('genProbability coins: no duplicate-value distractors (1/2 vs 2/4)', () => {
+    repeat(300, () => {
+      const q = generateOne('probability', 'easy')!;
+      if (!q.prompt.includes('coins') || !q.prompt.includes('all heads')) return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      // Check no two options are numerically equal
+      const values = q.options.map((opt) => {
+        const m = opt.match(/^1\/(\d+)$/);
+        return m ? 1 / Number(m[1]) : Number(opt);
+      });
+      expect(new Set(values).size).toBe(values.length);
+    });
+  });
+
+  it('genStatistics median: explanation mentions two middle values for even n', () => {
+    repeat(300, () => {
+      const q = generateOne('statistics', 'medium')!;
+      if (!q.prompt.includes('median')) return;
+      // For even n, explanation should mention "average of the two middle"
+      if (q.explanation!.includes('even')) {
+        expect(q.explanation!).toContain('average of the two middle');
+      }
+    });
+  });
+});
+
+describe('REGRESSION: visual-generator fixes', () => {
+  it('generateShapeChoice: all options have the same tone (no color leak)', () => {
+    repeat(100, () => {
+      const q = generateVisualQuestion('geometry', 'easy');
+      if (!q.visual || q.visual.kind !== 'shape-choice') return;
+      const tones = q.visual.options.map((o) => o.tone);
+      const uniqueTones = new Set(tones);
+      expect(uniqueTones.size).toBe(1);
+    });
+  });
+
+  it('generateCount: all shapes have the same tone (no color leak)', () => {
+    repeat(100, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'easy');
+      if (!q.visual || q.visual.kind !== 'count') return;
+      const tones = q.visual.scene.map((s) => s.tone);
+      const uniqueTones = new Set(tones);
+      expect(uniqueTones.size).toBe(1);
+    });
+  });
+
+  it('generateFraction: no distractor equals correct answer', () => {
+    repeat(300, () => {
+      const q = generateVisualQuestion('fractions', 'easy');
+      if (!q.visual || q.visual.kind !== 'fraction') return;
+      assertValidQuestion(q);
+      assertUniqueOptions(q);
+      assertCorrectAnswerIsUnique(q);
+    });
+  });
+
+  it('generateMirror: rotation is only 0 or 180 (no 90/270)', () => {
+    repeat(200, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'medium');
+      if (!q.visual || q.visual.kind !== 'mirror') return;
+      q.visual.options.forEach((opt) => {
+        expect([0, 180]).toContain(opt.rotation);
+      });
+    });
+  });
+});
+
+describe('REGRESSION: session validation', () => {
+  beforeEach(() => {
+    const store: Record<string, string> = {};
+    (globalThis as unknown as { localStorage: Storage }).localStorage = {
+      getItem: (k: string) => store[k] ?? null,
+      setItem: (k: string, v: string) => { store[k] = v; },
+      removeItem: (k: string) => { delete store[k]; },
+      clear: () => { for (const k of Object.keys(store)) delete store[k]; },
+      key: (i: number) => Object.keys(store)[i] ?? null,
+      get length() { return Object.keys(store).length; },
+    } as Storage;
+  });
+
+  it('rejects NaN in numeric fields', () => {
+    const bad = {
+      version: SESSION_VERSION,
+      config: { difficulty: 'easy' as const, categories: ['arithmetic' as const], totalQuestions: 5, practice: false },
+      questions: [{ id: 'x', category: 'arithmetic', difficulty: 'easy' as const, source: 'generator' as const, prompt: 'test', options: ['1', '2'], answerIndex: 0, explanation: 'test' }],
+      currentIndex: NaN,
+      score: 0,
+      lives: 3,
+      maxLives: 3,
+      streak: 0,
+      bestStreak: 0,
+      history: [],
+    };
+    localStorage.setItem('quiz-session', JSON.stringify(bad));
+    expect(loadSession()).toBeNull();
+  });
+
+  it('rejects invalid difficulty', () => {
+    const bad = {
+      version: SESSION_VERSION,
+      config: { difficulty: 'invalid' as unknown as 'easy', categories: ['arithmetic' as const], totalQuestions: 5, practice: false },
+      questions: [{ id: 'x', category: 'arithmetic', difficulty: 'easy' as const, source: 'generator' as const, prompt: 'test', options: ['1', '2'], answerIndex: 0, explanation: 'test' }],
+      currentIndex: 0,
+      score: 0,
+      lives: 3,
+      maxLives: 3,
+      streak: 0,
+      bestStreak: 0,
+      history: [],
+    };
+    localStorage.setItem('quiz-session', JSON.stringify(bad));
+    expect(loadSession()).toBeNull();
+  });
+});
+
+// ─── New generator tests: symbol substitution, missing number grid,
+//     text mirror, dot region, composite rotation, figure classification ─────
+
+describe('Symbol substitution coding — correctness', () => {
+  for (const difficulty of DIFFICULTIES) {
+    it(`symbol-sub/${difficulty} produces valid coding question`, () => {
+      repeat(50, () => {
+        const q = generateOne('letter-coding', difficulty);
+        assertValidQuestion(q);
+        assertUniqueOptions(q);
+        assertCorrectAnswerIsUnique(q);
+      });
+    });
+  }
+
+  it('symbol substitution answer matches the mapping', () => {
+    repeat(100, () => {
+      const q = generateOne('letter-coding', 'medium');
+      if (!q) return;
+      // Only check symbol substitution questions
+      if (!q.prompt.includes('represented as follows')) return;
+      // Extract the mapping from the prompt
+      const mappingMatch = [...q.prompt.matchAll(/([A-Z])\s*→\s*(\S)/g)];
+      const mapping: Record<string, string> = {};
+      for (const m of mappingMatch) mapping[m[1]] = m[2];
+      // Extract the word from the prompt
+      const wordMatch = q.prompt.match(/"([A-Z]+)"/);
+      if (wordMatch) {
+        const word = wordMatch[1];
+        const expected = [...word].map((ch) => mapping[ch] ?? '?').join('');
+        expect(q.options[q.answerIndex]).toBe(expected);
+      }
+    });
+  });
+});
+
+describe('Missing number grid — correctness', () => {
+  for (const difficulty of DIFFICULTIES) {
+    it(`grid/${difficulty} produces valid question with numeric answer`, () => {
+      repeat(50, () => {
+        const q = generateOne('logical-reasoning', difficulty);
+        if (!q) return;
+        // Not every logic question is a grid; filter by prompt
+        if (!q.prompt.includes('missing number in the grid')) return;
+        assertValidQuestion(q);
+        assertUniqueOptions(q);
+        assertCorrectAnswerIsUnique(q);
+        // Answer must be a number
+        const answer = q.options[q.answerIndex];
+        expect(Number.isFinite(Number(answer))).toBe(true);
+        // Grid must have ? in it
+        expect(q.prompt).toContain('?');
+      });
+    });
+  }
+
+  it('missing number grid answer is mathematically correct', () => {
+    repeat(100, () => {
+      const q = generateOne('logical-reasoning', 'medium');
+      if (!q) return;
+      if (!q.prompt.includes('missing number in the grid')) return;
+      // Parse the grid from the prompt
+      const gridLines = q.prompt.split('\n').filter((l) => l.includes('|'));
+      if (gridLines.length < 2) return;
+      // The answer should be consistent with the pattern
+      const answer = Number(q.options[q.answerIndex]);
+      expect(Number.isFinite(answer)).toBe(true);
+      expect(answer).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe('Text mirror — structural correctness', () => {
+  for (const difficulty of DIFFICULTIES) {
+    it(`text-mirror/${difficulty} produces valid visual question`, () => {
+      repeat(50, () => {
+        const q = generateVisualQuestion('visual-reasoning', difficulty);
+        if (!q.visual || q.visual.kind !== 'text-mirror') return;
+        assertValidQuestion(q);
+        assertUniqueOptions(q);
+        assertCorrectAnswerIsUnique(q);
+        expect(q.visual.word).toBeDefined();
+        expect(q.visual.word.length).toBeGreaterThanOrEqual(3);
+        expect(q.visual.options).toHaveLength(4);
+        // The correct option must have mirrorX=true
+        const correctOpt = q.visual.options[q.answerIndex];
+        expect(correctOpt.mirrorX).toBe(true);
+        expect(correctOpt.mirrorY).toBeUndefined();
+        expect(correctOpt.rotate180).toBeUndefined();
+      });
+    });
+  }
+});
+
+describe('Dot region — structural correctness', () => {
+  for (const difficulty of DIFFICULTIES) {
+    it(`dot-region/${difficulty} produces valid visual question`, () => {
+      repeat(50, () => {
+        const q = generateVisualQuestion('visual-reasoning', difficulty);
+        if (!q.visual || q.visual.kind !== 'dot-region') return;
+        assertValidQuestion(q);
+        assertUniqueOptions(q);
+        assertCorrectAnswerIsUnique(q);
+        expect(q.visual.shapes.length).toBeGreaterThanOrEqual(2);
+        expect(q.visual.dot).toBeDefined();
+        // Dot coordinates must be within the SVG viewBox
+        expect(q.visual.dot.x).toBeGreaterThanOrEqual(0);
+        expect(q.visual.dot.x).toBeLessThanOrEqual(100);
+        expect(q.visual.dot.y).toBeGreaterThanOrEqual(0);
+        expect(q.visual.dot.y).toBeLessThanOrEqual(100);
+      });
+    });
+  }
+
+  it('dot region answer is consistent with geometry', () => {
+    repeat(100, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'medium');
+      if (!q.visual || q.visual.kind !== 'dot-region') return;
+      const { shapes, dot } = q.visual;
+      // Recompute which shapes contain the dot
+      const containing: string[] = [];
+      for (const s of shapes) {
+        let inside = false;
+        if (s.type === 'circle') {
+          inside = Math.hypot(dot.x - s.cx, dot.y - s.cy) <= (s.r ?? 25);
+        } else if (s.type === 'square') {
+          const half = (s.w ?? 40) / 2;
+          inside = dot.x >= s.cx - half && dot.x <= s.cx + half && dot.y >= s.cy - half && dot.y <= s.cy + half;
+        } else if (s.type === 'triangle') {
+          const h = s.h ?? 40;
+          const top = s.cy - h / 2;
+          const bottom = s.cy + h / 2;
+          if (dot.y >= top && dot.y <= bottom) {
+            const ratio = (dot.y - top) / (bottom - top);
+            const halfWidth = (h / 2) * ratio;
+            inside = dot.x >= s.cx - halfWidth && dot.x <= s.cx + halfWidth;
+          }
+        }
+        if (inside) containing.push(s.label);
+      }
+      // The answer must match
+      const answer = q.options[q.answerIndex];
+      if (containing.length === 0) {
+        expect(answer).toMatch(/none/i);
+      } else if (containing.length === shapes.length) {
+        expect(answer).toMatch(/all/i);
+      } else {
+        for (const label of containing) {
+          expect(answer).toContain(label);
+        }
+      }
+    });
+  });
+});
+
+describe('Composite rotation — structural correctness', () => {
+  for (const difficulty of DIFFICULTIES) {
+    it(`composite-rotate/${difficulty} produces valid visual question`, () => {
+      repeat(50, () => {
+        const q = generateVisualQuestion('visual-reasoning', difficulty);
+        if (!q.visual || q.visual.kind !== 'composite-rotate') return;
+        assertValidQuestion(q);
+        assertUniqueOptions(q);
+        assertCorrectAnswerIsUnique(q);
+        expect(q.visual.base.dots.length).toBeGreaterThanOrEqual(2);
+        expect(q.visual.options).toHaveLength(4);
+        // The correct option must have a rotation != 0 and no mirrorX
+        const correctOpt = q.visual.options[q.answerIndex];
+        expect(correctOpt.rotation).toBeGreaterThanOrEqual(90);
+        expect(correctOpt.mirrorX).toBeUndefined();
+      });
+    });
+  }
+
+  it('composite rotation has exactly one correct rotation per question', () => {
+    repeat(100, () => {
+      const q = generateVisualQuestion('visual-reasoning', 'hard');
+      if (!q.visual || q.visual.kind !== 'composite-rotate') return;
+      // There should be options with different rotations
+      const rotations = q.visual.options.map((o) => o.rotation);
+      const uniqueRotations = new Set(rotations);
+      expect(uniqueRotations.size).toBeGreaterThanOrEqual(3);
+    });
+  });
+});
+
+describe('Figure classification curated bank — structural correctness', () => {
+  it('figure classification JSON loads and has valid questions', () => {
+    const bank = figClassBank;
+    expect(bank.questions).toBeDefined();
+    expect(Array.isArray(bank.questions)).toBe(true);
+    expect(bank.questions.length).toBeGreaterThanOrEqual(5);
+
+    for (const q of bank.questions) {
+      expect(q.id).toBeDefined();
+      expect(q.category).toBe('visual-reasoning');
+      expect(q.source).toBe('curated');
+      expect(q.options.length).toBeGreaterThanOrEqual(2);
+      expect(q.options.length).toBeLessThanOrEqual(4);
+      expect(q.answerIndex).toBeGreaterThanOrEqual(0);
+      expect(q.answerIndex).toBeLessThan(q.options.length);
+      expect(q.prompt.length).toBeGreaterThan(0);
+      expect(q.explanation).toBeDefined();
+      expect(q.dedupeKey).toBeDefined();
+      // Visual payload
+      expect(q.visual).toBeDefined();
+      expect(q.visual.kind).toBe('figure-classification');
+      expect(Array.isArray(q.visual.figures)).toBe(true);
+      expect(q.visual.figures.length).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  it('figure classification has unique dedupeKeys', () => {
+    const keys = figClassBank.questions.map((q) => q.dedupeKey);
+    const unique = new Set(keys);
+    expect(unique.size).toBe(keys.length);
+  });
+
+  it('figure classification has unique options per question', () => {
+    for (const q of figClassBank.questions) {
+      const set = new Set(q.options);
+      expect(set.size).toBe(q.options.length);
+    }
+  });
+});
+

@@ -66,7 +66,7 @@ function generateShapeChoice(difficulty: Difficulty): Question {
   const specs = shuffle([targetShape, ...distractors].map((shape) => ({
     shape,
     rotation: shape === 'square' || shape === 'circle' ? 0 : pick([0, 30, 45]),
-    tone: pick(['green', 'cream', 'peach'] as const),
+    tone: 'green' as const,
   })));
   const answerIndex = specs.findIndex((spec) => spec.shape === targetShape);
 
@@ -78,7 +78,7 @@ function generateShapeChoice(difficulty: Difficulty): Question {
     prompt: `Tap the ${title(targetShape)}.`,
     options: specs.map((spec) => title(spec.shape)),
     answerIndex,
-    explanation: `The selected figure is a ${title(targetShape).toLowerCase()}.`,
+    explanation: `Step 1: Look at each shape and identify its name.\nStep 2: Find the ${title(targetShape).toLowerCase()} among the options.\nStep 3: The correct figure is the ${title(targetShape).toLowerCase()}.\nAnswer: ${title(targetShape)}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `shape-choice:${targetShape}`,
   };
@@ -105,7 +105,7 @@ function generateOddOneOut(difficulty: Difficulty): Question {
     prompt: 'Tap the shape that is different from the rest.',
     options: specs.map((_, i) => `Option ${i + 1}`),
     answerIndex,
-    explanation: `The ${title(odd).toLowerCase()} is different — the others are ${title(same).toLowerCase()}s.`,
+    explanation: `Step 1: Identify each shape and group similar ones together.\nStep 2: Three shapes are ${title(same).toLowerCase()}s — they match.\nStep 3: The ${title(odd).toLowerCase()} is the odd one out — it's different from the rest.\nAnswer: ${title(odd)}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `odd-one-out:${odd}:${same}`,
   };
@@ -117,10 +117,11 @@ function generateSidesQuestion(difficulty: Difficulty): Question {
   const wrongShapes = shuffle(
     BASIC_SHAPES.filter((shape) => SIDES[shape] !== undefined && SIDES[shape] !== n),
   ).slice(0, 3);
+  const tone = pick(['green', 'cream', 'peach'] as const);
   const specs = shuffle(
     [correctShape, ...wrongShapes].map((shape) => ({
       shape,
-      tone: pick(['green', 'cream', 'peach'] as const),
+      tone,
     })),
   );
   const answerIndex = specs.findIndex((spec) => spec.shape === correctShape);
@@ -133,7 +134,7 @@ function generateSidesQuestion(difficulty: Difficulty): Question {
     prompt: `Which shape has exactly ${n} sides?`,
     options: specs.map((spec) => title(spec.shape)),
     answerIndex,
-    explanation: `A ${title(correctShape).toLowerCase()} has ${n} sides.`,
+    explanation: `Step 1: Identify the shape: it's a ${title(correctShape).toLowerCase()}.\nStep 2: Count the sides by tracing each edge.\nStep 3: A ${title(correctShape).toLowerCase()} has ${n} sides.\nAnswer: ${n}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `sides:${n}:${correctShape}`,
   };
@@ -154,7 +155,8 @@ function generateMostSides(difficulty: Difficulty): Question {
     }
   }
   const best = four.reduce((a, b) => (SIDES[a]! > SIDES[b]! ? a : b));
-  const specs = four.map((shape) => ({ shape, tone: pick(['green', 'cream', 'peach'] as const) }));
+  const mostSidesTone = pick(['green', 'cream', 'peach'] as const);
+  const specs = four.map((shape) => ({ shape, tone: mostSidesTone }));
   const answerIndex = specs.findIndex((s) => s.shape === best);
 
   return {
@@ -165,7 +167,7 @@ function generateMostSides(difficulty: Difficulty): Question {
     prompt: 'Which of these shapes has the MOST sides?',
     options: specs.map((_, i) => `Option ${i + 1}`),
     answerIndex,
-    explanation: `The ${title(best).toLowerCase()} has ${SIDES[best]} sides — the most of the four.`,
+    explanation: `Step 1: Count the sides of each shape.\nStep 2: Compare the side counts — the ${title(best).toLowerCase()} has ${SIDES[best]} sides.\nStep 3: ${SIDES[best]} is the highest — the ${title(best).toLowerCase()} has the most sides.\nAnswer: ${title(best)}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `most-sides:${four.sort().join(',')}`,
   };
@@ -193,7 +195,7 @@ function generateSymmetry(difficulty: Difficulty): Question {
     prompt: `Which of these shapes is symmetrical?`,
     options: specs.map((_, i) => `Option ${i + 1}`),
     answerIndex,
-    explanation: `A ${title(symmetric).toLowerCase()} can be folded along a line so both halves match.`,
+    explanation: `Step 1: Imagine folding the shape along a line through its center.\nStep 2: Check if both halves match exactly when folded.\nStep 3: A ${title(symmetric).toLowerCase()} has a line of symmetry — both halves match.\nAnswer: ${title(symmetric)}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `symmetry:${symmetric}`,
   };
@@ -207,7 +209,7 @@ function generateMirror(difficulty: Difficulty): Question {
   const flip = pick(['lr', 'tb'] as const);
   const target: ShapeSpec = {
     shape,
-    rotation: pick([0, 90, 180, 270]),
+    rotation: pick([0, 180]),
     tone: 'green',
   };
   const correct: ShapeSpec = {
@@ -234,8 +236,8 @@ function generateMirror(difficulty: Difficulty): Question {
     answerIndex,
     explanation:
       flip === 'lr'
-        ? 'A left-to-right flip mirrors the figure across a vertical line — the left and right sides swap.'
-        : 'A top-to-bottom flip mirrors the figure across a horizontal line — the top and bottom swap.',
+        ? 'Step 1: Identify the type of transformation — left-to-right flip.\nStep 2: Imagine a vertical mirror through the center of the shape.\nStep 3: The left and right sides swap places. The correct option is the mirrored figure.\nAnswer: the left-to-right flipped figure.'
+        : 'Step 1: Identify the type of transformation — top-to-bottom flip.\nStep 2: Imagine a horizontal mirror through the center of the shape.\nStep 3: The top and bottom swap places. The correct option is the mirrored figure.\nAnswer: the top-to-bottom flipped figure.',
     visual: { kind: 'mirror', target, options: candidates },
     dedupeKey: `mirror:${shape}:${flip}:${target.rotation}`,
   };
@@ -246,15 +248,22 @@ function generateCount(difficulty: Difficulty): Question {
   const targetCount = randInt(2, difficulty === 'hard' ? 8 : difficulty === 'medium' ? 7 : 5);
   const distractorCount = difficulty === 'easy' ? randInt(2, 4) : randInt(3, 6);
   const otherShapes = BASIC_SHAPES.filter((shape) => shape !== countShape);
-  const total = targetCount + distractorCount;
+  // Cap total shapes at 12 — the grid only has 12 positions. Reduce
+  // distractors first so the target count is always preserved.
+  let effectiveDistractorCount = distractorCount;
+  if (targetCount + distractorCount > 12) {
+    effectiveDistractorCount = Math.max(0, 12 - targetCount);
+  }
+  const total = targetCount + effectiveDistractorCount;
   const positions = shuffle(Array.from({ length: 12 }, (_, index) => index)).slice(0, total);
+  const countTone = pick(['green', 'cream', 'peach'] as const);
   const scene: ShapeSpec[] = positions.map((position, index) => ({
     shape: index < targetCount ? countShape : pick(otherShapes),
     x: 18 + (position % 4) * 25,
     y: 20 + Math.floor(position / 4) * 30,
     scale: pick([0.78, 0.9, 1]),
     rotation: pick([0, 15, 30, 45]),
-    tone: index < targetCount ? 'green' : pick(['cream', 'peach'] as const),
+    tone: countTone,
   }));
   const answers = shuffle([targetCount, targetCount - 1, targetCount + 1, targetCount + 2]);
 
@@ -266,7 +275,7 @@ function generateCount(difficulty: Difficulty): Question {
     prompt: `How many ${title(countShape).toLowerCase()} shapes can you see?`,
     options: answers.map(String),
     answerIndex: answers.indexOf(targetCount),
-    explanation: `There are ${targetCount} ${title(countShape).toLowerCase()} shapes.`,
+    explanation: `Step 1: Count each type of shape in the scene.\nStep 2: Focus on the ${title(countShape).toLowerCase()} shapes — count them carefully.\nStep 3: There are ${targetCount} ${title(countShape).toLowerCase()} shapes.\nAnswer: ${targetCount}`,
     visual: { kind: 'count', scene, countShape },
     dedupeKey: `count:${countShape}:${targetCount}`,
   };
@@ -285,7 +294,7 @@ function generateRotate(difficulty: Difficulty): Question {
     prompt: 'Drag around the dial to rotate the solid shape until it matches the outline.',
     options: ['Aligned', 'Not aligned'],
     answerIndex: 0,
-    explanation: `The shape needed a ${targetAngle}° rotation.`,
+    explanation: `Step 1: Look at the original shape and the target shape.\nStep 2: Determine how many degrees the shape was rotated.\nStep 3: The shape needed a ${targetAngle}° rotation to match the target.\nAnswer: Aligned.`,
     visual: {
       kind: 'rotate',
       shape: { shape, tone: 'green' },
@@ -343,7 +352,7 @@ function generateMemoryDots(difficulty: Difficulty): Question {
     prompt: 'Watch the dots light up, then tap them in the same order.',
     options: ['Completed correctly', 'Wrong order'],
     answerIndex: 0,
-    explanation: `The correct sequence was ${seqLength} dots long.`,
+    explanation: `Step 1: Watch the dots as they flash in sequence.\nStep 2: Memorize the order in which they appeared.\nStep 3: The correct sequence was ${seqLength} dots long. Tap them in the same order.\nAnswer: Completed correctly.`,
     visual: {
       kind: 'memory-dots',
       dots,
@@ -371,7 +380,7 @@ function generateFraction(difficulty: Difficulty): Question {
     `${Math.min(shaded + 1, total)}/${total}`,
     `${shaded}/${total + 1}`,
     `${total - shaded}/${total}`,
-    `${Math.max(shaded - 1, 1)}/${total}`,
+    `${Math.min(shaded + 2, total)}/${total}`,
   ]);
   const seen = new Set<string>([correct]);
   const distractors: string[] = [];
@@ -403,7 +412,7 @@ function generateFraction(difficulty: Difficulty): Question {
     prompt: 'What fraction of the bar is shaded?',
     options,
     answerIndex: options.indexOf(correct),
-    explanation: `${shaded} of the ${total} equal parts are shaded = ${shaded}/${total}`,
+    explanation: `Step 1: Count the total equal parts the bar is divided into: ${total}.\nStep 2: Count the shaded parts: ${shaded}.\nStep 3: Fraction = shaded ÷ total = ${shaded}/${total}.\nAnswer: ${shaded}/${total}`,
     visual: { kind: 'fraction', total, shaded, vertical },
     dedupeKey: `fraction:${shaded}/${total}:${vertical}`,
   };
@@ -422,5 +431,232 @@ export function generateVisualQuestion(category: QuestionCategory, difficulty: D
     return generateFraction(difficulty);
   }
 
-  return Math.random() < 0.5 ? generateMirror(difficulty) : generateRotate(difficulty);
+  // visual-reasoning: mix of mirror, rotate, text-mirror, dot-region, composite-rotate
+  const r = Math.random();
+  if (r < 0.25) return generateMirror(difficulty);
+  if (r < 0.50) return generateRotate(difficulty);
+  if (r < 0.70) return generateTextMirror(difficulty);
+  if (r < 0.85) return generateDotRegion(difficulty);
+  return generateCompositeRotate(difficulty);
+}
+
+// ─── Dot region (overlapping shapes) ─────────────────────────────────────────
+
+function isInsideCircle(x: number, y: number, cx: number, cy: number, r: number): boolean {
+  return Math.hypot(x - cx, y - cy) <= r;
+}
+function isInsideSquare(x: number, y: number, cx: number, cy: number, w: number): boolean {
+  return x >= cx - w / 2 && x <= cx + w / 2 && y >= cy - w / 2 && y <= cy + w / 2;
+}
+function isInsideTriangle(x: number, y: number, cx: number, cy: number, h: number): boolean {
+  // Equilateral-ish triangle centered at (cx, cy) with height h
+  const top = cy - h / 2;
+  const bottom = cy + h / 2;
+  const halfBase = h / 2;
+  if (y < top || y > bottom) return false;
+  const ratio = (y - top) / (bottom - top);
+  const halfWidth = halfBase * ratio;
+  return x >= cx - halfWidth && x <= cx + halfWidth;
+}
+
+function generateDotRegion(difficulty: Difficulty): Question {
+  // 2 shapes for easy, 3 for medium/hard
+  const useThree = difficulty !== 'easy';
+  // Fixed shape configurations with known overlap regions
+  const configs = useThree
+    ? [
+        // Circle + Square + Triangle all overlapping in center
+        {
+          shapes: [
+            { type: 'circle' as const, label: 'A', cx: 35, cy: 45, r: 28 },
+            { type: 'square' as const, label: 'B', cx: 60, cy: 55, w: 40 },
+            { type: 'triangle' as const, label: 'C', cx: 50, cy: 60, h: 45 },
+          ],
+        },
+      ]
+    : [
+        // Circle + Square overlapping
+        {
+          shapes: [
+            { type: 'circle' as const, label: 'A', cx: 35, cy: 50, r: 28 },
+            { type: 'square' as const, label: 'B', cx: 60, cy: 50, w: 40 },
+          ],
+        },
+        // Circle + Triangle overlapping
+        {
+          shapes: [
+            { type: 'circle' as const, label: 'A', cx: 38, cy: 48, r: 26 },
+            { type: 'triangle' as const, label: 'B', cx: 58, cy: 55, h: 42 },
+          ],
+        },
+      ];
+  const config = pick(configs);
+  const shapes = config.shapes;
+
+  // Try to place a dot in a specific region
+  // Regions: for 2 shapes: A only, B only, A∩B, neither
+  // For 3 shapes: A only, B only, C only, A∩B, A∩C, B∩C, A∩B∩C, neither
+  const attempts = 200;
+  let dot = { x: 50, y: 50 };
+  let containing: string[] = [];
+  for (let i = 0; i < attempts; i++) {
+    dot = { x: randInt(5, 95), y: randInt(5, 95) };
+    containing = [];
+    for (const s of shapes) {
+      let inside = false;
+      if (s.type === 'circle') inside = isInsideCircle(dot.x, dot.y, s.cx, s.cy, s.r ?? 25);
+      else if (s.type === 'square') inside = isInsideSquare(dot.x, dot.y, s.cx, s.cy, s.w ?? 40);
+      else if (s.type === 'triangle') inside = isInsideTriangle(dot.x, dot.y, s.cx, s.cy, s.h ?? 40);
+      if (inside) containing.push(s.label);
+    }
+    // We want a dot that's in at least one shape and not in all (to make it interesting)
+    if (containing.length >= 1 && containing.length < shapes.length) break;
+  }
+
+  // Build the answer
+  const allLabels = shapes.map((s) => s.label);
+  let answer: string;
+  let explanation: string;
+  if (containing.length === 0) {
+    answer = 'None of the shapes';
+    explanation = `Step 1: Check if the dot is inside shape ${allLabels.join(', ')}.\nStep 2: The dot is outside all shapes.\nAnswer: None of the shapes.`;
+  } else if (containing.length === shapes.length) {
+    answer = `All shapes (${allLabels.join(', ')})`;
+    explanation = `Step 1: Check each shape.\nStep 2: The dot is inside all ${shapes.length} shapes.\nAnswer: All shapes.`;
+  } else {
+    answer = `Only ${containing.join(' and ')}`;
+    explanation = `Step 1: Check if the dot is inside each shape.\nStep 2: The dot is inside ${containing.join(' and ')}, but outside ${allLabels.filter((l) => !containing.includes(l)).join(' and ') || 'none'}.\nAnswer: Only ${containing.join(' and ')}.`;
+  }
+
+  // Build distractors
+  const distractorSet = new Set<string>([answer]);
+  const distractors: string[] = [];
+  // "Only X" for each single shape
+  for (const label of allLabels) {
+    const d = `Only ${label}`;
+    if (!distractorSet.has(d)) { distractorSet.add(d); distractors.push(d); }
+  }
+  // "All shapes"
+  const allD = `All shapes (${allLabels.join(', ')})`;
+  if (!distractorSet.has(allD)) { distractorSet.add(allD); distractors.push(allD); }
+  // "None"
+  const noneD = 'None of the shapes';
+  if (!distractorSet.has(noneD)) { distractorSet.add(noneD); distractors.push(noneD); }
+  // Pairs for 3 shapes
+  if (shapes.length === 3) {
+    for (let i = 0; i < shapes.length; i++) {
+      for (let j = i + 1; j < shapes.length; j++) {
+        const d = `Only ${shapes[i].label} and ${shapes[j].label}`;
+        if (!distractorSet.has(d)) { distractorSet.add(d); distractors.push(d); }
+      }
+    }
+  }
+  // Take first 3 distractors
+  const finalDistractors = distractors.slice(0, 3);
+  const allOptions = shuffle([answer, ...finalDistractors]);
+  const answerIndex = allOptions.indexOf(answer);
+
+  return {
+    id: id('visual-reasoning'),
+    category: 'visual-reasoning',
+    difficulty,
+    source: 'generator',
+    prompt: `In which region does the dot lie?`,
+    options: allOptions,
+    answerIndex,
+    explanation,
+    visual: { kind: 'dot-region', shapes, dot },
+    dedupeKey: `dot-region:${shapes.map((s) => s.label).join('')}:${dot.x},${dot.y}`,
+  };
+}
+
+// ─── Composite rotation ──────────────────────────────────────────────────────
+
+function generateCompositeRotate(difficulty: Difficulty): Question {
+  // Generate a composite figure: a square with 2-3 internal dots
+  const numDots = difficulty === 'easy' ? 2 : difficulty === 'medium' ? 3 : 3;
+  const dots: { x: number; y: number }[] = [];
+  // Place dots in asymmetric positions within the square (10-90 range)
+  const positions = [
+    { x: 25, y: 25 }, { x: 75, y: 25 }, { x: 25, y: 75 }, { x: 75, y: 75 },
+    { x: 50, y: 25 }, { x: 25, y: 50 }, { x: 75, y: 50 }, { x: 50, y: 75 },
+    { x: 35, y: 35 }, { x: 65, y: 65 }, { x: 35, y: 65 }, { x: 65, y: 35 },
+  ];
+  const shuffledPositions = shuffle(positions);
+  for (let i = 0; i < numDots && i < shuffledPositions.length; i++) {
+    dots.push(shuffledPositions[i]);
+  }
+  // Optionally add a line for harder questions
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  if (difficulty === 'hard' && dots.length >= 2) {
+    lines.push({ x1: dots[0].x, y1: dots[0].y, x2: dots[1].x, y2: dots[1].y });
+  }
+
+  const base = { shape: 'square' as const, dots, lines };
+  // Correct answer: rotate by 90, 180, or 270
+  const correctRotation = pick([90, 180, 270]);
+  // Distractors: other rotations + a mirror
+  const wrongRotations = [90, 180, 270].filter((r) => r !== correctRotation);
+  const options = [
+    { rotation: correctRotation },
+    { rotation: wrongRotations[0] },
+    { rotation: wrongRotations[1] },
+    { rotation: 0, mirrorX: true },
+  ];
+  const shuffledOptions = shuffle(options);
+  const answerIndex = shuffledOptions.findIndex((o) => o.rotation === correctRotation && !o.mirrorX);
+
+  return {
+    id: id('visual-reasoning'),
+    category: 'visual-reasoning',
+    difficulty,
+    source: 'generator',
+    prompt: `The first figure is rotated. Which option shows the correct result of rotating it by ${correctRotation}° clockwise?`,
+    options: ['A', 'B', 'C', 'D'],
+    answerIndex,
+    explanation: `Step 1: A ${correctRotation}° clockwise rotation turns the figure.\nStep 2: Each dot moves to its new position under the rotation.\nStep 3: Option ${String.fromCharCode(65 + answerIndex)} matches the ${correctRotation}° rotation.\nAnswer: Option ${String.fromCharCode(65 + answerIndex)}`,
+    visual: { kind: 'composite-rotate', base, options: shuffledOptions },
+    dedupeKey: `composite-rotate:${dots.map((d) => `${d.x},${d.y}`).join(';')}:${correctRotation}`,
+  };
+}
+
+// ─── Text mirror (word/number mirror image) ──────────────────────────────────
+
+// Words with asymmetric letters that look visibly different when mirrored.
+const MIRROR_WORDS = [
+  'BIRD', 'CLOUD', 'FROG', 'JUMP', 'PLAY', 'QUEST', 'BOOK', 'DOOR',
+  'FISH', 'GAME', 'LAMP', 'NUMBER', 'PAPER', 'ROAD', 'STAR', 'WORD',
+  '1234', '5276', '8042', '3197', '6045', '9218', '4750', '2639',
+];
+
+function generateTextMirror(difficulty: Difficulty): Question {
+  const word = pick(MIRROR_WORDS);
+  // The correct mirror image: text reversed + mirrored horizontally (scaleX(-1))
+  // In the visual component, we render the original word with scaleX(-1) transform
+  // which produces the mirror image visually.
+  const correctOption = { text: word, mirrorX: true };
+  // Distractor 1: reversed text without mirroring (just backwards order)
+  const reversed = [...word].reverse().join('');
+  const distractor1 = { text: reversed };
+  // Distractor 2: vertical mirror (scaleY(-1)) — looks like upside-down text
+  const distractor2 = { text: word, mirrorY: true };
+  // Distractor 3: rotated 180° (both mirrors) — looks like upside-down reversed
+  const distractor3 = { text: word, mirrorX: true, mirrorY: true, rotate180: true };
+  type TextMirrorOpt = { text: string; mirrorX?: boolean; mirrorY?: boolean; rotate180?: boolean };
+  const options: TextMirrorOpt[] = shuffle([correctOption, distractor1, distractor2, distractor3]);
+  const answerIndex = options.findIndex(
+    (o) => o.text === word && o.mirrorX === true && o.mirrorY === undefined && o.rotate180 === undefined,
+  );
+  return {
+    id: id('visual-reasoning'),
+    category: 'visual-reasoning',
+    difficulty,
+    source: 'generator',
+    prompt: `Which of the following is the correct mirror image of "${word}" as seen in a mirror placed on its right side?`,
+    options: ['A', 'B', 'C', 'D'],
+    answerIndex,
+    explanation: `Step 1: A mirror on the right side reflects the text left-to-right.\nStep 2: The correct mirror image shows the text reversed horizontally — each letter is flipped and the order appears backwards.\nStep 3: Option ${String.fromCharCode(65 + answerIndex)} shows the correct horizontal mirror image.\nAnswer: Option ${String.fromCharCode(65 + answerIndex)}`,
+    visual: { kind: 'text-mirror', word, options },
+    dedupeKey: `text-mirror:${word}`,
+  };
 }

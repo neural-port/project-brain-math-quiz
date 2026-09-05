@@ -23,11 +23,13 @@ interface Props {
   onPractice: () => void;
   onResume: () => void;
   onChangeName: () => void;
+  onResetProgress: () => void;
+  seenCount: number;
 }
 
 const QUESTION_COUNTS = [10, 20, 50];
 
-export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, onPractice, onResume, onChangeName }: Props) {
+export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, onPractice, onResume, onChangeName, onResetProgress, seenCount }: Props) {
   const [learnerPath, setLearnerPath] = useState<LearnerPath>('foundation');
   const [difficulty, setDifficulty] = useState<Difficulty>(LEARNER_PATHS.foundation.difficulty);
   const [totalQuestions, setTotalQuestions] = useState(10);
@@ -83,6 +85,29 @@ export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, 
         </div>
       )}
 
+      {seenCount > 0 && (
+        <div className="progress-card">
+          <div className="progress-card__info">
+            <span className="progress-card__title">Your progress</span>
+            <span className="progress-card__meta">
+              {seenCount} question{seenCount === 1 ? '' : 's'} seen
+              {seenCount >= 100 ? ' · all fresh questions may start repeating' : ''}
+            </span>
+          </div>
+          <button
+            className="reset-btn"
+            onClick={() => {
+              if (confirm('Reset your question history? You will see all questions as fresh again. This does not affect your name or region.')) {
+                onResetProgress();
+              }
+            }}
+            type="button"
+          >
+            Reset history
+          </button>
+        </div>
+      )}
+
       <div className="path-grid" aria-label="Choose a learning path">
         {(Object.entries(LEARNER_PATHS) as [LearnerPath, typeof LEARNER_PATHS[LearnerPath]][]).map(
           ([path, config]) => (
@@ -111,7 +136,7 @@ export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, 
               >
                 <span className="seg-btn__title">{DIFFICULTY_LABELS[level]}</span>
                 <span className="seg-btn__meta">
-                  {DIFFICULTY_TIME[level]}s · {DIFFICULTY_LIVES[level]} lives
+                  {DIFFICULTY_TIME[level]}–{Math.min(120, DIFFICULTY_TIME[level] * 3)}s · {DIFFICULTY_LIVES[level]} lives
                 </span>
               </button>
             ))}
