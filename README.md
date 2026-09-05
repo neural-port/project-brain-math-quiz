@@ -4,7 +4,7 @@
 
 An arcade-style mathematics and reasoning practice platform for school learners, competitive exam aspirants, curious adults, and AI/ML engineers. Built as a fully AI-assisted coding showcase — prompt-driven development, zero hand-written code.
 
-> Thousands of unique questions powered by a procedural question generator across 16 categories, plus curated AI/ML and figure classification banks (60 questions, loaded locally). Includes interactive SVG-based visual questions, guided practice mode, persistent player identity, session resume, internationalized currency scaling, and 209 automated tests verifying generator correctness.
+> Thousands of unique questions powered by a procedural question generator across 16 categories, plus curated AI/ML and figure classification banks (60 questions, loaded locally). Includes interactive SVG-based visual questions, guided practice mode, persistent player identity, session resume, internationalized currency scaling, and 210 automated tests verifying generator correctness.
 
 Built with React 19 + Vite + TypeScript + Vitest. No backend, no external runtime API dependencies, no analytics, no data transmission.
 
@@ -236,7 +236,7 @@ Requires Node 18+ (developed on Node 22).
 
 ## Test Suite
 
-The project includes **209 automated tests** across three test files, all running via Vitest.
+The project includes **210 automated tests** across three test files, all running via Vitest.
 
 ### Permanent test suite — 140 tests (`src/quiz/generators.test.ts`)
 
@@ -312,11 +312,13 @@ Exhaustive programmatic audit that generates 500 questions per category per diff
 - Semantic correctness (parsed answers match independently computed expected values)
 - Batch integrity (category spread, sequence-family limits, no duplicate dedupe keys)
 
-### New generators audit suite — 25 tests (`src/quiz/new-generators-audit.test.ts`)
+### New generators audit suite — 26 tests (`src/quiz/new-generators-audit.test.ts`)
 
 Dedicated audit for the 6 new question types added in the latest release:
 - 500-sample stress tests per difficulty for symbol substitution, missing number grids, text mirror, dot region, and composite rotation
 - Answer correctness verification (mapping consistency, geometric containment, pattern consistency)
+- **Dot-region visual-clearance validator** — checks 4,500 randomized visual-reasoning generations across all difficulties and requires the entire rendered dot to remain at least 5 SVG units from every shape boundary
+- **Composite-rotation visual-signature validator** — transforms every dot and line exactly as the SVG renderer does and rejects questions unless all four answer options are visibly distinct
 - Figure classification curated bank validation (structure, unique dedupe keys, unique options)
 - **Semantic partition validator** — parses every "Group by" option's criterion and partition, verifies exactly ONE option is mathematically valid and it sits at `answerIndex`. Prevents ambiguous classifications where multiple options describe correct groupings.
 - **Odd-one-out discriminator validator** — verifies the non-answer figures share a common shape or tone that the answer figure lacks, with manual-verification whitelist for non-attribute rules (polygon classification, symmetry)
@@ -325,7 +327,7 @@ Dedicated audit for the 6 new question types added in the latest release:
 ### Running the tests
 
 ```bash
-npm test              # run all 209 tests
+npm test              # run all 210 tests
 npm run test:watch    # watch mode
 ```
 
@@ -339,7 +341,7 @@ This repo includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) th
 1. `npm ci` — clean install
 2. `npm audit --audit-level=high` — dependency vulnerability gate
 3. `npm run lint` — code quality gate
-4. `npm test` — unit test gate (209 tests)
+4. `npm test` — unit test gate (210 tests)
 5. `npm run build` — type-check + production build
 6. Upload artifact → deploy to GitHub Pages
 
@@ -403,7 +405,7 @@ A full audit was conducted covering generator correctness, visual question integ
 - Probability (coins): for n=2, distractors "1/2" and "2/4" are the same value — replaced with non-colliding distractors
 - Statistics (median): explanation claimed a single middle position for even-sized datasets — now mentions "average of the two middle values"
 
-**Visual generator — 9 fixes:**
+**Visual generator — 12 fixes:**
 
 - Shape choice, sides counting, most-sides, and counting: each option had an independent random color tone, so the correct shape could be the only one of its color — all options now share one uniform tone
 - Counting: grid could overflow (14 shapes in 12 slots) — capped total at 12
@@ -411,6 +413,9 @@ A full audit was conducted covering generator correctness, visual question integ
 - Fractions: `shaded - 1` distractor equals the correct answer when `shaded === 1` — replaced
 - Rotate explanation: said "Answer: 90°" but options are "Aligned"/"Not aligned" — fixed to match option text
 - Memory dots explanation: said "Answer: 5 dots" but option is "Completed correctly" — fixed to match option text
+- Dot-region containment used only the dot center, allowing its visible 3-unit radius to cross another shape's boundary while the answer excluded that shape — generation now selects only positions with at least 5 SVG units of clearance from every boundary; regression-tested across all difficulties
+- Composite rotation could place identical dots in rotationally symmetric positions, making two nominally different transformations render as the same answer — generated dot/line configurations are now rejected unless all four rendered transformations are unique
+- Shape-counting figures used a rightmost center position of 93% inside an `overflow: hidden` panel, allowing wide shapes to clip on narrow phones — columns now use safe centers at 12.5%, 37.5%, 62.5%, and 87.5%
 
 **Figure classification curated bank — 7 fixes (second audit round):**
 
@@ -452,7 +457,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 | A.8.15 Logging | COMPLIANT | Only `console.error` in ErrorBoundary; no PII logged |
 | A.8.20 Network security | PARTIALLY COMPLIANT | Only same-origin fetch for local JSON; Google Fonts over HTTPS; no CSP header configured |
 | A.8.24 Use of cryptography | NOT APPLICABLE | No cryptography needed for a single-user local app; no passwords, no tokens, no secrets |
-| A.8.25 Secure development lifecycle | COMPLIANT | Session versioning (v3), 209 tests, CI gates, strict TypeScript |
+| A.8.25 Secure development lifecycle | COMPLIANT | Session versioning (v3), 210 tests, CI gates, strict TypeScript |
 | A.8.28 Secure coding | COMPLIANT | `strict: true` in tsconfig, no `any`, no `dangerouslySetInnerHTML`, no `eval`, input trimmed and capped |
 | A.8.30 Outsourced development | NON-COMPLIANT | GitHub Actions use floating tags (`@v4`), not SHA-pinned — requires repo-owner manual fix |
 | A.8.32 Change management | COMPLIANT | `SESSION_VERSION = 3` with reject-and-clear on mismatch; no old schema can crash the app |
@@ -461,7 +466,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 
 | Characteristic | Status | Evidence |
 |---|---|---|
-| Functional Suitability | COMPLIANT | Generators compute answers from prompt parameters; 209 tests independently verify correctness |
+| Functional Suitability | COMPLIANT | Generators compute answers from prompt parameters; 210 tests independently verify correctness |
 | Performance Efficiency | PARTIALLY COMPLIANT | 320 KB bundle (98 KB gzip); no bundle analyzer or code-splitting; generator backtracking capped |
 | Compatibility | PARTIALLY COMPLIANT | Modern browsers only (ES2023); 6 responsive breakpoints; no polyfills for legacy browsers |
 | Usability | COMPLIANT | Practice mode, session resume, error recovery, responsive design, privacy notice |
@@ -479,7 +484,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 | Data Provenance | COMPLIANT | Two sources only: procedural generators (`source: 'generator'`) and curated static JSON (`source: 'curated'`); no runtime AI output |
 | Hallucination Defense | COMPLIANT | Zero runtime LLM calls; zero external AI APIs; all answers computed mathematically |
 | Human Oversight | PARTIALLY COMPLIANT | ErrorBoundary, session validation, "Not you?" deletion; no "Report this question" feedback channel |
-| Risk Management | COMPLIANT | 209 tests including independent answer recomputation, 500-sample audit sweeps, semantic partition validation, regression tests for 51 fixed bugs |
+| Risk Management | COMPLIANT | 210 tests including independent answer recomputation, 500-sample audit sweeps, semantic partition validation, regression tests for 54 fixed bugs |
 | Privacy in AI Context | COMPLIANT | No user data sent to any AI service; no AI service called; all data stays on device |
 | Bias and Fairness | PARTIALLY COMPLIANT | Gender-appropriate name pools for blood relations; gender-neutral pronouns in merchant questions; single cultural name set (Indian-origin) |
 
@@ -524,6 +529,10 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 - Unguarded JSON parse [ISO 5054] — null guard added
 - 42 generator correctness bugs (first audit round) — all fixed with regression tests
 - 9 figure-classification and text-mirror defects (second audit round) — all fixed with semantic partition validator test
+- Dot-region visible-boundary ambiguity (post-release audit) — fixed with minimum-clearance generation and regression test
+- Composite-rotation duplicate visible options (post-release audit) — fixed with rendered-state signatures and rejection sampling
+- Shape-counting clipping on narrow phones (post-release audit) — fixed with safe grid margins
+- Four visual audit tests requested categories that could never produce the visual subtype being tested — corrected dispatch categories and added minimum sample assertions so tests cannot silently pass without exercising relevant questions
 
 **Remaining items (manual follow-up, require repo-owner action):**
 - GitHub Actions SHA-pinning [ISO 27001 A.8.30] — replace `@v4` tags with pinned commit SHAs
@@ -536,7 +545,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 
 ### Audit verdict
 
-**PASS with documented exceptions.** All quality gates green — 0 lint errors, 0 build errors, 209/209 tests passing, strict TypeScript enabled. 42 generator defects fixed in the first audit round, plus 9 figure-classification and text-mirror defects fixed in the second audit round. ISO 27001: 9 compliant, 4 partially compliant, 1 non-compliant (SHA-pinning, manual fix), 1 N/A. ISO 5054: 5 compliant, 3 partially compliant. ISO 42001: 6 compliant, 2 partially compliant. IT Act 2000: 4 compliant, 3 partially compliant, 2 N/A. Remaining items are manual follow-ups requiring repo-owner action, not code changes.
+**PASS with documented exceptions.** All quality gates green — 0 lint errors, 0 build errors, 210/210 tests passing, strict TypeScript enabled. 54 correctness and visual-ambiguity defects have been fixed across the audit rounds, including post-release dot-region boundary, composite-rotation uniqueness, and mobile shape-clipping issues. ISO 27001: 9 compliant, 4 partially compliant, 1 non-compliant (SHA-pinning, manual fix), 1 N/A. ISO 5054: 5 compliant, 3 partially compliant. ISO 42001: 6 compliant, 2 partially compliant. IT Act 2000: 4 compliant, 3 partially compliant, 2 N/A. Remaining items are manual follow-ups requiring repo-owner action, not code changes.
 
 ---
 
@@ -555,7 +564,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 - **React 19** — UI framework
 - **Vite 8** — build tool and dev server
 - **TypeScript 6** — strict typing, no `any`
-- **Vitest 5** — unit testing (209 tests, all passing)
+- **Vitest 5** — unit testing (210 tests, all passing)
 - **oxlint** — fast linter (0 errors, 0 warnings)
 - **GitHub Actions** — CI/CD with audit + lint + test + build gates
 - **Inline SVG** — all visual questions rendered as vector graphics, no image assets
@@ -568,7 +577,7 @@ This project isn't a tutorial app or a CRUD scaffold. It's a deliberate engineer
 
 ### 1. Prompt-driven development at production standard
 
-The entire codebase — generators, visual engine, game logic, session persistence, error boundary, CI, audit, and this README — was produced through natural-language prompts with zero hand-written code. That demonstrates system architecture thinking, quality gatekeeping (the audit found 51 real bugs across two rounds and I drove every fix), and iterative product evolution under prompt control.
+The entire codebase — generators, visual engine, game logic, session persistence, error boundary, CI, audit, and this README — was produced through natural-language prompts with zero hand-written code. That demonstrates system architecture thinking, quality gatekeeping (the audits found 54 real correctness and visual-ambiguity defects and I drove every fix), and iterative product evolution under prompt control.
 
 ### 2. Algorithmic thinking, not framework plumbing
 
@@ -576,7 +585,7 @@ The entire codebase — generators, visual engine, game logic, session persisten
 - Visual puzzle generation with rejection sampling, sequence scaling, and SVG rendering
 - Category balancing and sequence-family limiting in the scheduler so no single pattern type dominates a quiz
 - Self-playing demo mode with auto-highlighting, auto-rotation, and auto-tap state machines
-- 209 tests that parse prompts, independently compute expected answers, verify distractor values differ numerically, check that visual questions can't be answered by color alone, and validate that figure-classification partitions have exactly one mathematically correct grouping
+- 210 tests that parse prompts, independently compute expected answers, verify distractor values differ numerically, check that visual questions can't be answered by color alone, and validate that figure-classification partitions have exactly one mathematically correct grouping
 
 These are problems you solve with thinking, not with `npm install`.
 
@@ -604,7 +613,7 @@ The audit section demonstrates the ability to think like an auditor — identify
 Being honest about what this doesn't prove:
 - No backend — there's no database, no auth, no server. Pair it with a Supabase/Node project for backend skills.
 - No real users at scale — the repeat-protection and session logic are designed for single-device use.
-- No integration/E2E tests — the 209 unit tests cover the generators (pure functions), but there are no component or browser-level tests. A production team would add Playwright/Cypress.
+- No integration/E2E tests — the 210 unit tests cover the generators (pure functions), but there are no component or browser-level tests. A production team would add Playwright/Cypress.
 
 ### The one-line pitch
 

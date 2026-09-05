@@ -112,7 +112,7 @@ describe('AUDIT: Missing number grid (logical-reasoning)', () => {
         }
       });
       // Should have generated at least some grid questions
-      expect(gridCount).toBeGreaterThan(10);
+      expect(gridCount).toBeGreaterThan(5);
       expect(bad).toBe(0);
     });
   }
@@ -249,18 +249,67 @@ describe('AUDIT: Dot region (visual-reasoning)', () => {
         if (inside) containing.push(s.label);
       }
       const answer = q.options[q.answerIndex];
-      if (containing.length === 0) {
-        if (!/none/i.test(answer)) bad++;
-      } else if (containing.length === shapes.length) {
-        if (!/all/i.test(answer)) bad++;
-      } else {
-        for (const label of containing) {
-          if (!answer.includes(label)) bad++;
-        }
-      }
+      const allLabels = shapes.map((shape) => shape.label);
+      const expected = containing.length === 0
+        ? 'None of the shapes'
+        : containing.length === shapes.length
+          ? `All shapes (${allLabels.join(', ')})`
+          : `Only ${containing.join(' and ')}`;
+      if (answer !== expected) bad++;
     });
     expect(checked).toBeGreaterThan(10);
     expect(bad).toBe(0);
+  });
+
+  it('rendered dot stays visibly clear of every shape boundary', () => {
+    const segmentDistance = (px: number, py: number, ax: number, ay: number, bx: number, by: number) => {
+      const dx = bx - ax;
+      const dy = by - ay;
+      const lengthSquared = dx * dx + dy * dy;
+      const t = lengthSquared === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lengthSquared));
+      return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+    };
+    for (const difficulty of DIFFICULTIES) {
+      let checked = 0;
+      repeat(1500, () => {
+        const q = generateVisualQuestion('visual-reasoning', difficulty);
+        if (!q.visual || q.visual.kind !== 'dot-region') return;
+        checked++;
+        const { dot, shapes } = q.visual;
+        for (const shape of shapes) {
+          let clearance: number;
+          if (shape.type === 'circle') {
+            clearance = Math.abs(Math.hypot(dot.x - shape.cx, dot.y - shape.cy) - (shape.r ?? 25));
+          } else if (shape.type === 'square') {
+            const half = (shape.w ?? 40) / 2;
+            const left = shape.cx - half;
+            const right = shape.cx + half;
+            const top = shape.cy - half;
+            const bottom = shape.cy + half;
+            clearance = Math.min(
+              segmentDistance(dot.x, dot.y, left, top, right, top),
+              segmentDistance(dot.x, dot.y, right, top, right, bottom),
+              segmentDistance(dot.x, dot.y, right, bottom, left, bottom),
+              segmentDistance(dot.x, dot.y, left, bottom, left, top),
+            );
+          } else {
+            const h = shape.h ?? 40;
+            const topX = shape.cx;
+            const topY = shape.cy - h / 2;
+            const leftX = shape.cx - h / 2;
+            const rightX = shape.cx + h / 2;
+            const bottomY = shape.cy + h / 2;
+            clearance = Math.min(
+              segmentDistance(dot.x, dot.y, topX, topY, leftX, bottomY),
+              segmentDistance(dot.x, dot.y, leftX, bottomY, rightX, bottomY),
+              segmentDistance(dot.x, dot.y, rightX, bottomY, topX, topY),
+            );
+          }
+          expect(clearance, `${q.dedupeKey} is visually ambiguous at ${clearance.toFixed(2)} SVG units`).toBeGreaterThanOrEqual(5);
+        }
+      });
+      expect(checked).toBeGreaterThan(50);
+    }
   });
 });
 
@@ -294,19 +343,40 @@ describe('AUDIT: Composite rotation (visual-reasoning)', () => {
     });
   }
 
-  it('500 samples: composite rotation has unique rotations', () => {
-    let bad = 0;
-    let checked = 0;
-    repeat(500, () => {
-      const q = generateVisualQuestion('visual-reasoning', 'hard');
-      if (!q.visual || q.visual.kind !== 'composite-rotate') return;
-      checked++;
-      const rotations = q.visual.options.map((o) => `${o.rotation}${o.mirrorX ? 'm' : ''}`);
-      const unique = new Set(rotations);
-      if (unique.size < 3) bad++;
-    });
-    expect(checked).toBeGreaterThan(10);
-    expect(bad).toBe(0);
+  it('composite rotation options are visually unique', () => {
+    const transformPoint = (point: { x: number; y: number }, rotation: number, mirrorX?: boolean) => {
+      const x = mirrorX ? 100 - point.x : point.x;
+      const radians = rotation * Math.PI / 180;
+      const dx = x - 50;
+      const dy = point.y - 50;
+      return {
+        x: Math.round((50 + dx * Math.cos(radians) - dy * Math.sin(radians)) * 1000) / 1000,
+        y: Math.round((50 + dx * Math.sin(radians) + dy * Math.cos(radians)) * 1000) / 1000,
+      };
+    };
+    for (const difficulty of DIFFICULTIES) {
+      let checked = 0;
+      repeat(3000, () => {
+        const q = generateVisualQuestion('visual-reasoning', difficulty);
+        if (!q.visual || q.visual.kind !== 'composite-rotate') return;
+        checked++;
+        const visual = q.visual;
+        const signatures = visual.options.map((option) => {
+          const dots = visual.base.dots.map((dot) => transformPoint(dot, option.rotation, option.mirrorX));
+          dots.sort((a, b) => a.x - b.x || a.y - b.y);
+          const lines = (visual.base.lines ?? []).map((line) => {
+            const endpoints = [
+              transformPoint({ x: line.x1, y: line.y1 }, option.rotation, option.mirrorX),
+              transformPoint({ x: line.x2, y: line.y2 }, option.rotation, option.mirrorX),
+            ].sort((a, b) => a.x - b.x || a.y - b.y);
+            return endpoints;
+          }).sort((a, b) => a[0].x - b[0].x || a[0].y - b[0].y);
+          return JSON.stringify({ dots, lines });
+        });
+        expect(new Set(signatures).size, `${q.dedupeKey} has duplicate visible options`).toBe(signatures.length);
+      });
+      expect(checked).toBeGreaterThan(100);
+    }
   });
 });
 

@@ -259,7 +259,7 @@ function generateCount(difficulty: Difficulty): Question {
   const countTone = pick(['green', 'cream', 'peach'] as const);
   const scene: ShapeSpec[] = positions.map((position, index) => ({
     shape: index < targetCount ? countShape : pick(otherShapes),
-    x: 18 + (position % 4) * 25,
+    x: 12.5 + (position % 4) * 25,
     y: 20 + Math.floor(position / 4) * 30,
     scale: pick([0.78, 0.9, 1]),
     rotation: pick([0, 15, 30, 45]),
@@ -459,6 +459,48 @@ function isInsideTriangle(x: number, y: number, cx: number, cy: number, h: numbe
   return x >= cx - halfWidth && x <= cx + halfWidth;
 }
 
+function distanceToSegment(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const lengthSquared = dx * dx + dy * dy;
+  const t = lengthSquared === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lengthSquared));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+function distanceToShapeBoundary(
+  x: number,
+  y: number,
+  shape: { type: 'circle' | 'square' | 'triangle'; cx: number; cy: number; r?: number; w?: number; h?: number },
+): number {
+  if (shape.type === 'circle') {
+    return Math.abs(Math.hypot(x - shape.cx, y - shape.cy) - (shape.r ?? 25));
+  }
+  if (shape.type === 'square') {
+    const half = (shape.w ?? 40) / 2;
+    const left = shape.cx - half;
+    const right = shape.cx + half;
+    const top = shape.cy - half;
+    const bottom = shape.cy + half;
+    return Math.min(
+      distanceToSegment(x, y, left, top, right, top),
+      distanceToSegment(x, y, right, top, right, bottom),
+      distanceToSegment(x, y, right, bottom, left, bottom),
+      distanceToSegment(x, y, left, bottom, left, top),
+    );
+  }
+  const h = shape.h ?? 40;
+  const topX = shape.cx;
+  const topY = shape.cy - h / 2;
+  const leftX = shape.cx - h / 2;
+  const rightX = shape.cx + h / 2;
+  const bottomY = shape.cy + h / 2;
+  return Math.min(
+    distanceToSegment(x, y, topX, topY, leftX, bottomY),
+    distanceToSegment(x, y, leftX, bottomY, rightX, bottomY),
+    distanceToSegment(x, y, rightX, bottomY, topX, topY),
+  );
+}
+
 function generateDotRegion(difficulty: Difficulty): Question {
   // 2 shapes for easy, 3 for medium/hard
   const useThree = difficulty !== 'easy';
@@ -496,22 +538,24 @@ function generateDotRegion(difficulty: Difficulty): Question {
   // Try to place a dot in a specific region
   // Regions: for 2 shapes: A only, B only, A∩B, neither
   // For 3 shapes: A only, B only, C only, A∩B, A∩C, B∩C, A∩B∩C, neither
-  const attempts = 200;
-  let dot = { x: 50, y: 50 };
-  let containing: string[] = [];
-  for (let i = 0; i < attempts; i++) {
-    dot = { x: randInt(5, 95), y: randInt(5, 95) };
-    containing = [];
-    for (const s of shapes) {
-      let inside = false;
-      if (s.type === 'circle') inside = isInsideCircle(dot.x, dot.y, s.cx, s.cy, s.r ?? 25);
-      else if (s.type === 'square') inside = isInsideSquare(dot.x, dot.y, s.cx, s.cy, s.w ?? 40);
-      else if (s.type === 'triangle') inside = isInsideTriangle(dot.x, dot.y, s.cx, s.cy, s.h ?? 40);
-      if (inside) containing.push(s.label);
+  const candidates: Array<{ dot: { x: number; y: number }; containing: string[] }> = [];
+  for (let x = 5; x <= 95; x++) {
+    for (let y = 5; y <= 95; y++) {
+      if (shapes.some((shape) => distanceToShapeBoundary(x, y, shape) < 5)) continue;
+      const containing = shapes.filter((shape) => {
+        if (shape.type === 'circle') return isInsideCircle(x, y, shape.cx, shape.cy, shape.r ?? 25);
+        if (shape.type === 'square') return isInsideSquare(x, y, shape.cx, shape.cy, shape.w ?? 40);
+        return isInsideTriangle(x, y, shape.cx, shape.cy, shape.h ?? 40);
+      }).map((shape) => shape.label);
+      if (containing.length >= 1 && containing.length < shapes.length) {
+        candidates.push({ dot: { x, y }, containing });
+      }
     }
-    // We want a dot that's in at least one shape and not in all (to make it interesting)
-    if (containing.length >= 1 && containing.length < shapes.length) break;
   }
+  if (candidates.length === 0) {
+    throw new Error('Dot-region configuration has no visually unambiguous positions');
+  }
+  const { dot, containing } = pick(candidates);
 
   // Build the answer
   const allLabels = shapes.map((s) => s.label);
@@ -572,24 +616,62 @@ function generateDotRegion(difficulty: Difficulty): Question {
 
 // ─── Composite rotation ──────────────────────────────────────────────────────
 
+function transformCompositePoint(point: { x: number; y: number }, rotation: number, mirrorX?: boolean) {
+  const x = mirrorX ? 100 - point.x : point.x;
+  const radians = rotation * Math.PI / 180;
+  const dx = x - 50;
+  const dy = point.y - 50;
+  return {
+    x: Math.round((50 + dx * Math.cos(radians) - dy * Math.sin(radians)) * 1000) / 1000,
+    y: Math.round((50 + dx * Math.sin(radians) + dy * Math.cos(radians)) * 1000) / 1000,
+  };
+}
+
+function compositeSignature(
+  dots: { x: number; y: number }[],
+  lines: { x1: number; y1: number; x2: number; y2: number }[],
+  option: { rotation: number; mirrorX?: boolean },
+): string {
+  const transformedDots = dots
+    .map((dot) => transformCompositePoint(dot, option.rotation, option.mirrorX))
+    .sort((a, b) => a.x - b.x || a.y - b.y);
+  const transformedLines = lines
+    .map((line) => [
+      transformCompositePoint({ x: line.x1, y: line.y1 }, option.rotation, option.mirrorX),
+      transformCompositePoint({ x: line.x2, y: line.y2 }, option.rotation, option.mirrorX),
+    ].sort((a, b) => a.x - b.x || a.y - b.y))
+    .sort((a, b) => a[0].x - b[0].x || a[0].y - b[0].y);
+  return JSON.stringify({ dots: transformedDots, lines: transformedLines });
+}
+
 function generateCompositeRotate(difficulty: Difficulty): Question {
   // Generate a composite figure: a square with 2-3 internal dots
   const numDots = difficulty === 'easy' ? 2 : difficulty === 'medium' ? 3 : 3;
-  const dots: { x: number; y: number }[] = [];
   // Place dots in asymmetric positions within the square (10-90 range)
   const positions = [
     { x: 25, y: 25 }, { x: 75, y: 25 }, { x: 25, y: 75 }, { x: 75, y: 75 },
     { x: 50, y: 25 }, { x: 25, y: 50 }, { x: 75, y: 50 }, { x: 50, y: 75 },
     { x: 35, y: 35 }, { x: 65, y: 65 }, { x: 35, y: 65 }, { x: 65, y: 35 },
   ];
-  const shuffledPositions = shuffle(positions);
-  for (let i = 0; i < numDots && i < shuffledPositions.length; i++) {
-    dots.push(shuffledPositions[i]);
+  const optionTransforms = [
+    { rotation: 90 },
+    { rotation: 180 },
+    { rotation: 270 },
+    { rotation: 0, mirrorX: true },
+  ];
+  let dots: { x: number; y: number }[] = [];
+  let lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let attempt = 0; attempt < 100; attempt++) {
+    dots = shuffle(positions).slice(0, numDots);
+    lines = difficulty === 'hard'
+      ? [{ x1: dots[0].x, y1: dots[0].y, x2: dots[1].x, y2: dots[1].y }]
+      : [];
+    const signatures = optionTransforms.map((option) => compositeSignature(dots, lines, option));
+    if (new Set(signatures).size === optionTransforms.length) break;
   }
-  // Optionally add a line for harder questions
-  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
-  if (difficulty === 'hard' && dots.length >= 2) {
-    lines.push({ x1: dots[0].x, y1: dots[0].y, x2: dots[1].x, y2: dots[1].y });
+  const signatures = optionTransforms.map((option) => compositeSignature(dots, lines, option));
+  if (new Set(signatures).size !== optionTransforms.length) {
+    throw new Error('Composite-rotation generator could not produce four visually unique options');
   }
 
   const base = { shape: 'square' as const, dots, lines };

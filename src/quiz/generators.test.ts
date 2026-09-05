@@ -364,35 +364,44 @@ describe('Probability generator — distractor value inequality', () => {
 
 describe('Visual generators — no tone leaks', () => {
   it('odd-one-out: all option shapes share the same tone', () => {
-    repeat(30, () => {
-      const q = generateVisualQuestion('visual-reasoning', 'easy');
+    let checked = 0;
+    repeat(300, () => {
+      const q = generateVisualQuestion('geometry', 'easy');
       assertValidQuestion(q);
       if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('different')) return;
+      checked++;
       const tones = new Set(q.visual.options.map((s) => s.tone));
       expect(tones.size).toBe(1);
     });
+    expect(checked).toBeGreaterThan(10);
   });
 
   it('symmetry: all option shapes share the same tone', () => {
-    repeat(30, () => {
-      const q = generateVisualQuestion('visual-reasoning', 'easy');
+    let checked = 0;
+    repeat(300, () => {
+      const q = generateVisualQuestion('geometry', 'easy');
       assertValidQuestion(q);
       if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('symmetrical')) return;
+      checked++;
       const tones = new Set(q.visual.options.map((s) => s.tone));
       expect(tones.size).toBe(1);
     });
+    expect(checked).toBeGreaterThan(10);
   });
 
   it('symmetry: arrow never appears as a distractor (it is symmetric)', () => {
-    repeat(50, () => {
-      const q = generateVisualQuestion('visual-reasoning', 'medium');
+    let checked = 0;
+    repeat(300, () => {
+      const q = generateVisualQuestion('geometry', 'medium');
       assertValidQuestion(q);
       if (q.visual?.kind !== 'shape-choice' || !q.prompt.includes('symmetrical')) return;
+      checked++;
       const distractorShapes = q.visual.options
         .filter((_, i) => i !== q.answerIndex)
         .map((s) => s.shape);
       expect(distractorShapes).not.toContain('arrow');
     });
+    expect(checked).toBeGreaterThan(10);
   });
 });
 
@@ -1051,14 +1060,23 @@ describe('REGRESSION: visual-generator fixes', () => {
     });
   });
 
-  it('generateCount: all shapes have the same tone (no color leak)', () => {
-    repeat(100, () => {
-      const q = generateVisualQuestion('visual-reasoning', 'easy');
+  it('generateCount: all shapes have the same tone and stay inside safe visual margins', () => {
+    let checked = 0;
+    repeat(300, () => {
+      const q = generateVisualQuestion('geometry', 'easy');
       if (!q.visual || q.visual.kind !== 'count') return;
+      checked++;
       const tones = q.visual.scene.map((s) => s.tone);
       const uniqueTones = new Set(tones);
       expect(uniqueTones.size).toBe(1);
+      for (const shape of q.visual.scene) {
+        expect(shape.x).toBeGreaterThanOrEqual(12);
+        expect(shape.x).toBeLessThanOrEqual(88);
+        expect(shape.y).toBeGreaterThanOrEqual(12);
+        expect(shape.y).toBeLessThanOrEqual(88);
+      }
     });
+    expect(checked).toBeGreaterThan(50);
   });
 
   it('generateFraction: no distractor equals correct answer', () => {
