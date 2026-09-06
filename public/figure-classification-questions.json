@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Curated figure classification questions for visual reasoning practice. Each question is designed so exactly ONE option is correct: the intended criterion produces a clean partition while every distractor lists a partition that matches no visible criterion.",
   "questions": [
     {
@@ -10,7 +10,7 @@
       "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
       "options": [
         "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
-        "Group by fill: (1,6,8), (2,4,9), (3,5,7)",
+        "Group by fill: (1,2,4), (3,6,9), (5,7,8)",
         "Group by columns: (1,4,7), (2,5,8), (3,6,9)",
         "Group by shape: (1,6,8), (2,4,9), (3,5,7)"
       ],
@@ -40,9 +40,9 @@
       "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
       "options": [
         "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
-        "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,4,8), (2,5,9), (3,6,7)",
         "Group by size: (1,5,9), (2,6,7), (3,4,8)",
-        "Group by rows: (1,4,7), (2,5,8), (3,6,9)"
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)"
       ],
       "answerIndex": 0,
       "explanation": "Step 1: All 9 figures are different shapes, so shape cannot group them. Step 2: Row 1 is all green, row 2 is all outline, row 3 is all peach. Step 3: Grouping by fill gives green (1,2,3), outline (4,5,6), peach (7,8,9). The size partition lists groups that share no attribute, and (1,4,7),(2,5,8),(3,6,9) are the columns, which mix fills. Answer: Group by fill: (1,2,3), (4,5,6), (7,8,9).",
@@ -70,12 +70,12 @@
       "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
       "options": [
         "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
-        "Group by rows: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,4,8), (2,6,9), (3,5,7)",
         "Group by number of sides: (1,6,9), (2,5,8), (3,4,7)",
         "Group by columns: (1,4,7), (2,5,8), (3,6,9)"
       ],
       "answerIndex": 2,
-      "explanation": "Step 1: The triangles (3 sides) are at positions 1, 6, 9; the squares (4 sides) at 2, 5, 8; the pentagons (5 sides) at 3, 4, 7. Step 2: Grouping by side count gives triangles (1,6,9), squares (2,5,8), pentagons (3,4,7). Step 3: Every row and every column mixes shapes and fills, so the row, column, and listed fill partitions are all invalid. Answer: Group by number of sides: (1,6,9), (2,5,8), (3,4,7).",
+      "explanation": "Step 1: The triangles (3 sides) are at positions 1, 6, 9; the squares (4 sides) at 2, 5, 8; the pentagons (5 sides) at 3, 4, 7. Step 2: Grouping by side count gives triangles (1,6,9), squares (2,5,8), pentagons (3,4,7). Step 3: Every row and every column mixes shapes and fills, and the listed shape and fill partitions also mix their claimed attributes. Answer: Group by number of sides: (1,6,9), (2,5,8), (3,4,7).",
       "dedupeKey": "fig-class-003",
       "visual": {
         "kind": "figure-classification",
@@ -102,7 +102,7 @@
         "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
         "Group by shape: (1,4,8), (2,5,9), (3,6,7)",
         "Group by fill: (1,4,7), (2,5,8), (3,6,9)",
-        "Group by size: (1,4,8), (2,5,9), (3,6,7)"
+        "Group by size: (1,5,7), (2,6,8), (3,4,9)"
       ],
       "answerIndex": 1,
       "explanation": "Step 1: The triangles are at positions 1, 4, 8; the squares at 2, 5, 9; the circles at 3, 6, 7. Step 2: Grouping by shape gives triangles (1,4,8), squares (2,5,9), circles (3,6,7). Step 3: Each row and column mixes shapes and fills, and all figures are the same size — so the other listed partitions are invalid. Answer: Group by shape: (1,4,8), (2,5,9), (3,6,7).",
@@ -191,11 +191,11 @@
       "options": [
         "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
         "Group by shape: (1,5,9), (2,6,7), (3,4,8)",
-        "Group by rows: (1,2,3), (4,5,6), (7,8,9)",
-        "Group by fill: (1,5,9), (2,6,7), (3,4,8)"
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by fill: (1,4,6), (2,5,9), (3,7,8)"
       ],
       "answerIndex": 1,
-      "explanation": "Step 1: The triangles are at positions 1, 5, 9; the squares at 2, 6, 7; the pentagons at 3, 4, 8. Step 2: Grouping by shape gives triangles (1,5,9), squares (2,6,7), pentagons (3,4,8). Step 3: Every row and column mixes shapes and fills — (1,5,9) are peach, outline, and outline, so the same partition does not work for fill. Answer: Group by shape: (1,5,9), (2,6,7), (3,4,8).",
+      "explanation": "Step 1: The triangles are at positions 1, 5, and 9; the squares at 2, 6, and 7; the pentagons at 3, 4, and 8. Step 2: Grouping by shape gives triangles (1,5,9), squares (2,6,7), and pentagons (3,4,8). Step 3: The listed row, column, and fill partitions each mix shapes or fills and are invalid. Answer: Group by shape: (1,5,9), (2,6,7), (3,4,8).",
       "dedupeKey": "fig-class-007",
       "visual": {
         "kind": "figure-classification",

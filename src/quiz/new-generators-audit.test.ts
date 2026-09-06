@@ -446,6 +446,27 @@ describe('AUDIT: Figure classification curated bank', () => {
    * it is the one at answerIndex. This prevents the earlier bug where multiple
    * options described partitions that were all actually correct.
    */
+  it('grouping options never repeat an equivalent partition', () => {
+    for (const q of figClassBank.questions) {
+      if (!q.prompt.includes('classified into 3 groups')) continue;
+      const partitions = q.options.flatMap((option) => {
+        const matches = [...option.matchAll(/\(([\d,\s]+)\)/g)];
+        if (matches.length !== 3) return [];
+        const groups = matches.map((match) => match[1]
+          .split(',')
+          .map((value) => Number(value.trim()))
+          .sort((a, b) => a - b)
+          .join(','))
+          .sort();
+        return [groups.join('|')];
+      });
+      expect(
+        new Set(partitions).size,
+        `${q.id} repeats an equivalent grouping: ${JSON.stringify(q.options)}`,
+      ).toBe(partitions.length);
+    }
+  });
+
   it('each grouping question has exactly one valid partition, at answerIndex', () => {
     const SIDES: Record<string, number> = {
       triangle: 3, 'scalene-triangle': 3, square: 4, rectangle: 4,
