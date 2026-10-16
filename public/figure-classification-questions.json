@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Curated figure classification questions for visual reasoning practice. Each question is designed so exactly ONE option is correct: the intended criterion produces a clean partition while every distractor lists a partition that matches no visible criterion.",
   "questions": [
     {
@@ -269,6 +269,136 @@
           { "shape": "star", "tone": "green" },
           { "shape": "l-shape", "tone": "green" },
           { "shape": "square", "tone": "green" }
+        ]
+      }
+    },
+    {
+      "id": "fc-011",
+      "category": "visual-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by rows: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by shape: (1,5,8), (2,6,7), (3,4,9)",
+        "Group by fill: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by fill: (1,3,6), (2,4,8), (5,7,9)"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: The pentagons are at positions 1, 5, and 8; the hexagons at 2, 6, and 7; the stars at 3, 4, and 9. Step 2: Grouping by shape gives pentagons (1,5,8), hexagons (2,6,7), stars (3,4,9). Step 3: Rows, columns, and the listed fill groupings each mix shapes and fills. Answer: Group by shape: (1,5,8), (2,6,7), (3,4,9).",
+      "dedupeKey": "fig-class-011",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "hexagon", "tone": "peach" },
+          { "shape": "star", "tone": "outline" },
+          { "shape": "star", "tone": "green" },
+          { "shape": "pentagon", "tone": "outline" },
+          { "shape": "hexagon", "tone": "green" },
+          { "shape": "hexagon", "tone": "outline" },
+          { "shape": "pentagon", "tone": "peach" },
+          { "shape": "star", "tone": "peach" }
+        ]
+      }
+    },
+    {
+      "id": "fc-012",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by shape: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)",
+        "Group by number of sides: (1,5,7), (2,6,9), (3,4,8)",
+        "Group by fill: (1,4,8), (2,5,7), (3,6,9)"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: All 9 figures are distinct shapes, so no shape grouping exists. Step 2: The green figures are at positions 1, 4, and 8; the peach figures at 2, 5, and 7; the outline figures at 3, 6, and 9. Step 3: Grouping by fill gives (1,4,8), (2,5,7), (3,6,9). Answer: Group by fill: (1,4,8), (2,5,7), (3,6,9).",
+      "dedupeKey": "fig-class-012",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "circle", "tone": "green" },
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "square", "tone": "outline" },
+          { "shape": "pentagon", "tone": "green" },
+          { "shape": "hexagon", "tone": "peach" },
+          { "shape": "star", "tone": "outline" },
+          { "shape": "rectangle", "tone": "peach" },
+          { "shape": "arrow", "tone": "green" },
+          { "shape": "flag", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-013",
+      "category": "visual-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "The 9 figures below can be classified into 3 groups. Which grouping is correct?",
+      "options": [
+        "Group by number of sides: (1,5,8), (2,4,9), (3,6,7)",
+        "Group by shape: (1,4,8), (2,5,9), (3,6,7)",
+        "Group by fill: (1,2,3), (4,5,6), (7,8,9)",
+        "Group by columns: (1,4,7), (2,5,8), (3,6,9)"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: Positions 1, 5, and 8 have 3-sided shapes (triangles and scalene triangle); positions 2, 4, and 9 have 4-sided shapes (squares and rectangle); positions 3, 6, and 7 have 6-sided hexagons. Step 2: Grouping by number of sides gives (1,5,8) with 3 sides, (2,4,9) with 4 sides, and (3,6,7) with 6 sides. Step 3: Rows, columns, and the other listed partitions mix shapes, side counts, and fills. Answer: Group by number of sides: (1,5,8), (2,4,9), (3,6,7).",
+      "dedupeKey": "fig-class-013",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "triangle", "tone": "green" },
+          { "shape": "square", "tone": "peach" },
+          { "shape": "hexagon", "tone": "outline" },
+          { "shape": "rectangle", "tone": "green" },
+          { "shape": "scalene-triangle", "tone": "outline" },
+          { "shape": "hexagon", "tone": "peach" },
+          { "shape": "hexagon", "tone": "green" },
+          { "shape": "triangle", "tone": "peach" },
+          { "shape": "square", "tone": "outline" }
+        ]
+      }
+    },
+    {
+      "id": "fc-014",
+      "category": "visual-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Which figure does NOT belong to the group?",
+      "options": ["Figure 1 (pentagon)", "Figure 2 (pentagon)", "Figure 3 (pentagon)", "Figure 4 (star)"],
+      "answerIndex": 3,
+      "explanation": "Step 1: All 4 figures have the same peach fill. Step 2: Figures 1, 2, and 3 are regular pentagons (5 straight sides). Step 3: Figure 4 is a 10-sided star — it is the only non-pentagon. Answer: Figure 4 (star) does not belong.",
+      "dedupeKey": "fig-class-014",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "pentagon", "tone": "peach" },
+          { "shape": "pentagon", "tone": "peach" },
+          { "shape": "pentagon", "tone": "peach" },
+          { "shape": "star", "tone": "peach" }
+        ]
+      }
+    },
+    {
+      "id": "fc-015",
+      "category": "visual-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Which figure does NOT belong to the group?",
+      "options": ["Figure 1 (hexagon)", "Figure 2 (circle)", "Figure 3 (hexagon)", "Figure 4 (hexagon)"],
+      "answerIndex": 1,
+      "explanation": "Step 1: All 4 figures share the same green fill. Step 2: Figures 1, 3, and 4 are hexagons (6 sides). Step 3: Figure 2 is a circle (0 straight sides). Answer: Figure 2 (circle) does not belong.",
+      "dedupeKey": "fig-class-015",
+      "visual": {
+        "kind": "figure-classification",
+        "figures": [
+          { "shape": "hexagon", "tone": "green" },
+          { "shape": "circle", "tone": "green" },
+          { "shape": "hexagon", "tone": "green" },
+          { "shape": "hexagon", "tone": "green" }
         ]
       }
     }

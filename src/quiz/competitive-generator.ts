@@ -160,20 +160,22 @@ function genSpeed(difficulty: Difficulty): Question {
 // ─── 4. Trains crossing ─────────────────────────────────────────────────────
 
 function genTrainCrossing(difficulty: Difficulty): Question {
-  const trainLen = randInt(50, difficulty === 'hard' ? 250 : 150);
-  const platformLen = randInt(100, difficulty === 'hard' ? 400 : 300);
-  const speed = randInt(36, difficulty === 'hard' ? 108 : 72);
-  // Time to cross platform = (trainLen + platformLen) / (speed × 1000/3600)
-  const totalDist = trainLen + platformLen;
-  const speedMs = (speed * 1000) / 3600;
-  const answer = Math.round((totalDist / speedMs) * 10) / 10;
-  if (answer < 1) return genTrainCrossing(difficulty);
+  const speed = pick(difficulty === 'hard' ? [54, 72, 90, 108] : [36, 54, 72]);
+  const speedMs = (speed * 1000) / 3600; // exact integer: 10, 15, 20, 25, or 30 m/s
+  const timeSec = randInt(8, difficulty === 'hard' ? 28 : 20);
+  const totalDist = speedMs * timeSec;
+  const trainLen = Math.max(50, Math.round((totalDist * randInt(3, 5)) / 10 / 10) * 10);
+  const platformLen = totalDist - trainLen;
+  if (platformLen < 50) return genTrainCrossing(difficulty);
+  const answer = totalDist / speedMs;
+  const trainOnly = Math.round((trainLen / speedMs) * 10) / 10;
+  const ds = [trainOnly, answer + 5, Math.max(1, answer - 4), answer + 8].filter((d) => d !== answer && d > 0);
   return mcq(
     difficulty,
     `A ${trainLen}m long train running at ${speed} km/h crosses a ${platformLen}m long platform. How long does it take (in seconds)?`,
     answer,
-    [Math.round((trainLen / speedMs) * 10) / 10, Math.round((totalDist / speedMs * 0.7) * 10) / 10, Math.round(answer + 8)],
-    `Step 1: Total distance = train length + platform length = ${trainLen} + ${platformLen} = ${totalDist} m.\nStep 2: Convert speed to m/s: ${speed} km/h ÷ 3.6 = ${speedMs.toFixed(2)} m/s.\nStep 3: Time = distance ÷ speed = ${totalDist} ÷ ${speedMs.toFixed(2)} ≈ ${answer} seconds.\nAnswer: ${answer} seconds.`,
+    ds,
+    `Step 1: Total distance = train length + platform length = ${trainLen} + ${platformLen} = ${totalDist} m.\nStep 2: Convert speed to m/s: ${speed} km/h ÷ 3.6 = ${speedMs} m/s.\nStep 3: Time = distance ÷ speed = ${totalDist} ÷ ${speedMs} = ${answer} seconds.\nAnswer: ${answer} seconds.`,
     `train:${trainLen}:${platformLen}:${speed}`,
   );
 }
@@ -186,13 +188,20 @@ function genBoat(difficulty: Difficulty): Question {
   if (streamSpeed >= boatSpeed) return genBoat(difficulty);
   const downstream = boatSpeed + streamSpeed;
   const upstream = boatSpeed - streamSpeed;
-  const answer = Math.round((downstream / upstream) * 10) / 10;
+  if ((downstream * 10) % upstream !== 0) return genBoat(difficulty);
+  const answer = downstream / upstream;
+  const ds = [
+    Math.round((downstream / boatSpeed) * 10) / 10,
+    Math.round((upstream / downstream) * 10) / 10,
+    downstream + upstream,
+    answer + 0.5,
+  ].filter((d) => d !== answer && d > 0);
   return mcq(
     difficulty,
     `A boat's speed in still water is ${boatSpeed} km/h. The stream flows at ${streamSpeed} km/h. What is the ratio of downstream speed to upstream speed?`,
     answer,
-    [Math.round((downstream / boatSpeed) * 10) / 10, Math.round((upstream / downstream) * 10) / 10, downstream + upstream],
-    `Step 1: Downstream speed = boat + stream = ${boatSpeed} + ${streamSpeed} = ${downstream} km/h.\nStep 2: Upstream speed = boat − stream = ${boatSpeed} − ${streamSpeed} = ${upstream} km/h.\nStep 3: Ratio = downstream ÷ upstream = ${downstream} ÷ ${upstream} ≈ ${answer}.\nAnswer: ${answer}.`,
+    ds,
+    `Step 1: Downstream speed = boat + stream = ${boatSpeed} + ${streamSpeed} = ${downstream} km/h.\nStep 2: Upstream speed = boat − stream = ${boatSpeed} − ${streamSpeed} = ${upstream} km/h.\nStep 3: Ratio = downstream ÷ upstream = ${downstream} ÷ ${upstream} = ${answer}.\nAnswer: ${answer}.`,
     `boat:${boatSpeed}:${streamSpeed}`,
   );
 }
@@ -200,7 +209,7 @@ function genBoat(difficulty: Difficulty): Question {
 // ─── 6. Percentage ──────────────────────────────────────────────────────────
 
 function genPercentage(difficulty: Difficulty): Question {
-  const value = randInt(200, difficulty === 'hard' ? 2000 : 1000);
+  const value = randInt(10, difficulty === 'hard' ? 100 : 50) * 20;
   const percent = pick([10, 15, 20, 25, 30, 40]);
   const answer = (value * percent) / 100;
   const ds = [value - answer, value + answer, Math.round(answer * 0.5)].filter((d) => d !== answer && d > 0);
@@ -217,17 +226,19 @@ function genPercentage(difficulty: Difficulty): Question {
 // ─── 7. Percentage Change ───────────────────────────────────────────────────
 
 function genPercentageChange(difficulty: Difficulty): Question {
-  const oldVal = randInt(100, difficulty === 'hard' ? 800 : 500);
+  const oldVal = randInt(5, difficulty === 'hard' ? 40 : 25) * 20;
   const change = pick([10, 15, 20, 25, 30, 40, 50]);
   const direction = pick(['increase', 'decrease'] as const);
-  const newVal = direction === 'increase' ? oldVal + (oldVal * change) / 100 : oldVal - (oldVal * change) / 100;
+  const delta = (oldVal * change) / 100;
+  const newVal = direction === 'increase' ? oldVal + delta : oldVal - delta;
+  const signedDelta = newVal - oldVal;
   const answer = direction === 'increase' ? change : -change;
   return mcq(
     difficulty,
     `A value changes from ${oldVal} to ${newVal}. What is the percentage change?`,
     `${answer}%`,
-    [`${Math.abs(answer) + 5}%`, `${Math.abs(answer) - 5}%`, `${direction === 'increase' ? '−' : ''}${Math.abs(answer)}%`],
-    `Step 1: Change = new − old = ${newVal} − ${oldVal} = ${newVal - oldVal}.\nStep 2: Percentage change = (change ÷ old) × 100 = (${newVal - oldVal} ÷ ${oldVal}) × 100.\nStep 3: = ${answer}%.\nAnswer: ${answer}%.`,
+    [`${Math.abs(answer) + 5}%`, `${Math.abs(answer) - 5}%`, `${direction === 'increase' ? '-' : ''}${Math.abs(answer)}%`],
+    `Step 1: Change = new − old = ${newVal} − ${oldVal} = ${signedDelta}.\nStep 2: Percentage change = (change ÷ old) × 100 = (${signedDelta} ÷ ${oldVal}) × 100.\nStep 3: = ${answer}%.\nAnswer: ${answer}%.`,
     `pct-change:${oldVal}:${change}:${direction}`,
   );
 }
@@ -235,7 +246,7 @@ function genPercentageChange(difficulty: Difficulty): Question {
 // ─── 8. Profit & Loss ───────────────────────────────────────────────────────
 
 function genProfitLoss(difficulty: Difficulty): Question {
-  const cost = randInt(100, difficulty === 'hard' ? 2000 : 1000);
+  const cost = randInt(5, difficulty === 'hard' ? 100 : 50) * 20;
   const percent = pick([10, 15, 20, 25, 30, 40]);
   const isProfit = pick([true, false]);
   const answer = isProfit ? (cost * (100 + percent)) / 100 : (cost * (100 - percent)) / 100;
@@ -247,7 +258,7 @@ function genProfitLoss(difficulty: Difficulty): Question {
     `An item costs ₹${cost}. It is sold at a ${label} of ${percent}%. What is its selling price?`,
     answer,
     ds,
-    `Step 1: Selling price = cost × (100 ${isProfit ? '+' : '−'} ${percent}%) ÷ 100.\nStep 2: = ${cost} × ${isProfit ? 100 + percent : 100 - percent} ÷ 100.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
+    `Step 1: Selling price = cost × (100 ${isProfit ? '+' : '−'} ${percent}%) ÷ 100.\nStep 2: = ₹${cost} × ${isProfit ? 100 + percent : 100 - percent} ÷ 100.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
     `${label}:${cost}:${percent}`,
     true,
   );
@@ -256,17 +267,17 @@ function genProfitLoss(difficulty: Difficulty): Question {
 // ─── 9. Discount ────────────────────────────────────────────────────────────
 
 function genDiscount(difficulty: Difficulty): Question {
-  const marked = randInt(200, difficulty === 'hard' ? 2000 : 1000);
+  const marked = randInt(10, difficulty === 'hard' ? 100 : 50) * 20;
   const discount = pick([10, 15, 20, 25, 30, 40]);
-  const answer = marked - (marked * discount) / 100;
   const discountAmt = (marked * discount) / 100;
+  const answer = marked - discountAmt;
   const ds = [marked, discountAmt, Math.round(answer * 1.15)].filter((d) => d !== answer && d > 0);
   return mcq(
     difficulty,
     `An item marked at ₹${marked} is sold at a discount of ${discount}%. What is the selling price?`,
     answer,
     ds,
-    `Step 1: Discount amount = marked price × discount% ÷ 100 = ${marked} × ${discount} ÷ 100 = ₹${(marked * discount) / 100}.\nStep 2: Selling price = marked price − discount = ${marked} − ${(marked * discount) / 100}.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
+    `Step 1: Discount amount = marked price × discount% ÷ 100 = ₹${marked} × ${discount} ÷ 100 = ₹${discountAmt}.\nStep 2: Selling price = marked price − discount = ₹${marked} − ₹${discountAmt}.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
     `discount:${marked}:${discount}`,
     true,
   );
@@ -284,7 +295,7 @@ function genSimpleInterest(difficulty: Difficulty): Question {
     `Find the simple interest on ₹${principal} at ${rate}% per annum for ${years} years.`,
     answer,
     [(principal * rate) / 100, Math.round(answer * 1.5), principal + answer],
-    `Step 1: Simple interest = P × R × T ÷ 100.\nStep 2: = ${principal} × ${rate} × ${years} ÷ 100.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
+    `Step 1: Simple interest = P × R × T ÷ 100.\nStep 2: = ₹${principal} × ${rate} × ${years} ÷ 100.\nStep 3: = ₹${answer}.\nAnswer: ₹${answer}.`,
     `si:${principal}:${rate}:${years}`,
     true,
   );
@@ -293,18 +304,21 @@ function genSimpleInterest(difficulty: Difficulty): Question {
 // ─── 11. Compound Interest ──────────────────────────────────────────────────
 
 function genCompoundInterest(difficulty: Difficulty): Question {
-  const principal = randInt(10, difficulty === 'hard' ? 100 : 50) * 100;
   const rate = pick([5, 10, 20]);
   const years = pick([2, 3]);
+  // Choose principal step so principal * (1 + rate/100)^years is an exact integer
+  const step = years === 3 && rate === 5 ? 8000 : years === 3 ? 1000 : 400;
+  const maxMult = difficulty === 'hard' ? 12 : 6;
+  const principal = randInt(1, maxMult) * step;
   const supYrs = sup(years);
-  const amount = Math.round(principal * Math.pow(1 + rate / 100, years));
+  const amount = Math.round((principal * (100 + rate) ** years) / 100 ** years);
   const answer = amount - principal;
   return mcq(
     difficulty,
     `Find the compound interest on ₹${principal} at ${rate}% per annum for ${years} years (compounded annually).`,
     answer,
     [(principal * rate * years) / 100, amount, answer + principal / 10],
-    `Step 1: Amount = P × (1 + R/100)ᵀ = ${principal} × (1 + ${rate}/100)${supYrs}.\nStep 2: = ${principal} × ${(1 + rate / 100).toFixed(2)}${supYrs} = ₹${amount}.\nStep 3: Compound interest = Amount − Principal = ${amount} − ${principal} = ₹${answer}.\nAnswer: ₹${answer}.`,
+    `Step 1: Amount = P × (1 + R/100)ᵀ = ₹${principal} × (1 + ${rate}/100)${supYrs}.\nStep 2: = ₹${principal} × ${(1 + rate / 100).toFixed(2)}${supYrs} = ₹${amount}.\nStep 3: Compound interest = Amount − Principal = ₹${amount} − ₹${principal} = ₹${answer}.\nAnswer: ₹${answer}.`,
     `ci:${principal}:${rate}:${years}`,
     true,
   );
@@ -378,20 +392,22 @@ function genMixture(difficulty: Difficulty): Question {
   // Choose a target that is NOT the midpoint to create a meaningful ratio
   const mid = (cheap + dear) / 2;
   const target = pick([Math.round(mid - 5), Math.round(mid + 5), Math.round(mid - 10), Math.round(mid + 10)].filter((t) => t > cheap && t < dear));
-  const ratioA = dear - target;
-  const ratioB = target - cheap;
-  const totalQty = randInt(10, difficulty === 'hard' ? 50 : 30);
-  // Ensure totalQty is divisible by (ratioA + ratioB) for a clean answer
+  const rawA = dear - target;
+  const rawB = target - cheap;
+  const g = gcd(rawA, rawB);
+  const ratioA = rawA / g;
+  const ratioB = rawB / g;
   const parts = ratioA + ratioB;
-  const adjustedQty = Math.round(totalQty / parts) * parts;
-  const answer = (adjustedQty * ratioA) / parts;
-  const ds = [adjustedQty - answer, Math.round(adjustedQty / 3), answer + 3].filter((d) => d !== answer && d > 0);
+  const multiplier = randInt(2, difficulty === 'hard' ? 8 : 5);
+  const adjustedQty = multiplier * parts;
+  const answer = multiplier * ratioA;
+  const ds = [adjustedQty - answer, Math.max(1, Math.round(adjustedQty / 3)), answer + ratioA, answer + 3].filter((d) => d !== answer && d > 0);
   return mcq(
     difficulty,
     `A merchant mixes rice costing ₹${cheap}/kg with rice costing ₹${dear}/kg to get a mixture worth ₹${target}/kg. If they make ${adjustedQty} kg total, how many kg of the cheaper rice do they use?`,
     answer,
     ds,
-    `Step 1: Alligation ratio = (dear − target) : (target − cheap) = (${dear}−${target}) : (${target}−${cheap}) = ${ratioA}:${ratioB}.\nStep 2: Total parts = ${ratioA} + ${ratioB} = ${parts}.\nStep 3: Cheaper qty = total × ${ratioA} ÷ ${parts} = ${adjustedQty} × ${ratioA} ÷ ${parts} = ${answer} kg.\nAnswer: ${answer} kg.`,
+    `Step 1: Alligation ratio = (dear − target) : (target − cheap) = (₹${dear} − ₹${target}) : (₹${target} − ₹${cheap}) = ${ratioA}:${ratioB}.\nStep 2: Total parts = ${ratioA} + ${ratioB} = ${parts}.\nStep 3: Cheaper qty = total × ${ratioA} ÷ ${parts} = ${adjustedQty} × ${ratioA} ÷ ${parts} = ${answer} kg.\nAnswer: ${answer} kg.`,
     `mixture:${cheap}:${dear}:${target}:${adjustedQty}`,
   );
 }
@@ -403,15 +419,22 @@ function genPartnership(difficulty: Difficulty): Question {
   const bInv = randInt(2, difficulty === 'hard' ? 10 : 6) * 1000;
   const aMonths = randInt(3, 8);
   const bMonths = randInt(3, 8);
-  const totalProfit = randInt(5, difficulty === 'hard' ? 30 : 20) * 1000;
-  const aShare = Math.round((totalProfit * aInv * aMonths) / (aInv * aMonths + bInv * bMonths));
-  const ds = [totalProfit - aShare, Math.round(totalProfit * 0.3), Math.round(aShare * 0.8)].filter((d) => d !== aShare && d > 0);
+  const aWeight = aInv * aMonths;
+  const bWeight = bInv * bMonths;
+  const g = gcd(aWeight, bWeight);
+  const rA = aWeight / g;
+  const rB = bWeight / g;
+  const totalParts = rA + rB;
+  const unitProfit = randInt(2, difficulty === 'hard' ? 6 : 4) * 500;
+  const totalProfit = totalParts * unitProfit;
+  const aShare = rA * unitProfit;
+  const ds = [totalProfit - aShare, Math.round(totalProfit * 0.3), Math.round(aShare * 0.8), aShare + unitProfit].filter((d) => d !== aShare && d > 0);
   return mcq(
     difficulty,
     `A invests ₹${aInv} for ${aMonths} months and B invests ₹${bInv} for ${bMonths} months in a business. Total profit is ₹${totalProfit}. What is A's share?`,
     aShare,
     ds,
-    `Step 1: Profit ratio = (A's investment × time) : (B's investment × time).\nStep 2: = (${aInv}×${aMonths}) : (${bInv}×${bMonths}) = ${aInv * aMonths} : ${bInv * bMonths}.\nStep 3: A's share = ${totalProfit} × ${aInv * aMonths} ÷ ${aInv * aMonths + bInv * bMonths} = ₹${aShare}.\nAnswer: ₹${aShare}.`,
+    `Step 1: Profit ratio = (A's investment × time) : (B's investment × time).\nStep 2: = (₹${aInv} × ${aMonths}) : (₹${bInv} × ${bMonths}) = ${rA} : ${rB} (total ${totalParts} parts).\nStep 3: A's share = ₹${totalProfit} × ${rA} ÷ ${totalParts} = ₹${aShare}.\nAnswer: ₹${aShare}.`,
     `partnership:${aInv}:${aMonths}:${bInv}:${bMonths}:${totalProfit}`,
     true,
   );

@@ -56,10 +56,10 @@ describe('SEMANTIC AUDIT — verify answers independently', () => {
     for (let i = 0; i < 300; i++) {
       const q = generateOne('arithmetic', 'medium');
       if (!check(q, 'arithmetic', 'medium')) continue;
-      const m = q!.prompt.match(/What is (\d+) ([+\-−×]) (\d+)\?/);
+      const m = q!.prompt.match(/What is (\d+) ([+\-−×÷]) (\d+)\?/);
       if (!m) { failures.push(`arithmetic: unparsable "${q!.prompt}"`); continue; }
       const a = Number(m[1]), b = Number(m[3]);
-      const expected = m[2] === '+' ? a + b : m[2] === '×' ? a * b : a - b;
+      const expected = m[2] === '+' ? a + b : m[2] === '×' ? a * b : m[2] === '÷' ? a / b : a - b;
       if (answer(q!) !== String(expected)) {
         failures.push(`arithmetic wrong: "${q!.prompt}" expected=${expected} got=${answer(q!)}`);
       }

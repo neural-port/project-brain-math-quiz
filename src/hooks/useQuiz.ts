@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { loadCuratedBank, loadFigureClassificationBank } from '../quiz/cdn';
+import { loadCuratedBank, loadFigureClassificationBank, loadExamBank } from '../quiz/cdn';
 import { generateQuestions } from '../quiz/generator';
 import { generateVisualQuestion } from '../quiz/visual-generator';
 import { getSeenHistory } from '../quiz/seen-history';
@@ -17,6 +17,7 @@ import {
   DIFFICULTY_LIVES,
   GENERATOR_CATEGORIES,
   getTimeLimit,
+  isUntimed,
 } from '../quiz/categories';
 import type {
   AnswerRecord,
@@ -69,6 +70,10 @@ function shuffleArray<T>(arr: T[]): T[] {
   return a;
 }
 
+function questionTimeLimit(path: LearnerPath, difficulty: Difficulty, category: QuestionCategory): number {
+  return isUntimed(path) ? 0 : getTimeLimit(difficulty, category);
+}
+
 /**
  * Build the quiz question set for a session.
  * Mixes curated AI/ML questions (if available) with procedurally generated
@@ -82,12 +87,14 @@ function buildQuestionSet(
   config: QuizConfig,
   curated: Question[],
   figClass: Question[],
+  exam: Question[],
   currency: CurrencySymbol,
 ): Question[] {
   const { difficulty, totalQuestions, categories } = config;
-  const wantsCurated = categories.includes('ai-ml-concepts');
-  const wantsFigClass = categories.includes('visual-reasoning');
-  const genCats = categories.filter((c) => GENERATOR_CATEGORIES.includes(c));
+  const untimed = isUntimed(config.learnerPath);
+  const wantsCurated = !untimed && categories.includes('ai-ml-concepts');
+  const wantsFigClass = !untimed && categories.includes('visual-reasoning');
+  const genCats = untimed ? [] : categories.filter((c) => GENERATOR_CATEGORIES.includes(c));
   const history = getSeenHistory();
   const seen = history.asSet();
 
@@ -99,10 +106,41 @@ function buildQuestionSet(
     const basePool = byDifficulty.length >= 3 ? byDifficulty : curated;
     // Use the same key everywhere: dedupeKey ?? prompt
     const getKey = (q: Question) => q.dedupeKey ?? q.prompt;
-    const unseen = basePool.filter((q) => !seen.has(getKey(q)));
-    const seenOnes = basePool.filter((q) => seen.has(getKey(q)));
+    const shuffleOptions = (q: Question): Question => {
+      const correctOption = q.options[q.answerIndex];
+      const options = shuffleArray(q.options);
+      return { ...q, options, answerIndex: options.indexOf(correctOption) };
+    };
+    const unseen = basePool.filter((q) => !seen.has(getKey(q))).map(shuffleOptions);
+    const seenOnes = basePool.filter((q) => seen.has(getKey(q))).map(shuffleOptions);
     // Keep unseen first, then seen — don't shuffle them together
     curatedPool = [...shuffleArray(unseen), ...shuffleArray(seenOnes)];
+  }
+  // Untimed exam practice: exam bank only, filtered to the selected topics
+  if (untimed && exam.length > 0) {
+    const inTopics = exam.filter((q) => categories.includes(q.category));
+    const topicPool = inTopics.length > 0 ? inTopics : exam;
+    const byDifficulty = topicPool.filter((q) => q.difficulty === difficulty);
+    const basePool = byDifficulty.length >= 3 ? byDifficulty : topicPool;
+    const getKey = (q: Question) => q.dedupeKey ?? q.prompt;
+    const shuffleOptions = (q: Question): Question => {
+      const correctOption = q.options[q.answerIndex];
+      const options = shuffleArray(q.options);
+      return { ...q, options, answerIndex: options.indexOf(correctOption) };
+    };
+    const unseen = basePool.filter((q) => !seen.has(getKey(q))).map(shuffleOptions);
+    const seenOnes = basePool.filter((q) => seen.has(getKey(q))).map(shuffleOptions);
+    const restPool = basePool.length < totalQuestions
+      ? topicPool.filter((q) => !basePool.includes(q))
+      : [];
+    const restUnseen = restPool.filter((q) => !seen.has(getKey(q))).map(shuffleOptions);
+    const restSeen = restPool.filter((q) => seen.has(getKey(q))).map(shuffleOptions);
+    curatedPool = [
+      ...shuffleArray(unseen),
+      ...shuffleArray(seenOnes),
+      ...shuffleArray(restUnseen),
+      ...shuffleArray(restSeen),
+    ];
   }
   // Add figure classification curated questions for visual-reasoning
   if (wantsFigClass && figClass.length > 0) {
@@ -115,11 +153,13 @@ function buildQuestionSet(
     curatedPool = [...curatedPool, ...figPool];
   }
 
-  // Aim for ~30% curated, ~70% generated (if curated available)
-  const curatedCount = (wantsCurated || wantsFigClass)
-    ? Math.min(curatedPool.length, Math.ceil(totalQuestions * 0.3))
-    : 0;
-  const genCount = totalQuestions - curatedCount;
+  // Untimed sections are all curated; otherwise aim for ~30% curated, ~70% generated
+  const curatedCount = untimed
+    ? Math.min(curatedPool.length, totalQuestions)
+    : (wantsCurated || wantsFigClass)
+      ? Math.min(curatedPool.length, Math.ceil(totalQuestions * 0.3))
+      : 0;
+  const genCount = untimed ? 0 : totalQuestions - curatedCount;
 
   // Pass the seen set to the generator so it avoids generating seen prompts.
   // If the generator can't produce enough unseen questions (exhausted pool),
@@ -161,6 +201,7 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const curatedRef = useRef<Question[]>([]);
   const figClassRef = useRef<Question[]>([]);
+  const examRef = useRef<Question[]>([]);
 
   // ─── Load curated banks on mount ───────────────────────────────────────────
   useEffect(() => {
@@ -168,18 +209,20 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
 
     async function init() {
       setState((s) => ({ ...s, phase: 'loading' }));
-      const [aiMl, figClass] = await Promise.all([
+      const [aiMl, figClass, exam] = await Promise.all([
         loadCuratedBank(),
         loadFigureClassificationBank(),
+        loadExamBank(),
       ]);
       if (cancelled) return;
       curatedRef.current = aiMl.questions;
       figClassRef.current = figClass.questions;
+      examRef.current = exam.questions;
       setState((s) => ({
         ...s,
         phase: 'start',
-        curatedLoaded: aiMl.count + figClass.count,
-        curatedTotal: aiMl.count + figClass.count,
+        curatedLoaded: aiMl.count + figClass.count + exam.count,
+        curatedTotal: aiMl.count + figClass.count + exam.count,
       }));
     }
 
@@ -220,6 +263,7 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
     if (state.phase !== 'playing') return;
     if (state.answered) return;
     if (state.lives <= 0) return;
+    if (isUntimed(state.config.learnerPath)) return;
 
     timerRef.current = setInterval(() => {
       setState((s) => {
@@ -235,18 +279,21 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [state.phase, state.answered, state.currentIndex, state.lives]);
+  }, [state.phase, state.answered, state.currentIndex, state.lives, state.config.learnerPath]);
 
   // ─── Actions ───────────────────────────────────────────────────────────────
+
+  const [seenCount, setSeenCount] = useState(() => getSeenHistory().size);
 
   const startQuiz = useCallback(
     (learnerPath: LearnerPath, difficulty: Difficulty, totalQuestions: number, categories: QuestionCategory[]) => {
       const config: QuizConfig = { learnerPath, difficulty, totalQuestions, categories };
-      const questions = buildQuestionSet(config, curatedRef.current, figClassRef.current, currency);
+      const questions = buildQuestionSet(config, curatedRef.current, figClassRef.current, examRef.current, currency);
+      setSeenCount(getSeenHistory().size);
       const lives = DIFFICULTY_LIVES[difficulty];
       // Set the initial time limit based on the FIRST question's category
       const firstQ = questions[0];
-      const timeLimit = firstQ ? getTimeLimit(difficulty, firstQ.category) : 30;
+      const timeLimit = firstQ ? questionTimeLimit(learnerPath, difficulty, firstQ.category) : 30;
 
       setState({
         ...createInitialState(),
@@ -267,17 +314,21 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
   const startPractice = useCallback(() => {
     // One question per interaction kind so the player sees every mechanic once.
     const questions: Question[] = generateQuestions(2, ['arithmetic'], 'easy');
-    const wanted = ['shape-choice', 'mirror', 'count', 'rotate', 'memory-dots', 'fraction'];
-    const cats: QuestionCategory[] = ['geometry', 'visual-reasoning', 'fractions', 'memory'];
-    const found = new Set<string>();
-    let guard = 0;
-    while (found.size < wanted.length && guard < 60) {
-      guard++;
-      const q = generateVisualQuestion(cats[Math.floor(Math.random() * cats.length)], 'easy');
-      const kind = q.visual?.kind;
-      if (kind && !found.has(kind)) {
-        found.add(kind);
-        questions.push(q);
+    const wantedByCategory: Array<{ kind: string; category: QuestionCategory }> = [
+      { kind: 'shape-choice', category: 'geometry' },
+      { kind: 'count', category: 'geometry' },
+      { kind: 'mirror', category: 'visual-reasoning' },
+      { kind: 'rotate', category: 'visual-reasoning' },
+      { kind: 'memory-dots', category: 'memory' },
+      { kind: 'fraction', category: 'fractions' },
+    ];
+    for (const target of wantedByCategory) {
+      for (let guard = 0; guard < 100; guard++) {
+        const q = generateVisualQuestion(target.category, 'easy');
+        if (q.visual?.kind === target.kind) {
+          questions.push(q);
+          break;
+        }
       }
     }
 
@@ -321,7 +372,7 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
         newStreak = s.streak + 1;
         const basePoints = DIFFICULTY_BASE_POINTS[s.config.difficulty];
         const streakBonus = (newStreak - 1) * STREAK_BONUS;
-        const timeBonus = timeTaken <= TIME_BONUS_THRESHOLD ? TIME_BONUS : 0;
+        const timeBonus = s.timeLimit > 0 && timeTaken <= TIME_BONUS_THRESHOLD ? TIME_BONUS : 0;
         pointsAwarded = basePoints + streakBonus + timeBonus;
         newScore = s.score + pointsAwarded;
       } else {
@@ -370,7 +421,7 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
 
       const nextIdx = s.currentIndex + 1;
       const nextQ = s.questions[nextIdx];
-      const timeLimit = nextQ ? getTimeLimit(s.config.difficulty, nextQ.category) : s.timeLimit;
+      const timeLimit = nextQ ? questionTimeLimit(s.config.learnerPath, s.config.difficulty, nextQ.category) : s.timeLimit;
       return {
         ...s,
         currentIndex: nextIdx,
@@ -407,15 +458,16 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
       curatedLoaded: s.curatedLoaded,
       curatedTotal: s.curatedTotal,
     }));
-    // Refresh the saved-session banner on the start screen
+    // Refresh the saved-session and seen-count banners on the start screen
     setSavedSession(loadSession());
+    setSeenCount(getSeenHistory().size);
   }, []);
 
   const resumeQuiz = useCallback(() => {
     const s = loadSession();
     if (!s) return;
     const currentQ = s.questions[s.currentIndex];
-    const timeLimit = currentQ ? getTimeLimit(s.config.difficulty, currentQ.category) : 30;
+    const timeLimit = currentQ ? questionTimeLimit(s.config.learnerPath, s.config.difficulty, currentQ.category) : 30;
     setState((prev) => ({
       ...createInitialState(),
       phase: 'playing',
@@ -435,11 +487,11 @@ export function useQuiz(currency: CurrencySymbol = '₹') {
     }));
   }, []);
 
-  const [seenCount, setSeenCount] = useState(() => getSeenHistory().size);
-
   const resetProgress = useCallback(() => {
     const history = getSeenHistory();
     history.clear();
+    clearSession();
+    setSavedSession(null);
     setSeenCount(0);
   }, []);
 

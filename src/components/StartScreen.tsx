@@ -6,6 +6,7 @@ import {
   DIFFICULTY_LIVES,
   DIFFICULTY_TIME,
   LEARNER_PATHS,
+  isUntimed,
 } from '../quiz/categories';
 import type { SavedSession } from '../quiz/session';
 import type { Difficulty, LearnerPath, QuestionCategory } from '../quiz/types';
@@ -24,12 +25,13 @@ interface Props {
   onResume: () => void;
   onChangeName: () => void;
   onResetProgress: () => void;
+  onPuzzle: () => void;
   seenCount: number;
 }
 
 const QUESTION_COUNTS = [10, 20, 50];
 
-export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, onPractice, onResume, onChangeName, onResetProgress, seenCount }: Props) {
+export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, onPractice, onResume, onChangeName, onResetProgress, onPuzzle, seenCount }: Props) {
   const [learnerPath, setLearnerPath] = useState<LearnerPath>('foundation');
   const [difficulty, setDifficulty] = useState<Difficulty>(LEARNER_PATHS.foundation.difficulty);
   const [totalQuestions, setTotalQuestions] = useState(10);
@@ -124,6 +126,16 @@ export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, 
         )}
       </div>
 
+      <div className="puzzle-card">
+        <div className="puzzle-card__info">
+          <span className="puzzle-card__title">Number Match puzzle</span>
+          <span className="puzzle-card__meta">
+            Untimed 10×10 grid game — clear touching pairs (equal even digits or sum 10), digits fall like Tetris
+          </span>
+        </div>
+        <button className="resume-btn" onClick={onPuzzle} type="button">Play</button>
+      </div>
+
       <div className="config-section">
         <div className="config-group">
           <span className="config-label">Challenge level</span>
@@ -136,7 +148,7 @@ export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, 
               >
                 <span className="seg-btn__title">{DIFFICULTY_LABELS[level]}</span>
                 <span className="seg-btn__meta">
-                  {DIFFICULTY_TIME[level]}–{Math.min(120, DIFFICULTY_TIME[level] * 3)}s · {DIFFICULTY_LIVES[level]} lives
+                  {isUntimed(learnerPath) ? 'No timer' : `${DIFFICULTY_TIME[level]}–${Math.min(120, DIFFICULTY_TIME[level] * 3)}s`} · {DIFFICULTY_LIVES[level]} lives
                 </span>
               </button>
             ))}
@@ -161,7 +173,7 @@ export function StartScreen({ playerName, curatedLoaded, savedSession, onStart, 
         <div className="config-group">
           <span className="config-label">Topics</span>
           <div className="cat-grid">
-            {ALL_CATEGORIES.map((category) => (
+            {(isUntimed(learnerPath) ? LEARNER_PATHS[learnerPath].categories : ALL_CATEGORIES).map((category) => (
               <button
                 key={category}
                 className={selectedCats.has(category) ? 'cat-chip cat-chip--active' : 'cat-chip'}

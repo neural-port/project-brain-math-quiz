@@ -134,7 +134,7 @@ function generateSidesQuestion(difficulty: Difficulty): Question {
     prompt: `Which shape has exactly ${n} sides?`,
     options: specs.map((spec) => title(spec.shape)),
     answerIndex,
-    explanation: `Step 1: Identify the shape: it's a ${title(correctShape).toLowerCase()}.\nStep 2: Count the sides by tracing each edge.\nStep 3: A ${title(correctShape).toLowerCase()} has ${n} sides.\nAnswer: ${n}`,
+    explanation: `Step 1: Identify the shape: it's a ${title(correctShape).toLowerCase()}.\nStep 2: Count the sides by tracing each edge.\nStep 3: A ${title(correctShape).toLowerCase()} has ${n} sides.\nAnswer: ${title(correctShape)}`,
     visual: { kind: 'shape-choice', options: specs },
     dedupeKey: `sides:${n}:${correctShape}`,
   };
@@ -611,7 +611,7 @@ function generateDotRegion(difficulty: Difficulty): Question {
   const containing = regionKey.split(',');
 
   // Build the answer
-  const allLabels = shapes.map((s) => s.label);
+  const allLabels = shapes.map((s) => s.label).sort();
   const answer = `Only ${containing.join(' and ')}`;
   const outsideLabels = allLabels.filter((l) => !containing.includes(l));
   const explanation = `Step 1: Check if the dot is inside each shape.\nStep 2: The dot is inside ${containing.join(' and ')}, but outside ${outsideLabels.join(' and ') || 'none'}.\nAnswer: Only ${containing.join(' and ')}.`;
@@ -751,9 +751,9 @@ function generateCompositeRotate(difficulty: Difficulty): Question {
     difficulty,
     source: 'generator',
     prompt: `The first figure is rotated. Which option shows the correct result of rotating it by ${correctRotation}° clockwise?`,
-    options: ['A', 'B', 'C', 'D'],
+    options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
     answerIndex,
-    explanation: `Step 1: A ${correctRotation}° clockwise rotation turns the figure.\nStep 2: Each dot moves to its new position under the rotation.\nStep 3: Option ${String.fromCharCode(65 + answerIndex)} matches the ${correctRotation}° rotation.\nAnswer: Option ${String.fromCharCode(65 + answerIndex)}`,
+    explanation: `Step 1: A ${correctRotation}° clockwise rotation turns the figure.\nStep 2: Each dot moves to its new position under the rotation.\nStep 3: Option ${answerIndex + 1} matches the ${correctRotation}° rotation.\nAnswer: Option ${answerIndex + 1}`,
     visual: { kind: 'composite-rotate', base, options: shuffledOptions },
     dedupeKey: `composite-rotate:${dots.map((d) => `${d.x},${d.y}`).join(';')}:${correctRotation}`,
   };
@@ -779,8 +779,8 @@ function generateTextMirror(difficulty: Difficulty): Question {
   const distractor1 = { text: reversed };
   // Distractor 2: vertical mirror (scaleY(-1)) — looks like upside-down text
   const distractor2 = { text: word, mirrorY: true };
-  // Distractor 3: rotated 180° (both mirrors) — looks like upside-down reversed
-  const distractor3 = { text: word, mirrorX: true, mirrorY: true, rotate180: true };
+  // Distractor 3: rotated 180° — upside-down and reversed
+  const distractor3 = { text: word, rotate180: true };
   type TextMirrorOpt = { text: string; mirrorX?: boolean; mirrorY?: boolean; rotate180?: boolean };
   const options: TextMirrorOpt[] = shuffle([correctOption, distractor1, distractor2, distractor3]);
   const answerIndex = options.findIndex(
@@ -792,9 +792,9 @@ function generateTextMirror(difficulty: Difficulty): Question {
     difficulty,
     source: 'generator',
     prompt: `Which of the following is the correct mirror image of "${word}" as seen in a mirror placed on its right side?`,
-    options: ['A', 'B', 'C', 'D'],
+    options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
     answerIndex,
-    explanation: `Step 1: A mirror on the right side reflects the text left-to-right.\nStep 2: The correct mirror image shows the text reversed horizontally — each letter is flipped and the order appears backwards.\nStep 3: Option ${String.fromCharCode(65 + answerIndex)} shows the correct horizontal mirror image.\nAnswer: Option ${String.fromCharCode(65 + answerIndex)}`,
+    explanation: `Step 1: A mirror on the right side reflects the text left-to-right.\nStep 2: The correct mirror image shows the text reversed horizontally — each letter is flipped and the order appears backwards.\nStep 3: Option ${answerIndex + 1} shows the correct horizontal mirror image.\nAnswer: Option ${answerIndex + 1}`,
     visual: { kind: 'text-mirror', word, options },
     dedupeKey: `text-mirror:${word}`,
   };

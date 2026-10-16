@@ -74,7 +74,17 @@ export const LEARNER_PATHS: Record<LearnerPath, {
     categories: ['competitive-math', 'number-series', 'letter-coding', 'logical-reasoning', 'patterns', 'arithmetic'],
     difficulty: 'medium',
   },
+  'exam-practice': {
+    label: 'Aptitude & Reasoning (no timer)',
+    description: 'Untimed practice: quantitative aptitude, number series, letter coding and logical reasoning',
+    categories: ['competitive-math', 'number-series', 'letter-coding', 'logical-reasoning'],
+    difficulty: 'medium',
+  },
 };
+
+export function isUntimed(path: LearnerPath): boolean {
+  return path === 'exam-practice';
+}
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   easy: 'Easy',

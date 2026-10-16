@@ -213,10 +213,10 @@ function genCalculus(difficulty: Difficulty): Question {
   );
 }
 
-// ─── Matrices (basic 2×2: determinant, trace, add) ───────────────────────────
+// ─── Matrices & Vectors (2×2 determinant, trace, add, dot product, magnitude) ─
 
 function genLinearAlgebra(difficulty: Difficulty): Question {
-  const type = pick(['determinant', 'determinant', 'trace', 'add']);
+  const type = pick(['determinant', 'trace', 'add', 'dot', 'magnitude'] as const);
 
   if (type === 'determinant') {
     const a = randInt(1, 9);
@@ -247,6 +247,38 @@ function genLinearAlgebra(difficulty: Difficulty): Question {
       near(answer, 3),
       `Step 1: The trace of a matrix is the sum of its diagonal elements (top-left to bottom-right).\nStep 2: Diagonal elements are ${a} (top-left) and ${d} (bottom-right).\nStep 3: Trace = ${a} + ${d} = ${answer}.\nAnswer: ${answer}`,
       `la-trace:${a}:${d}`,
+    );
+  }
+
+  if (type === 'dot') {
+    const dim = difficulty === 'hard' ? 3 : 2;
+    const u = Array.from({ length: dim }, () => randInt(1, 7));
+    const v = Array.from({ length: dim }, () => randInt(1, 7));
+    const products = u.map((ui, i) => ui * v[i]);
+    const answer = products.reduce((s, x) => s + x, 0);
+    const prompt = `What is the dot product of vectors u = (${u.join(', ')}) and v = (${v.join(', ')})?`;
+    return mcq(
+      'linear-algebra', difficulty, prompt,
+      answer,
+      near(answer, 4),
+      `Step 1: Multiply corresponding components: ${u.map((ui, i) => `${ui} × ${v[i]} = ${products[i]}`).join(', ')}.\nStep 2: Sum the products: ${products.join(' + ')} = ${answer}.\nAnswer: ${answer}`,
+      `la-dot:${u.join(',')}:${v.join(',')}`,
+    );
+  }
+
+  if (type === 'magnitude') {
+    const triples: [number, number, number][] = [
+      [3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10],
+      [5, 12, 13], [12, 5, 13], [9, 12, 15], [12, 9, 15], [8, 15, 17],
+    ];
+    const [vx, vy, answer] = pick(triples);
+    const prompt = `What is the magnitude (Euclidean norm ||v||) of the vector v = (${vx}, ${vy})?`;
+    return mcq(
+      'linear-algebra', difficulty, prompt,
+      answer,
+      [vx + vy, Math.max(1, Math.abs(vx - vy)), answer + 2],
+      `Step 1: For a 2D vector (x, y), magnitude ||v|| = √(x² + y²).\nStep 2: Calculate: √(${vx}² + ${vy}²) = √(${vx ** 2} + ${vy ** 2}) = √${vx ** 2 + vy ** 2}.\nStep 3: ||v|| = ${answer}.\nAnswer: ${answer}`,
+      `la-mag:${vx}:${vy}`,
     );
   }
 
@@ -300,7 +332,7 @@ function genAlgebra(difficulty: Difficulty): Question {
 
 function genArithmetic(difficulty: Difficulty): Question {
   const max = difficulty === 'easy' ? 30 : difficulty === 'medium' ? 80 : 150;
-  const op = pick(['+', '-', '×']);
+  const op = pick(['+', '-', '×', '÷'] as const);
   let a = randInt(2, max);
   let b = randInt(2, max);
   let answer: number;
@@ -318,6 +350,13 @@ function genArithmetic(difficulty: Difficulty): Question {
       answer = a - b;
       prompt = `What is ${a} − ${b}?`;
       work = `Step 1: Subtract the smaller from the larger: ${a} − ${b}.\nStep 2: ${a} − ${b} = ${answer}.\nAnswer: ${answer}`;
+      break;
+    case '÷':
+      b = randInt(2, difficulty === 'hard' ? 15 : difficulty === 'medium' ? 12 : 9);
+      answer = randInt(2, difficulty === 'hard' ? 18 : difficulty === 'medium' ? 12 : 9);
+      a = b * answer;
+      prompt = `What is ${a} ÷ ${b}?`;
+      work = `Step 1: Divide ${a} by ${b} (since ${b} × ${answer} = ${a}).\nStep 2: ${a} ÷ ${b} = ${answer}.\nAnswer: ${answer}`;
       break;
     default: // ×
       a = randInt(2, difficulty === 'hard' ? 15 : difficulty === 'medium' ? 12 : 9);

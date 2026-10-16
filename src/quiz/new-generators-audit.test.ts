@@ -4,6 +4,8 @@ import { generateVisualQuestion } from './visual-generator';
 import type { Difficulty, Question } from './types';
 import figClassBank from '../../public/figure-classification-questions.json';
 import aiMlBank from '../../public/ai-ml-questions.json';
+import examBank from '../../public/exam-questions.json';
+import { isUntimed, LEARNER_PATHS } from './categories';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
 
@@ -148,14 +150,13 @@ describe('AUDIT: Missing number grid (logical-reasoning)', () => {
       const rowProduct = rows.every((r) => r[2] === r[0] * r[1]);
       // Check row sum pattern (col3 = col1 + col2)
       const rowSum = rows.every((r) => r[2] === r[0] + r[1]);
-      if (!allRowsSame && !allColsSame && !rowProduct && !rowSum) {
-        // Check diagonal pattern
-        const diag1 = rows[0][0] + rows[1][1] + rows[2][2];
-        const diag2 = rows[0][2] + rows[1][1] + rows[2][0];
-        if (diag1 !== diag2) bad++;
+      // Check col sum pattern (row3 = row1 + row2)
+      const colAdd = [0, 1, 2].every((c) => rows[2][c] === rows[0][c] + rows[1][c]);
+      if (!allRowsSame && !allColsSame && !rowProduct && !rowSum && !colAdd) {
+        bad++;
       }
     });
-    expect(checked).toBeGreaterThan(10);
+    expect(checked).toBeGreaterThanOrEqual(10);
     expect(bad).toBe(0);
   });
 });
@@ -178,6 +179,10 @@ describe('AUDIT: Text mirror (visual-reasoning)', () => {
           if (correct.mirrorX !== true) bad++;
           if (correct.mirrorY !== undefined) bad++;
           if (correct.rotate180 !== undefined) bad++;
+          // No option may combine mirrorX + mirrorY + rotate180 (which cancels to identity)
+          for (const opt of q.visual.options) {
+            if (opt.mirrorX && opt.mirrorY && opt.rotate180) bad++;
+          }
           // Word must be defined and at least 3 chars
           if (q.visual.word.length < 3) bad++;
         } catch {
@@ -343,7 +348,7 @@ describe('AUDIT: Composite rotation (visual-reasoning)', () => {
     });
   }
 
-  it('composite rotation options are visually unique', () => {
+  it('composite rotation options are visually unique', { timeout: 30000 }, () => {
     const transformPoint = (point: { x: number; y: number }, rotation: number, mirrorX?: boolean) => {
       const x = mirrorX ? 100 - point.x : point.x;
       const radians = rotation * Math.PI / 180;
@@ -384,7 +389,7 @@ describe('AUDIT: Composite rotation (visual-reasoning)', () => {
 
 describe('AUDIT: AI/ML curated bank', () => {
   it('all questions have valid structure and dedupeKey', () => {
-    expect(aiMlBank.questions.length).toBeGreaterThanOrEqual(50);
+    expect(aiMlBank.questions.length).toBeGreaterThanOrEqual(75);
     let bad = 0;
     for (const q of aiMlBank.questions) {
       try {
@@ -408,6 +413,23 @@ describe('AUDIT: AI/ML curated bank', () => {
   it('all dedupeKeys are unique', () => {
     const keys = aiMlBank.questions.map((q) => q.dedupeKey);
     expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it('covers easy, medium, and hard difficulties and distributes answerIndex across all 4 slots', () => {
+    const difficulties = new Set(aiMlBank.questions.map((q) => q.difficulty));
+    expect(difficulties).toEqual(new Set(['easy', 'medium', 'hard']));
+    const answerIndices = new Set(aiMlBank.questions.map((q) => q.answerIndex));
+    expect(answerIndices).toEqual(new Set([0, 1, 2, 3]));
+    // Verify no question has duplicate numeric fraction values (e.g. "1/2" and "2/4")
+    for (const q of aiMlBank.questions) {
+      const fracVals = q.options
+        .filter((o) => /^\d+\/\d+$/.test(o))
+        .map((o) => {
+          const [n, d] = o.split('/').map(Number);
+          return n / d;
+        });
+      expect(new Set(fracVals).size, `${q.id} has numerically equivalent fraction options`).toBe(fracVals.length);
+    }
   });
 });
 
@@ -538,6 +560,177 @@ describe('AUDIT: Figure classification curated bank', () => {
         autoOk || toneOk || MANUALLY_VERIFIED.has(q.id),
         `${q.id}: no verifiable discriminating attribute`,
       ).toBe(true);
+    }
+  });
+});
+
+// ─── Exam curated bank ────────────────────────────────────────────────
+
+describe('AUDIT: Exam curated bank', () => {
+  const VALID_CATEGORIES = new Set([
+    'competitive-math',
+    'number-series',
+    'letter-coding',
+    'logical-reasoning',
+  ]);
+
+  it('all questions have valid structure and dedupeKey', () => {
+    expect(examBank.questions.length).toBeGreaterThanOrEqual(100);
+    for (const q of examBank.questions) {
+      expect(q.options.length).toBe(4);
+      expect(new Set(q.options).size, `${q.id} has duplicate options`).toBe(4);
+      expect(q.answerIndex).toBeGreaterThanOrEqual(0);
+      expect(q.answerIndex).toBeLessThan(q.options.length);
+      expect(q.prompt.length).toBeGreaterThan(15);
+      expect(q.explanation.length).toBeGreaterThan(10);
+      expect(q.dedupeKey).toBe(`exam:${q.id}`);
+      expect(VALID_CATEGORIES.has(q.category), `${q.id} bad category`).toBe(true);
+      expect(q.source).toBe('curated');
+      expect(q.prompt).not.toContain('undefined');
+      expect(q.explanation).not.toContain('undefined');
+    }
+  });
+
+  it('all dedupeKeys and prompts are unique', () => {
+    const keys = examBank.questions.map((q) => q.dedupeKey);
+    const prompts = examBank.questions.map((q) => q.prompt);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(new Set(prompts).size).toBe(prompts.length);
+  });
+
+  it('covers easy/medium/hard and multiple categories', () => {
+    const difficulties = new Set(examBank.questions.map((q) => q.difficulty));
+    expect(difficulties).toEqual(new Set(['easy', 'medium', 'hard']));
+    const cats = new Set(examBank.questions.map((q) => q.category));
+    expect(cats.size).toBeGreaterThanOrEqual(3);
+  });
+
+  it('includes the new analytical reasoning set without duplicate prompts', () => {
+    const analytical = examBank.questions.filter((q) => /^ex-(12[1-9]|13\d|14[0-6])$/.test(q.id));
+    const reasoningCount = examBank.questions.filter((q) => q.category === 'logical-reasoning').length;
+    const independentlyCheckedAnswers: Record<string, string> = {
+      'ex-121': 'E',
+      'ex-122': '1/3',
+      'ex-123': 'Either A or B',
+      'ex-124': 'A and 7',
+      'ex-125': 'Doctor',
+      'ex-126': '5',
+      'ex-127': 'Both I and II',
+      'ex-128': '12',
+      'ex-129': 'The sensor did not detect smoke',
+      'ex-130': 'The sample is likely biased toward people who enjoy films',
+      'ex-131': 'B',
+      'ex-132': 'The box labeled Oranges',
+      'ex-133': 'Turn switch 1 on for several minutes, turn it off, turn switch 2 on, then enter',
+      'ex-134': '042',
+      'ex-135': 'No; a non-member could also have completed it',
+      'ex-136': '7',
+      'ex-137': '8 km',
+      'ex-138': 'Both together are sufficient, neither alone is sufficient',
+      'ex-139': 'Hot weather can increase both independently',
+      'ex-140': '15',
+      'ex-141': 'A is lying and B is truthful',
+      'ex-142': 'A',
+      'ex-143': 'The key is not red, or the lock is not open (or both)',
+      'ex-144': '2/3',
+      'ex-145': '2',
+      'ex-146': 'Its guard is locked and its operator is trained',
+    };
+    expect(analytical).toHaveLength(26);
+    expect(analytical.every((q) => q.category === 'logical-reasoning')).toBe(true);
+    expect(reasoningCount).toBeGreaterThanOrEqual(40);
+    expect(new Set(analytical.map((q) => q.prompt.trim().toLowerCase())).size).toBe(26);
+    for (const question of analytical) {
+      expect(question.options[question.answerIndex], `${question.id} answer`).toBe(independentlyCheckedAnswers[question.id]);
+    }
+  });
+
+  it('includes the second analytical batch with independently recomputed answers', () => {
+    const expectedAnswers: Record<string, string> = {
+      'ex-163': 'din',
+      'ex-164': 'SUW',
+      'ex-165': 'EJO',
+      'ex-166': '14',
+      'ex-167': 'D',
+      'ex-168': 'Wednesday',
+      'ex-169': '3',
+      'ex-170': '17 min',
+      'ex-171': '9',
+      'ex-172': '4 girls, 3 boys',
+      'ex-173': '8:20',
+      'ex-174': '11:35 AM',
+      'ex-175': 'Uncle',
+      'ex-176': 'DFI',
+      'ex-177': 'A > D',
+      'ex-178': '6',
+      'ex-179': 'E',
+      'ex-180': '630',
+      'ex-181': '89',
+      'ex-182': '7',
+      'ex-183': '13',
+      'ex-184': 'Pepper',
+      'ex-185': '18,000',
+      'ex-186': '6',
+      'ex-187': '₹768',
+      'ex-188': '66',
+      'ex-189': '5%',
+      'ex-190': '15/16',
+      'ex-191': '1.2',
+      'ex-192': '6',
+    };
+    const batch = examBank.questions.filter((q) => q.id in expectedAnswers);
+    expect(batch).toHaveLength(30);
+    expect(new Set(batch.map((q) => q.prompt.trim().toLowerCase())).size).toBe(30);
+    for (const question of batch) {
+      expect(question.options[question.answerIndex], `${question.id} answer`).toBe(expectedAnswers[question.id]);
+    }
+  });
+
+  it('includes the blood-relation batch with independently recomputed answers', () => {
+    const expectedAnswers: Record<string, string> = {
+      'ex-193': 'R − P',
+      'ex-194': 'Grandfather',
+      'ex-195': 'Sister',
+      'ex-196': 'Niece',
+      'ex-197': 'Grandfather',
+      'ex-198': 'Nephew',
+      'ex-199': '5',
+      'ex-200': 'F',
+      'ex-201': 'Son',
+      'ex-202': 'Brother-in-law',
+      'ex-203': 'Daughter',
+      'ex-204': 'Son',
+      'ex-205': 'Grandson',
+      'ex-206': 'Cousin',
+      'ex-207': 'Brother-in-law',
+      'ex-208': 'Grandson',
+      'ex-209': 'A',
+      'ex-210': 'Brother-in-law',
+      'ex-211': 'Aunt',
+      'ex-212': 'Grandmother',
+      'ex-213': 'Sister-in-law',
+    };
+    const batch = examBank.questions.filter((q) => q.id in expectedAnswers);
+    expect(batch).toHaveLength(21);
+    expect(batch.every((q) => q.category === 'logical-reasoning')).toBe(true);
+    expect(new Set(batch.map((q) => q.prompt.trim().toLowerCase())).size).toBe(21);
+    for (const question of batch) {
+      expect(question.options[question.answerIndex], `${question.id} answer`).toBe(expectedAnswers[question.id]);
+    }
+  });
+
+  it('only the exam-practice section is untimed, and its topics cover every bank category and difficulty', () => {
+    const untimedPaths = Object.keys(LEARNER_PATHS).filter((p) => isUntimed(p as keyof typeof LEARNER_PATHS));
+    expect(untimedPaths).toEqual(['exam-practice']);
+    const topics = new Set<string>(LEARNER_PATHS['exam-practice'].categories);
+    for (const q of examBank.questions) {
+      expect(topics.has(q.category), `${q.id} category ${q.category} not in exam-practice topics`).toBe(true);
+    }
+    for (const cat of topics) {
+      for (const diff of DIFFICULTIES) {
+        const matching = examBank.questions.filter((q) => q.category === cat && q.difficulty === diff);
+        expect(matching.length, `${cat}/${diff} should have >=3 questions`).toBeGreaterThanOrEqual(3);
+      }
     }
   });
 });

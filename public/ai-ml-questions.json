@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "description": "Curated basic AI/ML math questions for the quiz game",
+  "version": "1.2.0",
+  "description": "Curated AI/ML mathematics and machine learning questions across easy, medium, and hard difficulties",
   "questions": [
     {
       "id": "ai-001",
@@ -22,14 +22,15 @@
       "id": "ai-002",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the output range of the sigmoid function?",
       "options": [
-        "0 to 1",
         "-1 to 1",
+        "0 to 1",
         "0 to infinity",
         "Negative infinity to positive infinity"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Sigmoid always outputs between 0 and 1, which is why it's used for probability predictions.",
       "dedupeKey": "ai-ml:ai-002"
     },
@@ -37,14 +38,15 @@
       "id": "ai-003",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What does ReLU(x) output when x = -5?",
       "options": [
-        "0",
         "-5",
         "5",
+        "0",
         "1"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "ReLU(x) = max(0, x). For any negative input, the output is 0. max(0, -5) = 0.",
       "dedupeKey": "ai-ml:ai-003"
     },
@@ -54,12 +56,12 @@
       "difficulty": "easy",
       "prompt": "What does ReLU(x) output when x = 7?",
       "options": [
-        "7",
         "0",
         "1",
-        "0.7"
+        "0.7",
+        "7"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "ReLU(x) = max(0, x). For positive inputs, it returns the input itself. max(0, 7) = 7.",
       "dedupeKey": "ai-ml:ai-004"
     },
@@ -67,6 +69,7 @@
       "id": "ai-005",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "In gradient descent, which direction do we move?",
       "options": [
         "Opposite to the gradient (downhill)",
@@ -82,14 +85,15 @@
       "id": "ai-006",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the learning rate in gradient descent?",
       "options": [
-        "How big each step is",
         "How many times we train",
+        "How big each step is",
         "The number of layers",
         "The dataset size"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "The learning rate controls step size. Too big = overshoot. Too small = slow.",
       "dedupeKey": "ai-ml:ai-006"
     },
@@ -97,14 +101,15 @@
       "id": "ai-007",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What does MSE stand for in machine learning?",
       "options": [
-        "Mean Squared Error",
         "Multiple Sample Estimation",
         "Model Standard Error",
+        "Mean Squared Error",
         "Mean Sample Evaluation"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "MSE = Mean Squared Error. It's the average of (prediction - actual)² across all samples.",
       "dedupeKey": "ai-ml:ai-007"
     },
@@ -112,14 +117,15 @@
       "id": "ai-008",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "If a model predicts 3 and the actual value is 5, what is the squared error for this single sample?",
       "options": [
-        "4",
         "2",
         "8",
-        "15"
+        "15",
+        "4"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Squared error = (actual - prediction)² = (5 - 3)² = 2² = 4.",
       "dedupeKey": "ai-ml:ai-008"
     },
@@ -127,6 +133,7 @@
       "id": "ai-009",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "If predictions are [2, 4] and actual values are [3, 5], what is the MSE?",
       "options": [
         "1",
@@ -142,14 +149,15 @@
       "id": "ai-010",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What does a weight in a neural network represent?",
       "options": [
-        "How important an input is",
         "The learning rate",
+        "How important an input is",
         "The number of neurons",
         "The training time"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Weights determine how much each input contributes to the output. Bigger weight = more important input.",
       "dedupeKey": "ai-ml:ai-010"
     },
@@ -157,14 +165,15 @@
       "id": "ai-011",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the dot product of vectors (1, 2) and (3, 4)?",
       "options": [
-        "11",
         "7",
         "14",
+        "11",
         "10"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Dot product = (1×3) + (2×4) = 3 + 8 = 11.",
       "dedupeKey": "ai-ml:ai-011"
     },
@@ -172,14 +181,15 @@
       "id": "ai-012",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the dot product of vectors (2, 0) and (0, 3)?",
       "options": [
-        "0",
         "6",
         "5",
-        "2"
+        "2",
+        "0"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Dot product = (2×0) + (0×3) = 0 + 0 = 0. Perpendicular vectors have zero dot product.",
       "dedupeKey": "ai-ml:ai-012"
     },
@@ -187,6 +197,7 @@
       "id": "ai-013",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the derivative of x²?",
       "options": [
         "2x",
@@ -202,14 +213,15 @@
       "id": "ai-014",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the derivative of x³?",
       "options": [
-        "3x²",
         "3x",
+        "3x²",
         "x²",
         "3"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Power rule: d/dx[x³] = 3×x² = 3x².",
       "dedupeKey": "ai-ml:ai-014"
     },
@@ -217,14 +229,15 @@
       "id": "ai-015",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the derivative of 5x²?",
       "options": [
-        "10x",
         "5x",
         "10",
+        "10x",
         "5x²"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Power rule: d/dx[5x²] = 5×2×x = 10x.",
       "dedupeKey": "ai-ml:ai-015"
     },
@@ -232,14 +245,15 @@
       "id": "ai-016",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the derivative of a constant, like 7?",
       "options": [
-        "0",
         "7",
         "1",
-        "7x"
+        "7x",
+        "0"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "The derivative of any constant is 0, because a constant doesn't change.",
       "dedupeKey": "ai-ml:ai-016"
     },
@@ -247,6 +261,7 @@
       "id": "ai-017",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the derivative of 3x?",
       "options": [
         "3",
@@ -262,14 +277,15 @@
       "id": "ai-018",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "In a 2×2 matrix, the determinant is calculated as:",
       "options": [
-        "ad - bc",
         "a + b + c + d",
+        "ad - bc",
         "ad + bc",
         "ab - cd"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "For matrix [[a,b],[c,d]], det = ad - bc. Multiply the diagonal, subtract the anti-diagonal.",
       "dedupeKey": "ai-ml:ai-018"
     },
@@ -277,14 +293,15 @@
       "id": "ai-019",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the trace of a matrix?",
       "options": [
-        "Sum of diagonal elements",
         "Sum of all elements",
         "Product of diagonal",
+        "Sum of diagonal elements",
         "The determinant"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "The trace is the sum of the diagonal elements (top-left to bottom-right).",
       "dedupeKey": "ai-ml:ai-019"
     },
@@ -292,14 +309,15 @@
       "id": "ai-020",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the trace of [[3, 0], [0, 5]]?",
       "options": [
-        "8",
         "15",
         "3",
-        "5"
+        "5",
+        "8"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Trace = sum of diagonal = 3 + 5 = 8.",
       "dedupeKey": "ai-ml:ai-020"
     },
@@ -307,6 +325,7 @@
       "id": "ai-021",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the determinant of [[2, 0], [0, 3]]?",
       "options": [
         "6",
@@ -322,14 +341,15 @@
       "id": "ai-022",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the determinant of [[1, 2], [3, 4]]?",
       "options": [
-        "-2",
         "2",
+        "-2",
         "10",
         "12"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "det = (1×4) - (2×3) = 4 - 6 = -2.",
       "dedupeKey": "ai-ml:ai-022"
     },
@@ -337,14 +357,15 @@
       "id": "ai-023",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What does 'epoch' mean in machine learning training?",
       "options": [
-        "One full pass through the entire dataset",
         "One single training example",
         "One layer of the network",
+        "One full pass through the entire dataset",
         "One weight update"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "An epoch is one complete pass through all the training data.",
       "dedupeKey": "ai-ml:ai-023"
     },
@@ -352,14 +373,15 @@
       "id": "ai-024",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the mean of [10, 20, 30]?",
       "options": [
-        "20",
         "10",
         "30",
-        "60"
+        "60",
+        "20"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Mean = (10 + 20 + 30) / 3 = 60 / 3 = 20.",
       "dedupeKey": "ai-ml:ai-024"
     },
@@ -367,6 +389,7 @@
       "id": "ai-025",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the mean of [4, 8, 6, 2]?",
       "options": [
         "5",
@@ -382,14 +405,15 @@
       "id": "ai-026",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the median of [1, 3, 5, 7, 9]?",
       "options": [
-        "5",
         "3",
+        "5",
         "7",
         "4"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "The median is the middle value. With 5 numbers, the middle (3rd) is 5.",
       "dedupeKey": "ai-ml:ai-026"
     },
@@ -397,14 +421,15 @@
       "id": "ai-027",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the mode of [2, 2, 3, 4, 5]?",
       "options": [
-        "2",
         "3",
         "4",
+        "2",
         "5"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "The mode is the most frequent value. 2 appears twice, others once. Mode = 2.",
       "dedupeKey": "ai-ml:ai-027"
     },
@@ -412,14 +437,15 @@
       "id": "ai-028",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the range of [3, 7, 1, 9, 4]?",
       "options": [
-        "8",
         "5",
         "9",
-        "4"
+        "4",
+        "8"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Range = max - min = 9 - 1 = 8.",
       "dedupeKey": "ai-ml:ai-028"
     },
@@ -427,11 +453,12 @@
       "id": "ai-029",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
-      "prompt": "If you flip 1 coin, what is the probability of getting heads?",
+      "source": "curated",
+      "prompt": "If you flip 1 fair coin, what is the probability of getting heads?",
       "options": [
         "1/2",
         "1/4",
-        "1/1",
+        "2/3",
         "1/3"
       ],
       "answerIndex": 0,
@@ -442,14 +469,15 @@
       "id": "ai-030",
       "category": "ai-ml-concepts",
       "difficulty": "easy",
+      "source": "curated",
       "prompt": "What is the probability of rolling a 6 on a standard die?",
       "options": [
-        "1/6",
         "1/3",
-        "6/6",
+        "1/6",
+        "1/12",
         "1/2"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "1 favorable outcome (rolling 6) out of 6 possible outcomes = 1/6.",
       "dedupeKey": "ai-ml:ai-030"
     },
@@ -457,14 +485,15 @@
       "id": "ai-031",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the derivative of 4x³?",
       "options": [
-        "12x²",
         "4x²",
         "12x",
+        "12x²",
         "4x"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Power rule: d/dx[4x³] = 4×3×x² = 12x².",
       "dedupeKey": "ai-ml:ai-031"
     },
@@ -472,14 +501,15 @@
       "id": "ai-032",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the derivative of x² + 3x?",
       "options": [
-        "2x + 3",
         "2x",
         "3",
-        "x + 3"
+        "x + 3",
+        "2x + 3"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Derivative of x² = 2x. Derivative of 3x = 3. So d/dx[x² + 3x] = 2x + 3.",
       "dedupeKey": "ai-ml:ai-032"
     },
@@ -487,6 +517,7 @@
       "id": "ai-033",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the dot product of (1, 2, 3) and (4, 5, 6)?",
       "options": [
         "32",
@@ -502,14 +533,15 @@
       "id": "ai-034",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the determinant of [[3, 1], [1, 3]]?",
       "options": [
-        "8",
         "9",
+        "8",
         "6",
         "0"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "det = (3×3) - (1×1) = 9 - 1 = 8.",
       "dedupeKey": "ai-ml:ai-034"
     },
@@ -517,14 +549,15 @@
       "id": "ai-035",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "If a model predicts [1, 2, 3] and actual values are [1, 2, 5], what is the MSE?",
       "options": [
-        "4/3",
         "2",
         "4",
+        "4/3",
         "1"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Errors: 0, 0, 2. Squared: 0, 0, 4. MSE = (0+0+4)/3 = 4/3 ≈ 1.33.",
       "dedupeKey": "ai-ml:ai-035"
     },
@@ -532,14 +565,15 @@
       "id": "ai-036",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the output of tanh(0)?",
       "options": [
-        "0",
         "0.5",
         "1",
-        "-1"
+        "-1",
+        "0"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "tanh(0) = 0. Unlike sigmoid (which gives 0.5 at 0), tanh is centered at zero.",
       "dedupeKey": "ai-ml:ai-036"
     },
@@ -547,6 +581,7 @@
       "id": "ai-037",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the output range of the tanh function?",
       "options": [
         "-1 to 1",
@@ -562,14 +597,15 @@
       "id": "ai-038",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "In the weight update rule w = w - α × gradient, what is α?",
       "options": [
-        "Learning rate",
         "Weight",
+        "Learning rate",
         "Loss",
         "Bias"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "α (alpha) is the learning rate — it controls how big each update step is.",
       "dedupeKey": "ai-ml:ai-038"
     },
@@ -577,14 +613,15 @@
       "id": "ai-039",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the derivative of 2x² + 1?",
       "options": [
-        "4x",
         "2x",
         "4x + 1",
+        "4x",
         "2"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "d/dx[2x²] = 4x. d/dx[1] = 0 (constant). So the answer is 4x.",
       "dedupeKey": "ai-ml:ai-039"
     },
@@ -592,14 +629,15 @@
       "id": "ai-040",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the mean of [10, 20, 30, 40, 50]?",
       "options": [
-        "30",
         "25",
         "35",
-        "20"
+        "20",
+        "30"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "Mean = (10+20+30+40+50)/5 = 150/5 = 30.",
       "dedupeKey": "ai-ml:ai-040"
     },
@@ -607,6 +645,7 @@
       "id": "ai-041",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the variance of [2, 4, 6]? (Mean = 4)",
       "options": [
         "8/3",
@@ -622,14 +661,15 @@
       "id": "ai-042",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the trace of [[1, 2, 3], [4, 5, 6], [7, 8, 9]]?",
       "options": [
-        "15",
         "9",
+        "15",
         "45",
         "5"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Trace = sum of diagonal = 1 + 5 + 9 = 15.",
       "dedupeKey": "ai-ml:ai-042"
     },
@@ -637,14 +677,15 @@
       "id": "ai-043",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the derivative of x⁴?",
       "options": [
-        "4x³",
         "x³",
         "4x",
+        "4x³",
         "4"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "Power rule: d/dx[x⁴] = 4×x³ = 4x³.",
       "dedupeKey": "ai-ml:ai-043"
     },
@@ -652,21 +693,23 @@
       "id": "ai-044",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
-      "prompt": "If you flip 2 coins, what is the probability of getting both heads?",
+      "source": "curated",
+      "prompt": "If you flip 2 fair coins, what is the probability of getting both heads?",
       "options": [
-        "1/4",
         "1/2",
         "1/3",
-        "2/4"
+        "3/4",
+        "1/4"
       ],
-      "answerIndex": 0,
-      "explanation": "Each coin has 1/2 chance. (1/2)×(1/2) = 1/4.",
+      "answerIndex": 3,
+      "explanation": "Each coin has 1/2 chance of heads. Since flips are independent, (1/2)×(1/2) = 1/4.",
       "dedupeKey": "ai-ml:ai-044"
     },
     {
       "id": "ai-045",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "A bag has 3 red and 2 blue marbles. What is the probability of picking red?",
       "options": [
         "3/5",
@@ -682,14 +725,15 @@
       "id": "ai-046",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the dot product of (2, 3) and (2, 3)?",
       "options": [
-        "13",
         "12",
+        "13",
         "6",
         "10"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "Dot product = (2×2) + (3×3) = 4 + 9 = 13.",
       "dedupeKey": "ai-ml:ai-046"
     },
@@ -697,14 +741,15 @@
       "id": "ai-047",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the determinant of [[5, 0], [0, 5]]?",
       "options": [
-        "25",
         "5",
         "0",
+        "25",
         "10"
       ],
-      "answerIndex": 0,
+      "answerIndex": 2,
       "explanation": "det = (5×5) - (0×0) = 25 - 0 = 25.",
       "dedupeKey": "ai-ml:ai-047"
     },
@@ -712,14 +757,15 @@
       "id": "ai-048",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "Solve for x:  2x + 3 = 11",
       "options": [
-        "4",
         "7",
         "14",
-        "3"
+        "3",
+        "4"
       ],
-      "answerIndex": 0,
+      "answerIndex": 3,
       "explanation": "2x + 3 = 11 → 2x = 8 → x = 4.",
       "dedupeKey": "ai-ml:ai-048"
     },
@@ -727,6 +773,7 @@
       "id": "ai-049",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "Solve for x:  3x - 5 = 10",
       "options": [
         "5",
@@ -742,16 +789,417 @@
       "id": "ai-050",
       "category": "ai-ml-concepts",
       "difficulty": "medium",
+      "source": "curated",
       "prompt": "What is the standard deviation of [4, 4, 4, 4]? (Mean = 4)",
       "options": [
-        "0",
         "4",
+        "0",
         "1",
         "2"
       ],
-      "answerIndex": 0,
+      "answerIndex": 1,
       "explanation": "All values equal the mean, so all deviations are 0. Standard deviation = 0.",
       "dedupeKey": "ai-ml:ai-050"
+    },
+    {
+      "id": "ai-051",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If a 3-class classifier outputs equal logits [0, 0, 0], what probability does softmax assign to each class?",
+      "options": [
+        "0",
+        "1/2",
+        "1/3",
+        "1"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: softmax(zᵢ) = e^(zᵢ) / Σ e^(zⱼ).\nStep 2: Since e⁰ = 1 for all three classes, the denominator is 1 + 1 + 1 = 3.\nStep 3: Each class receives probability 1/3.",
+      "dedupeKey": "ai-ml:ai-051"
+    },
+    {
+      "id": "ai-052",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In binary cross-entropy loss L = −[y log(p) + (1−y) log(1−p)], what is the loss when true label y = 1 and predicted probability p = 0.5?",
+      "options": [
+        "0",
+        "0.5",
+        "1",
+        "log(2) ≈ 0.693"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: Substitute y = 1 and p = 0.5 into L = −[1·log(0.5) + 0·log(0.5)].\nStep 2: L = −log(1/2) = log(2) ≈ 0.693.",
+      "dedupeKey": "ai-ml:ai-052"
+    },
+    {
+      "id": "ai-053",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "What is the maximum value of the derivative of the sigmoid function σ'(x) = σ(x)(1 − σ(x)), and why does it cause vanishing gradients?",
+      "options": [
+        "0.25 at x = 0; multiplying many factors ≤ 0.25 shrinks gradients exponentially",
+        "1.0 at x = 0; gradients stay constant across layers",
+        "0.5 at x = 1; gradients double at every layer",
+        "2.0 at x = 0; gradients explode across deep layers"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: At x = 0, σ(0) = 0.5, so σ'(0) = 0.5 × (1 − 0.5) = 0.25.\nStep 2: Because p(1−p) ≤ 0.25 for all p ∈ (0,1), backpropagating through n sigmoid layers multiplies by at most 0.25ⁿ, causing gradients to vanish.",
+      "dedupeKey": "ai-ml:ai-053"
+    },
+    {
+      "id": "ai-054",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "By Bayes' theorem, if P(A) = 0.1, P(B|A) = 0.8, and P(B) = 0.2, what is the posterior probability P(A|B)?",
+      "options": [
+        "0.16",
+        "0.4",
+        "0.8",
+        "0.25"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: Bayes' theorem states P(A|B) = P(B|A) × P(A) / P(B).\nStep 2: Substitute the values: (0.8 × 0.1) / 0.2 = 0.08 / 0.2 = 0.4.",
+      "dedupeKey": "ai-ml:ai-054"
+    },
+    {
+      "id": "ai-055",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "What is the Kullback–Leibler divergence D_KL(P || Q) when distributions P and Q are identical (P = Q)?",
+      "options": [
+        "1",
+        "−1",
+        "0",
+        "Infinity"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: D_KL(P || Q) = Σ P(x) log(P(x) / Q(x)).\nStep 2: When P(x) = Q(x) everywhere, P(x)/Q(x) = 1 and log(1) = 0.\nStep 3: Therefore D_KL(P || P) = 0.",
+      "dedupeKey": "ai-ml:ai-055"
+    },
+    {
+      "id": "ai-056",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Which property is TRUE of Kullback–Leibler divergence D_KL(P || Q)?",
+      "options": [
+        "It can be negative when Q is uniform",
+        "It is symmetric: D_KL(P || Q) always equals D_KL(Q || P)",
+        "It satisfies the triangle inequality and is a true metric",
+        "It is always non-negative (≥ 0) and is generally asymmetric"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: By Gibbs' inequality, D_KL(P || Q) ≥ 0 with equality if and only if P = Q.\nStep 2: Because P weights the log-ratio in D_KL(P || Q), swapping P and Q generally changes the value, so it is asymmetric.",
+      "dedupeKey": "ai-ml:ai-056"
+    },
+    {
+      "id": "ai-057",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In Principal Component Analysis (PCA), what does the first principal component represent?",
+      "options": [
+        "The eigenvector of the covariance matrix with the largest eigenvalue (direction of maximum variance)",
+        "The eigenvector with the smallest eigenvalue",
+        "The mean vector of the dataset",
+        "The feature column with the smallest standard deviation"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: PCA decomposes the sample covariance matrix Σ = V Λ Vᵀ.\nStep 2: Each eigenvalue λᵢ equals the variance along eigenvector vᵢ.\nStep 3: The first principal component is the eigenvector corresponding to the largest eigenvalue.",
+      "dedupeKey": "ai-ml:ai-057"
+    },
+    {
+      "id": "ai-058",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If a 3D dataset has covariance eigenvalues λ₁ = 6, λ₂ = 3, and λ₃ = 1, what proportion of total variance is explained by the first principal component?",
+      "options": [
+        "30%",
+        "60%",
+        "90%",
+        "50%"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: Total variance = sum of eigenvalues = 6 + 3 + 1 = 10.\nStep 2: Proportion explained by PC1 = λ₁ / (λ₁ + λ₂ + λ₃) = 6 / 10 = 60%.",
+      "dedupeKey": "ai-ml:ai-058"
+    },
+    {
+      "id": "ai-059",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In Singular Value Decomposition (SVD) of a matrix A = U Σ Vᵀ, what are the diagonal entries of Σ?",
+      "options": [
+        "The eigenvalues of A (which may be negative or complex)",
+        "The row means of A",
+        "The non-negative singular values σᵢ = √λᵢ of AᵀA",
+        "The determinants of each column of A"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: SVD factors any m×n matrix as A = U Σ Vᵀ where U and V are orthogonal.\nStep 2: The diagonal entries of Σ are the non-negative singular values σ₁ ≥ σ₂ ≥ … ≥ 0, equal to the square roots of the eigenvalues of AᵀA.",
+      "dedupeKey": "ai-ml:ai-059"
+    },
+    {
+      "id": "ai-060",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If a matrix has singular values σ₁ = 10, σ₂ = 4, and σ₃ = 0, what is the rank of the matrix?",
+      "options": [
+        "3",
+        "1",
+        "14",
+        "2"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: The rank of a matrix equals the number of non-zero singular values.\nStep 2: Here σ₁ = 10 > 0 and σ₂ = 4 > 0, while σ₃ = 0.\nStep 3: There are 2 non-zero singular values, so the rank is 2.",
+      "dedupeKey": "ai-ml:ai-060"
+    },
+    {
+      "id": "ai-061",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In Transformer scaled dot-product attention, Attention(Q,K,V) = softmax(QKᵀ / √d_k)V, why do we divide by √d_k?",
+      "options": [
+        "To keep dot products from growing large in magnitude, which would push softmax into regions with tiny gradients",
+        "To make the matrix QKᵀ invertible",
+        "To reduce the number of trainable parameters",
+        "To convert cosine similarity into Euclidean distance"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: If components of q and k have zero mean and unit variance, their dot product has variance d_k.\nStep 2: Dividing by √d_k rescales the variance back to 1, preventing softmax saturation and vanishing gradients.",
+      "dedupeKey": "ai-ml:ai-061"
+    },
+    {
+      "id": "ai-062",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In scaled dot-product attention, if the key dimension is d_k = 64, what is the scaling factor √d_k by which QKᵀ is divided?",
+      "options": [
+        "64",
+        "8",
+        "32",
+        "4"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: The scaling factor in softmax(QKᵀ / √d_k) is √d_k.\nStep 2: For d_k = 64, √64 = 8.",
+      "dedupeKey": "ai-ml:ai-062"
+    },
+    {
+      "id": "ai-063",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "What two exponential moving averages does the Adam optimizer maintain for each parameter?",
+      "options": [
+        "The minimum and maximum parameter values",
+        "The training loss and validation loss",
+        "The first moment (mean of gradients m_t) and second moment (uncentered variance of squared gradients v_t)",
+        "The determinant and trace of the Hessian matrix"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: Adam stands for Adaptive Moment Estimation.\nStep 2: It tracks m_t = β₁ m_{t−1} + (1−β₁) g_t (first moment / momentum) and v_t = β₂ v_{t−1} + (1−β₂) g_t² (second moment / adaptive scaling).",
+      "dedupeKey": "ai-ml:ai-063"
+    },
+    {
+      "id": "ai-064",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In Adam, if m₀ = 0, β₁ = 0.9, and the first gradient is g₁ = 10, what is m₁ before and after bias correction m̂₁ = m₁ / (1 − β₁¹)?",
+      "options": [
+        "m₁ = 9, m̂₁ = 9",
+        "m₁ = 10, m̂₁ = 1",
+        "m₁ = 1, m̂₁ = 1",
+        "m₁ = 1, m̂₁ = 10"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: m₁ = β₁ m₀ + (1 − β₁) g₁ = 0.9(0) + 0.1(10) = 1.\nStep 2: Bias correction divides by (1 − β₁¹) = 1 − 0.9 = 0.1.\nStep 3: m̂₁ = 1 / 0.1 = 10, removing the initial bias toward zero.",
+      "dedupeKey": "ai-ml:ai-064"
+    },
+    {
+      "id": "ai-065",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Why does L1 (Lasso) regularization λ|w| tend to produce sparse weights (exact zeros), whereas L2 (Ridge) regularization λw² does not?",
+      "options": [
+        "L1 has a constant subgradient (±λ) all the way to w = 0, whereas L2's gradient (2λw) shrinks to 0 as w approaches 0",
+        "L1 increases the learning rate while L2 decreases it",
+        "L2 only applies to bias terms, not weights",
+        "L1 squares large weights, forcing them to infinity"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: d/dw[λ|w|] = λ·sign(w), which pushes small weights toward 0 with constant force ±λ.\nStep 2: d/dw[λw²] = 2λw, which becomes tiny near 0 so weights decay asymptotically without hitting exact 0.",
+      "dedupeKey": "ai-ml:ai-065"
+    },
+    {
+      "id": "ai-066",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If the L2 regularization penalty is R(w) = (λ/2)(w₁² + w₂²) with λ = 4 and weights w = (3, −2), what is the penalty value R(w)?",
+      "options": [
+        "10",
+        "26",
+        "52",
+        "13"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: Compute w₁² + w₂² = 3² + (−2)² = 9 + 4 = 13.\nStep 2: Multiply by λ/2 = 4/2 = 2.\nStep 3: R(w) = 2 × 13 = 26.",
+      "dedupeKey": "ai-ml:ai-066"
+    },
+    {
+      "id": "ai-067",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "What is the cosine similarity between vectors u = (3, 4) and v = (6, 8)?",
+      "options": [
+        "0",
+        "0.5",
+        "1",
+        "50"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: u · v = 3×6 + 4×8 = 18 + 32 = 50.\nStep 2: ||u|| = √(3²+4²) = 5 and ||v|| = √(6²+8²) = 10.\nStep 3: cos(θ) = 50 / (5 × 10) = 1 (v is a positive scalar multiple of u).",
+      "dedupeKey": "ai-ml:ai-067"
+    },
+    {
+      "id": "ai-068",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A binary classifier has Precision = 0.8 and Recall = 0.5. What is its F1-score?",
+      "options": [
+        "0.65",
+        "0.40",
+        "0.75",
+        "8/13 ≈ 0.615"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: F1 = 2 × (Precision × Recall) / (Precision + Recall).\nStep 2: Numerator = 2 × 0.8 × 0.5 = 0.8. Denominator = 0.8 + 0.5 = 1.3.\nStep 3: F1 = 0.8 / 1.3 = 8/13 ≈ 0.615.",
+      "dedupeKey": "ai-ml:ai-068"
+    },
+    {
+      "id": "ai-069",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If a classifier makes 40 True Positives, 10 False Positives, and 30 False Negatives, what are its Precision and Recall?",
+      "options": [
+        "Precision = 4/5 (80%), Recall = 4/7 (≈57.1%)",
+        "Precision = 4/7 (≈57.1%), Recall = 4/5 (80%)",
+        "Precision = 1/5 (20%), Recall = 3/7 (≈42.9%)",
+        "Precision = 4/8 (50%), Recall = 4/8 (50%)"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: Precision = TP / (TP + FP) = 40 / (40 + 10) = 40/50 = 4/5 (80%).\nStep 2: Recall = TP / (TP + FN) = 40 / (40 + 30) = 40/70 = 4/7 (≈57.1%).",
+      "dedupeKey": "ai-ml:ai-069"
+    },
+    {
+      "id": "ai-070",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A 2D convolutional layer has input width W = 32, kernel size K = 5, padding P = 2, and stride S = 1. What is the output width?",
+      "options": [
+        "28",
+        "32",
+        "30",
+        "36"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: Use the convolution output formula: W_out = ⌊(W − K + 2P) / S⌋ + 1.\nStep 2: W_out = (32 − 5 + 2×2) / 1 + 1 = 31 + 1 = 32 ('same' padding).",
+      "dedupeKey": "ai-ml:ai-070"
+    },
+    {
+      "id": "ai-071",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "For Leaky ReLU defined as f(x) = x if x > 0 and f(x) = 0.01x if x ≤ 0, what is the derivative f'(x) at x = −4?",
+      "options": [
+        "0",
+        "−0.04",
+        "0.01",
+        "1"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: For x < 0, Leaky ReLU is f(x) = 0.01x.\nStep 2: Its derivative with respect to x is the slope 0.01, which prevents 'dead ReLU' neurons.",
+      "dedupeKey": "ai-ml:ai-071"
+    },
+    {
+      "id": "ai-072",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "When softmax activation is combined with categorical cross-entropy loss L, what is the gradient ∂L/∂zᵢ with respect to logit zᵢ?",
+      "options": [
+        "yᵢ / pᵢ",
+        "pᵢ × (1 − pᵢ)",
+        "pᵢ + yᵢ",
+        "pᵢ − yᵢ (predicted probability minus true one-hot label)"
+      ],
+      "answerIndex": 3,
+      "explanation": "Step 1: With L = −Σ yⱼ log(pⱼ) and pᵢ = softmax(zᵢ), differentiating via the chain rule yields ∂L/∂zᵢ = pᵢ − yᵢ.\nStep 2: This clean linear difference avoids softmax derivative saturation.",
+      "dedupeKey": "ai-ml:ai-072"
+    },
+    {
+      "id": "ai-073",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If v = (1, 1) is an eigenvector of matrix A = [[4, 2], [1, 5]], what is its corresponding eigenvalue λ?",
+      "options": [
+        "6",
+        "4",
+        "5",
+        "9"
+      ],
+      "answerIndex": 0,
+      "explanation": "Step 1: Compute Av = [[4, 2], [1, 5]] × [1, 1]ᵀ = [4+2, 1+5]ᵀ = [6, 6]ᵀ.\nStep 2: Since Av = 6 × [1, 1]ᵀ = λv, the eigenvalue is λ = 6.",
+      "dedupeKey": "ai-ml:ai-073"
+    },
+    {
+      "id": "ai-074",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In Batch Normalization, if a mini-batch feature has mean μ = 10 and standard deviation σ = 2, what is the normalized value x̂ for x = 14 (ignoring ε)?",
+      "options": [
+        "7",
+        "2",
+        "4",
+        "1"
+      ],
+      "answerIndex": 1,
+      "explanation": "Step 1: Batch Normalization standardizes each value as x̂ = (x − μ) / σ.\nStep 2: x̂ = (14 − 10) / 2 = 4 / 2 = 2.",
+      "dedupeKey": "ai-ml:ai-074"
+    },
+    {
+      "id": "ai-075",
+      "category": "ai-ml-concepts",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "What is the L1 (Manhattan) norm ||v||₁ and L2 (Euclidean) norm ||v||₂ of the vector v = (−3, 4)?",
+      "options": [
+        "||v||₁ = 1, ||v||₂ = 5",
+        "||v||₁ = 5, ||v||₂ = 7",
+        "||v||₁ = 7, ||v||₂ = 5",
+        "||v||₁ = 7, ||v||₂ = 25"
+      ],
+      "answerIndex": 2,
+      "explanation": "Step 1: L1 norm = |−3| + |4| = 3 + 4 = 7.\nStep 2: L2 norm = √((−3)² + 4²) = √(9 + 16) = √25 = 5.",
+      "dedupeKey": "ai-ml:ai-075"
     }
   ]
 }

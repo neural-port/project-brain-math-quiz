@@ -232,18 +232,18 @@ function genDirectionShadow(difficulty: Difficulty): Question {
 // ─── 5. Direction — with distance ───────────────────────────────────────────
 
 function genDirectionDistance(difficulty: Difficulty): Question {
-  const dist1 = randInt(2, 10);
-  const dist2 = randInt(2, 10);
+  const triples: [number, number, number][] = difficulty === 'hard'
+    ? [[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [12, 5, 13], [9, 12, 15], [12, 9, 15], [8, 15, 17], [15, 8, 17]]
+    : [[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [12, 5, 13], [9, 12, 15], [12, 9, 15]];
+  const [dist1, dist2, answer] = pick(triples);
   const dir1 = pick(['north', 'east'] as const);
   const dir2 = dir1 === 'north' ? 'east' : 'north';
-  // Person walks dist1 north, then dist2 east. How far from start?
-  const answer = Math.round(Math.sqrt(dist1 ** 2 + dist2 ** 2) * 100) / 100;
   return mcq(
     difficulty,
     `A person walks ${dist1} km ${dir1}, then turns and walks ${dist2} km ${dir2}. How far are they from the starting point (straight-line distance)?`,
     `${answer} km`,
-    [`${dist1 + dist2} km`, `${Math.abs(dist1 - dist2)} km`, `${Math.round((dist1 + dist2) / 2)} km`],
-    `Step 1: The person walks ${dist1} km ${dir1}, then ${dist2} km ${dir2} — these are perpendicular.\nStep 2: Use Pythagoras: distance = √(${dist1}² + ${dist2}²) = √(${dist1 ** 2} + ${dist2 ** 2}).\nStep 3: = √${dist1 ** 2 + dist2 ** 2} ≈ ${answer} km.\nAnswer: ${answer} km.`,
+    [`${dist1 + dist2} km`, `${Math.max(1, Math.abs(dist1 - dist2))} km`, `${answer + 2} km`],
+    `Step 1: The person walks ${dist1} km ${dir1}, then ${dist2} km ${dir2} — these are perpendicular.\nStep 2: Use Pythagoras: distance = √(${dist1}² + ${dist2}²) = √(${dist1 ** 2} + ${dist2 ** 2}).\nStep 3: = √${dist1 ** 2 + dist2 ** 2} = ${answer} km.\nAnswer: ${answer} km.`,
     `dir-dist:${dist1}:${dist2}:${dir1}`,
   );
 }
@@ -710,9 +710,9 @@ function genStatementConclusion(difficulty: Difficulty): Question {
 
 function genMissingNumberGrid(difficulty: Difficulty): Question {
   // 3x3 grid with one missing cell (bottom-right).
-  // Pattern types: row-sum, row-product, row-difference, col-sum, diagonal-sum
-  const patternType = pick(['row-sum', 'col-sum', 'row-product', 'row-diff', 'diag-sum'] as const);
-  let grid: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  // Every pattern uses all 9 cells deterministically (no random noise cells).
+  const patternType = pick(['row-sum', 'col-sum', 'row-product', 'row-diff', 'col-diff'] as const);
+  const grid: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
   let answer = 0;
   let explanation = '';
   const range = difficulty === 'easy' ? 9 : difficulty === 'medium' ? 20 : 50;
@@ -756,8 +756,7 @@ function genMissingNumberGrid(difficulty: Difficulty): Question {
     answer = a * b;
     explanation = `Step 1: In each row, col 3 = col 1 × col 2. Row 1: ${grid[0][0]}×${grid[0][1]}=${grid[0][2]}. Row 2: ${grid[1][0]}×${grid[1][1]}=${grid[1][2]}.\nStep 2: Row 3: ${a}×${b} = ${answer}.\nAnswer: ${answer}.`;
   } else if (patternType === 'row-diff') {
-    // Each row: col3 = col1 + col2 (same as row-sum but framed as difference pattern)
-    // Actually use: col3 - col2 = col1, i.e., col3 = col1 + col2
+    // Each row: col 3 = col 1 + col 2
     const base = randInt(5, range);
     for (let r = 0; r < 2; r++) {
       const a = randInt(2, base);
@@ -770,51 +769,22 @@ function genMissingNumberGrid(difficulty: Difficulty): Question {
     answer = a + b;
     explanation = `Step 1: In each row, col 3 = col 1 + col 2. Row 1: ${grid[0][0]}+${grid[0][1]}=${grid[0][2]}. Row 2: ${grid[1][0]}+${grid[1][1]}=${grid[1][2]}.\nStep 2: Row 3: ${a}+${b} = ${answer}.\nAnswer: ${answer}.`;
   } else {
-    // diag-sum: main diagonal and anti-diagonal sum to same value
-    const S = randInt(20, 60);
-    const a = randInt(2, S - 4);
-    const c = randInt(2, S - 4);
-    const d = randInt(2, S - c - 2);
-    // grid[0][0]=a, grid[1][1]=center, grid[2][2]=answer (main diagonal = S)
-    // grid[0][2]=c, grid[1][1]=center, grid[2][0]=d (anti-diagonal = S)
-    // center = S - a - answer = S - c - d => answer = a + c + d - S... too complex
-    // Simpler: center = e, a + e + answer = S, c + e + d = S => answer = S - a - e, e = S - c - d
-    const e = S - c - d;
-    if (e < 2) { // fallback to row-sum
-      const Sa = randInt(20, 60);
-      for (let r = 0; r < 2; r++) {
-        const xa = randInt(2, Sa - 4);
-        const xb = randInt(2, Sa - xa - 2);
-        grid[r] = [xa, xb, Sa - xa - xb];
-      }
-      const xa = randInt(2, Sa - 4);
-      const xb = randInt(2, Sa - xa - 2);
-      grid[2] = [xa, xb, 0];
-      answer = Sa - xa - xb;
-      explanation = `Step 1: Each row sums to ${Sa}.\nStep 2: Row 3: ${xa}+${xb}+?=${Sa}, so ? = ${answer}.\nAnswer: ${answer}.`;
-    } else {
-      grid[0][0] = a; grid[0][1] = randInt(2, range); grid[0][2] = c;
-      grid[1][0] = randInt(2, range); grid[1][1] = e; grid[1][2] = randInt(2, range);
-      grid[2][0] = d; grid[2][1] = randInt(2, range); grid[2][2] = 0;
-      answer = S - a - e;
-      if (answer < 2) {
-        // answer would be too small — fall back to row-sum pattern entirely
-        const Sa = randInt(20, 60);
-        for (let r = 0; r < 2; r++) {
-          const xa = randInt(2, Sa - 4);
-          const xb = randInt(2, Sa - xa - 2);
-          grid[r] = [xa, xb, Sa - xa - xb];
-        }
-        const xa = randInt(2, Sa - 4);
-        const xb = randInt(2, Sa - xa - 2);
-        grid[2] = [xa, xb, 0];
-        answer = Sa - xa - xb;
-        explanation = `Step 1: Each row sums to ${Sa}.\nStep 2: Row 3: ${xa}+${xb}+?=${Sa}, so ? = ${answer}.\nAnswer: ${answer}.`;
-      } else {
-        grid[2][2] = 0; // keep as placeholder, we display ? in prompt
-        explanation = `Step 1: Both diagonals sum to ${S}. Main diagonal: ${a}+${e}+?=${S}. Anti-diagonal: ${c}+${e}+${d}=${S}.\nStep 2: From the main diagonal: ? = ${S}−${a}−${e} = ${answer}.\nAnswer: ${answer}.`;
-      }
+    // col-diff: in each column, row 3 = row 1 + row 2
+    const base = randInt(5, range);
+    for (let c = 0; c < 2; c++) {
+      const a = randInt(2, base);
+      const b = randInt(2, base);
+      grid[0][c] = a;
+      grid[1][c] = b;
+      grid[2][c] = a + b;
     }
+    const a = randInt(2, base);
+    const b = randInt(2, base);
+    grid[0][2] = a;
+    grid[1][2] = b;
+    grid[2][2] = 0;
+    answer = a + b;
+    explanation = `Step 1: In each column, row 3 = row 1 + row 2. Col 1: ${grid[0][0]}+${grid[1][0]}=${grid[2][0]}. Col 2: ${grid[0][1]}+${grid[1][1]}=${grid[2][1]}.\nStep 2: Col 3: ${a}+${b} = ${answer}.\nAnswer: ${answer}.`;
   }
 
   // Build grid display with ? in place of the missing cell

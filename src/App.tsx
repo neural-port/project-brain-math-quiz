@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Lives } from './components/Lives';
 import { NamePrompt } from './components/NamePrompt';
+import { NumberMatchGame } from './components/NumberMatchGame';
 import { QuestionCard } from './components/QuestionCard';
 import { ResultsScreen } from './components/ResultsScreen';
 import { ScoreBar } from './components/ScoreBar';
@@ -13,6 +14,7 @@ import type { QuizState } from './quiz/types';
 export default function App() {
   const [playerName, setPlayerNameState] = useState<string | null>(() => getPlayerName());
   const [currency, setCurrencyState] = useState<CurrencySymbol>(() => getCurrency());
+  const [puzzleOpen, setPuzzleOpen] = useState(false);
   const { state, savedSession, startQuiz, startPractice, selectAnswer, nextQuestion, retryQuestion, backToStart, resumeQuiz, resetProgress, seenCount } = useQuiz(currency);
 
   const handleNameSubmit = (name: string, curr: CurrencySymbol) => {
@@ -25,6 +27,7 @@ export default function App() {
   const handleChangeName = () => {
     clearPlayerName();
     clearCurrency();
+    resetProgress();
     setPlayerNameState(null);
     setCurrencyState('₹');
   };
@@ -44,17 +47,22 @@ export default function App() {
         )}
 
         {state.phase === 'start' && playerName && (
-          <StartScreen
-            playerName={playerName}
-            curatedLoaded={state.curatedLoaded}
-            savedSession={savedSession}
-            onStart={startQuiz}
-            onPractice={startPractice}
-            onResume={resumeQuiz}
-            onChangeName={handleChangeName}
-            onResetProgress={resetProgress}
-            seenCount={seenCount}
-          />
+          puzzleOpen ? (
+            <NumberMatchGame onExit={() => setPuzzleOpen(false)} />
+          ) : (
+            <StartScreen
+              playerName={playerName}
+              curatedLoaded={state.curatedLoaded}
+              savedSession={savedSession}
+              onStart={startQuiz}
+              onPractice={startPractice}
+              onResume={resumeQuiz}
+              onChangeName={handleChangeName}
+              onResetProgress={resetProgress}
+              onPuzzle={() => setPuzzleOpen(true)}
+              seenCount={seenCount}
+            />
+          )
         )}
 
         {state.phase === 'results' && (
@@ -116,7 +124,7 @@ function PlayingScreen({
           ) : (
             <Lives lives={state.lives} maxLives={state.maxLives} />
           )}
-          {!state.answered && (
+          {!state.answered && state.timeLimit > 0 && (
             <Timer timeLeft={state.timeLeft} timeLimit={state.timeLimit} />
           )}
           <button className="quit-btn" onClick={onQuit} type="button">

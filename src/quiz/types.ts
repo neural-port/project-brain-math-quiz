@@ -1,6 +1,6 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
-export type LearnerPath = 'foundation' | 'school' | 'everyday' | 'ai-ml' | 'competitive-exams';
+export type LearnerPath = 'foundation' | 'school' | 'everyday' | 'ai-ml' | 'competitive-exams' | 'exam-practice';
 
 export type QuestionCategory =
   | 'arithmetic'

@@ -4,7 +4,7 @@
 
 An arcade-style mathematics and reasoning practice platform for school learners, competitive exam aspirants, curious adults, and AI/ML engineers. Built as a fully AI-assisted coding showcase — prompt-driven development, zero hand-written code.
 
-> Thousands of unique questions powered by a procedural question generator across 16 categories, plus curated AI/ML and figure classification banks (60 questions, loaded locally). Includes interactive SVG-based visual questions, guided practice mode, persistent player identity, session resume, internationalized currency scaling, and 211 automated tests verifying generator correctness.
+> Thousands of unique questions powered by a procedural question generator across 16 categories, plus curated AI/ML, figure classification, and competitive exam banks (260 questions, loaded locally). Includes interactive SVG-based visual questions, guided practice mode, persistent player identity, session resume, internationalized currency scaling, and 255 automated tests verifying generator correctness.
 
 Built with React 19 + Vite + TypeScript + Vitest. No backend, no external runtime API dependencies, no analytics, no data transmission.
 
@@ -32,14 +32,15 @@ Built with React 19 + Vite + TypeScript + Vitest. No backend, no external runtim
 
 ### Learning paths
 
-Five learning paths cover the full audience spectrum — from young learners to competitive exam aspirants to AI/ML engineers:
+Six learning paths cover the full audience spectrum — from young learners to competitive exam aspirants to AI/ML engineers:
 
 | Path | Audience | Default level | Categories |
 |---|---|---|---|
 | **Foundation** | Kids, beginners | Easy | Arithmetic, Geometry, Visual Reasoning, Memory, Fractions |
 | **School Math** | School students | Easy | Arithmetic, Algebra, Geometry, Visual Reasoning, Patterns, Fractions, Probability, Statistics |
 | **Everyday Logic** | Curious adults | Medium | Arithmetic, Geometry, Visual Reasoning, Memory, Patterns, Fractions, Probability, Statistics |
-| **Competitive Exams** | Aspirants | Hard | Competitive Math, Number Series, Letter Coding, Logical Reasoning, Arithmetic, Algebra, Probability |
+| **Competitive Exams** | Aspirants | Medium | Competitive Math, Number Series, Letter Coding, Logical Reasoning, Number Patterns, Arithmetic |
+| **Aptitude & Reasoning (no timer)** | Aspirants | Medium | Competitive Math, Number Series, Letter Coding, Logical Reasoning — drawn only from the curated exam bank, untimed |
 | **AI/ML Math** | Engineers, researchers | Medium | Algebra, Patterns, Matrices & Vectors, Derivatives, Probability, Statistics, AI/ML Concepts |
 
 Each path pre-selects relevant categories; the user can toggle any topic on the start screen.
@@ -64,18 +65,18 @@ All visual questions render as inline SVG — no image assets, sharp at any reso
 - **Derivatives** — polynomial, trigonometric, exponential, chain rule
 - **Probability** — dice, coins, marbles, cards, combinations
 - **Statistics** — mean, median, mode, range
-- **Competitive Math** — work and time, speed-distance-time, trains, boats, percentages, profit and loss, discount, simple and compound interest, averages, ratios, mixtures, partnerships, ages, LCM/HCF, area and perimeter, BODMAS
+- **Competitive Math** — work and time, speed-distance-time, trains, boats, percentages, profit and loss, discount, simple and compound interest, averages, ratios, mixtures, partnerships, ages, LCM/HCF, area and perimeter, BODMAS — plus the curated bank (see Aptitude & Reasoning below)
 - **Number Series** — primes, geometric, squares, cubes, triangular, Fibonacci, alternating, mixed operations, wrong-number identification
 - **Letter Coding** — forward/backward shift, reverse, letter-number coding, mixed coding, direct coding, number coding, symbol substitution
 - **Logical Reasoning** — blood relations, direction sense, seating arrangements, rankings, calendars, clock angles, syllogisms, statement-conclusion evaluation, missing number grids
-- **AI/ML Concepts** — 50 curated questions on gradient descent, loss functions, activation derivatives, Bayes' theorem, PCA, SVD, attention, KL divergence, Adam optimizer
+- **AI/ML Concepts** — 75 curated questions across easy, medium, and hard on gradient descent, loss functions, activation derivatives, Bayes' theorem, PCA, SVD, scaled dot-product attention, KL divergence, L1/L2 regularization, cosine similarity, F1-score, and Adam optimizer
 
 ### Game mechanics
 
 - **3 challenge levels**: Easy (45s, 5 lives), Medium (30s, 4 lives), Hard (20s, 3 lives)
 - **Per-category timers** — calculation-heavy categories get extra time
 - **Arcade scoring**: base points by difficulty + streak bonus (50/answer) + time bonus (30 for fast answers)
-- **Countdown timer** with visual bar
+- **Countdown timer** with visual bar (not shown or enforced in the untimed Aptitude & Reasoning section)
 - **Lives system** — wrong answers cost a life; out of lives ends the quiz
 - **Repeat protection** — question history tracked in localStorage (capped at 2000 entries); generators avoid seen questions across sessions, with category strikeout when a pool is exhausted
 - **Category balancing** — the scheduler distributes questions evenly across selected categories and limits sequence-family dominance so no single pattern type overwhelms a quiz
@@ -102,8 +103,10 @@ The app uses a hybrid question system to guarantee variety:
 
 1. **Procedural generators** (`src/quiz/generator.ts`, `src/quiz/competitive-generator.ts`, `src/quiz/series-generator.ts`, `src/quiz/coding-generator.ts`, `src/quiz/logic-generator.ts`, `src/quiz/visual-generator.ts`) — generate questions algorithmically at runtime. Each call produces a fresh question with randomized parameters, computed correct answers, plausible distractors, and step-by-step explanations. Category strikeout drops exhausted pools mid-session instead of forcing repeats.
 
-2. **Curated AI/ML bank** (`public/ai-ml-questions.json`) — 50 hand-authored questions on AI/ML mathematical concepts that can't be procedurally generated. Loaded locally at runtime.
-3. **Curated figure classification bank** (`public/figure-classification-questions.json`) — 10 hand-authored visual reasoning questions for figure classification and odd-one-out patterns. Loaded locally at runtime.
+2. **Curated AI/ML bank** (`public/ai-ml-questions.json`) — 75 hand-authored questions on AI/ML mathematical concepts across easy, medium, and hard levels. Loaded locally at runtime.
+3. **Curated figure classification bank** (`public/figure-classification-questions.json`) — 15 hand-authored visual reasoning questions for figure classification and odd-one-out patterns. Loaded locally at runtime.
+4. **Curated exam bank** (`public/exam-questions.json`) — 170 quantitative, number series, letter coding and logical reasoning questions: 37 from official competitive-recruitment sample papers, and 133 original items in the same format. General knowledge, comprehension and current-affairs items were removed. Every answer is recomputed with its working in the explanation. Served only in the untimed Aptitude & Reasoning section.
+5. **Number Match puzzle** — a standalone untimed logic game (Ten Pair style) launched from the start screen. Fresh randomized 10×10 board of digits 1–9 every game (generation guarantees at least 3 legal opening moves). Each game rolls a random parity mode — identical digits match only when even *or* odd depending on the board; sum-to-10 pairs always match. Pure-function match engine (`src/puzzle/number-match.ts`) with undo stack, hints, in-place shuffle, column gravity with fall animation, row-clear bonuses and a persisted best score.
 
 3. **Seen-history** (`src/quiz/seen-history.ts`) — every question's dedupe key is stored in localStorage (capped at 2000 entries with FIFO eviction). Generators avoid repeating questions you've already seen, and fall back gracefully when a pool is exhausted.
 
@@ -138,12 +141,17 @@ src/
 │  ├─ Timer.tsx                 # Countdown bar
 │  ├─ Lives.tsx                 # Life indicators
 │  └─ ResultsScreen.tsx         # Final grade, stats, category breakdown, review
+│  ├─ NumberMatchGame.tsx       # Number Match puzzle UI (Ten Pair / Seeds)
+├─ puzzle/
+│  ├─ number-match.ts           # Board rules, match engine, scoring (pure logic)
+│  └─ number-match.test.ts      # Rule-engine regression tests
 ├─ App.tsx                      # Phase routing (loading → name → start → playing → results)
 ├─ main.tsx                     # Entry point with ErrorBoundary
 └─ index.css                    # All styling (palette + responsive + practice demo)
 public/
-├─ ai-ml-questions.json                  # Curated AI/ML question bank (50 questions)
-├─ figure-classification-questions.json  # Curated figure classification bank (10 questions)
+├─ ai-ml-questions.json                  # Curated AI/ML question bank (75 questions)
+├─ figure-classification-questions.json  # Curated figure classification bank (15 questions)
+├─ exam-questions.json                   # Curated exam bank, untimed section (170 questions)
 ├─ favicon.svg
 └─ icons.svg
 ```
@@ -163,11 +171,11 @@ public/
 | Derivatives | Parameterized | ~600+ | Polynomial, trig, exponential, chain rule |
 | Probability | Parameterized | ~1,000+ | Dice, coins, marbles, cards, combinations |
 | Statistics | Parameterized | ~700+ | Mean, median, mode, range |
-| Competitive Math | Parameterized | ~5,000+ | 20 subtypes: work, speed, trains, boats, percentages, profit/loss, discount, SI/CI, averages, ratios, mixtures, partnerships, ages, LCM/HCF, area, BODMAS |
+| Competitive Math | Parameterized + bank | ~5,000+ | 20 subtypes: work, speed, trains, boats, percentages, profit/loss, discount, SI/CI, averages, ratios, mixtures, partnerships, ages, LCM/HCF, area, BODMAS + untimed exam bank (170 questions) |
 | Number Series | Parameterized | ~2,000+ | 12 subtypes: primes, geometric, squares, cubes, triangular, Fibonacci, alternating, mixed, wrong-number |
 | Letter Coding | Parameterized | ~1,000+ | 8 subtypes: forward/backward shift, reverse, mixed, letter-number, direct, number, symbol substitution |
 | Logical Reasoning | Parameterized + bank | ~500+ | 18 subtypes: blood relations, directions, arrangements, rankings, calendars, clocks, syllogisms, statement-conclusion, missing number grids |
-| AI/ML Concepts | Curated bank | 50 fixed | Gradient descent, loss functions, PCA, SVD, attention, etc. |
+| AI/ML Concepts | Curated bank | 75 fixed | Gradient descent, loss functions, Bayes' theorem, PCA, SVD, attention, KL divergence, Adam, etc. |
 
 ### Visual (interactive SVG)
 
@@ -236,7 +244,7 @@ Requires Node 18+ (developed on Node 22).
 
 ## Test Suite
 
-The project includes **211 automated tests** across three test files, all running via Vitest.
+The project includes **255 automated tests** across four test files, all running via Vitest.
 
 ### Permanent test suite — 140 tests (`src/quiz/generators.test.ts`)
 
@@ -312,7 +320,7 @@ Exhaustive programmatic audit that generates 500 questions per category per diff
 - Semantic correctness (parsed answers match independently computed expected values)
 - Batch integrity (category spread, sequence-family limits, no duplicate dedupe keys)
 
-### New generators audit suite — 27 tests (`src/quiz/new-generators-audit.test.ts`)
+### New generators audit suite — 33 tests (`src/quiz/new-generators-audit.test.ts`)
 
 Dedicated audit for the 6 new question types added in the latest release:
 - 500-sample stress tests per difficulty for symbol substitution, missing number grids, text mirror, dot region, and composite rotation
@@ -322,12 +330,13 @@ Dedicated audit for the 6 new question types added in the latest release:
 - Figure classification curated bank validation (structure, unique dedupe keys, unique options)
 - **Semantic partition validator** — parses every "Group by" option's criterion and partition, verifies exactly ONE option is mathematically valid and it sits at `answerIndex`. It also canonicalizes member and group order to reject duplicate equivalent partitions, even when their criterion labels differ.
 - **Odd-one-out discriminator validator** — verifies the non-answer figures share a common shape or tone that the answer figure lacks, with manual-verification whitelist for non-attribute rules (polygon classification, symmetry)
-- **AI/ML curated bank validation** — structure, unique dedupe keys, unique options for all 50 questions
+- **AI/ML curated bank validation** — structure, unique dedupe keys, unique options, difficulty coverage (easy/medium/hard), distributed answer indices, and non-equivalent fraction distractors for all 75 questions
+- **Exam curated bank validation** — structure, unique dedupe keys/prompts, 4 unique options each, valid category tags, and easy/medium/hard coverage for all 170 questions, including at least 40 analytical reasoning items and ≥3 items per category/difficulty cell
 
 ### Running the tests
 
 ```bash
-npm test              # run all 211 tests
+npm test              # run all 217 tests
 npm run test:watch    # watch mode
 ```
 
@@ -341,7 +350,7 @@ This repo includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) th
 1. `npm ci` — clean install
 2. `npm audit --audit-level=high` — dependency vulnerability gate
 3. `npm run lint` — code quality gate
-4. `npm test` — unit test gate (211 tests)
+4. `npm test` — unit test gate (217 tests)
 5. `npm run build` — type-check + production build
 6. Upload artifact → deploy to GitHub Pages
 
@@ -458,7 +467,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 | A.8.15 Logging | COMPLIANT | Only `console.error` in ErrorBoundary; no PII logged |
 | A.8.20 Network security | PARTIALLY COMPLIANT | Only same-origin fetch for local JSON; Google Fonts over HTTPS; no CSP header configured |
 | A.8.24 Use of cryptography | NOT APPLICABLE | No cryptography needed for a single-user local app; no passwords, no tokens, no secrets |
-| A.8.25 Secure development lifecycle | COMPLIANT | Session versioning (v3), 211 tests, CI gates, strict TypeScript |
+| A.8.25 Secure development lifecycle | COMPLIANT | Session versioning (v3), 217 tests, CI gates, strict TypeScript |
 | A.8.28 Secure coding | COMPLIANT | `strict: true` in tsconfig, no `any`, no `dangerouslySetInnerHTML`, no `eval`, input trimmed and capped |
 | A.8.30 Outsourced development | NON-COMPLIANT | GitHub Actions use floating tags (`@v4`), not SHA-pinned — requires repo-owner manual fix |
 | A.8.32 Change management | COMPLIANT | `SESSION_VERSION = 3` with reject-and-clear on mismatch; no old schema can crash the app |
@@ -467,7 +476,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 
 | Characteristic | Status | Evidence |
 |---|---|---|
-| Functional Suitability | COMPLIANT | Generators compute answers from prompt parameters; 211 tests independently verify correctness |
+| Functional Suitability | COMPLIANT | Generators compute answers from prompt parameters; 217 tests independently verify correctness |
 | Performance Efficiency | PARTIALLY COMPLIANT | 320 KB bundle (98 KB gzip); no bundle analyzer or code-splitting; generator backtracking capped |
 | Compatibility | PARTIALLY COMPLIANT | Modern browsers only (ES2023); 6 responsive breakpoints; no polyfills for legacy browsers |
 | Usability | COMPLIANT | Practice mode, session resume, error recovery, responsive design, privacy notice |
@@ -485,7 +494,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 | Data Provenance | COMPLIANT | Two sources only: procedural generators (`source: 'generator'`) and curated static JSON (`source: 'curated'`); no runtime AI output |
 | Hallucination Defense | COMPLIANT | Zero runtime LLM calls; zero external AI APIs; all answers computed mathematically |
 | Human Oversight | PARTIALLY COMPLIANT | ErrorBoundary, session validation, "Not you?" deletion; no "Report this question" feedback channel |
-| Risk Management | COMPLIANT | 211 tests including independent answer recomputation, 500-sample audit sweeps, semantic partition validation, regression tests for 60 fixed bugs |
+| Risk Management | COMPLIANT | 217 tests including independent answer recomputation, 500-sample audit sweeps, semantic partition validation, regression tests for 60 fixed bugs |
 | Privacy in AI Context | COMPLIANT | No user data sent to any AI service; no AI service called; all data stays on device |
 | Bias and Fairness | PARTIALLY COMPLIANT | Gender-appropriate name pools for blood relations; gender-neutral pronouns in merchant questions; single cultural name set (Indian-origin) |
 
@@ -546,7 +555,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 
 ### Audit verdict
 
-**PASS with documented exceptions.** All quality gates green — 0 lint errors, 0 build errors, 211/211 tests passing, strict TypeScript enabled. 60 correctness and visual-ambiguity defects have been fixed across the audit rounds, including post-release dot-region boundary, composite-rotation uniqueness, and mobile shape-clipping issues. ISO 27001: 9 compliant, 4 partially compliant, 1 non-compliant (SHA-pinning, manual fix), 1 N/A. ISO 5054: 5 compliant, 3 partially compliant. ISO 42001: 6 compliant, 2 partially compliant. IT Act 2000: 4 compliant, 3 partially compliant, 2 N/A. Remaining items are manual follow-ups requiring repo-owner action, not code changes.
+**PASS with documented exceptions.** All quality gates green — 0 lint errors, 0 build errors, 217/217 tests passing, strict TypeScript enabled. 60 correctness and visual-ambiguity defects have been fixed across the audit rounds, including post-release dot-region boundary, composite-rotation uniqueness, and mobile shape-clipping issues. ISO 27001: 9 compliant, 4 partially compliant, 1 non-compliant (SHA-pinning, manual fix), 1 N/A. ISO 5054: 5 compliant, 3 partially compliant. ISO 42001: 6 compliant, 2 partially compliant. IT Act 2000: 4 compliant, 3 partially compliant, 2 N/A. Remaining items are manual follow-ups requiring repo-owner action, not code changes.
 
 ---
 
@@ -555,7 +564,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 1. **Multi-tab usage** — two tabs on the same origin share localStorage; last-write-wins on the session key. Use one tab at a time for predictable resume behavior.
 2. **Memory dots** — inherently visual; not playable non-visually by screen-reader users. The question is skipped via timeout with no lives lost in practice mode.
 3. **Browser storage per origin** — `localhost:5173` and `127.0.0.1:5173` are different origins; they keep separate player names and saved sessions. Always test on the same URL.
-4. **Curated AI/ML bank is fixed at 50 questions** — these are hand-authored and can't be procedurally generated. After ~15 rounds on the AI/ML path, repeats from this pool are expected (seen-history prevents immediate repeats).
+4. **Curated banks are fixed-size** — 75 AI/ML, 15 figure-classification, and 170 exam questions are hand-authored/verified and can't be procedurally generated. After many rounds on those paths, repeats from these pools are expected (seen-history prevents immediate repeats).
 5. **Currency scaling is approximate** — scale factors are rough magnitudes for local realism, not live exchange rates. The intent is that ₹500 feels like ¥5,000 in context, not precise FX conversion.
 
 ---
@@ -565,7 +574,7 @@ A systematic control-by-control audit was conducted against four frameworks. Eac
 - **React 19** — UI framework
 - **Vite 8** — build tool and dev server
 - **TypeScript 6** — strict typing, no `any`
-- **Vitest 5** — unit testing (211 tests, all passing)
+- **Vitest 5** — unit testing (217 tests, all passing)
 - **oxlint** — fast linter (0 errors, 0 warnings)
 - **GitHub Actions** — CI/CD with audit + lint + test + build gates
 - **Inline SVG** — all visual questions rendered as vector graphics, no image assets
@@ -586,7 +595,7 @@ The entire codebase — generators, visual engine, game logic, session persisten
 - Visual puzzle generation with rejection sampling, sequence scaling, and SVG rendering
 - Category balancing and sequence-family limiting in the scheduler so no single pattern type dominates a quiz
 - Self-playing demo mode with auto-highlighting, auto-rotation, and auto-tap state machines
-- 211 tests that parse prompts, independently compute expected answers, verify distractor values differ numerically, check that visual questions can't be answered by color alone, and validate that figure-classification partitions have exactly one mathematically correct grouping
+- 217 tests that parse prompts, independently compute expected answers, verify distractor values differ numerically, check that visual questions can't be answered by color alone, and validate that figure-classification partitions have exactly one mathematically correct grouping
 
 These are problems you solve with thinking, not with `npm install`.
 
@@ -604,7 +613,7 @@ The audit section demonstrates the ability to think like an auditor — identify
 
 ### 5. Full-stack product ownership
 
-- Product design: five learning paths covering kids to AI/ML engineers, six interaction types, difficulty scaling, arcade scoring
+- Product design: six learning paths covering kids to AI/ML engineers, six interaction types, difficulty scaling, arcade scoring
 - UX engineering: self-playing practice mode, resume where you left off, quit anytime, responsive across phone/tablet/desktop, internationalized currency
 - DevOps: CI pipeline with audit + lint + test + build gates, GitHub Pages deployment
 - Documentation: architecture, question-type inventory, audit report, and known limitations
@@ -614,7 +623,7 @@ The audit section demonstrates the ability to think like an auditor — identify
 Being honest about what this doesn't prove:
 - No backend — there's no database, no auth, no server. Pair it with a Supabase/Node project for backend skills.
 - No real users at scale — the repeat-protection and session logic are designed for single-device use.
-- No integration/E2E tests — the 211 unit tests cover the generators (pure functions), but there are no component or browser-level tests. A production team would add Playwright/Cypress.
+- No integration/E2E tests — the 217 unit tests cover the generators (pure functions), but there are no component or browser-level tests. A production team would add Playwright/Cypress.
 
 ### The one-line pitch
 

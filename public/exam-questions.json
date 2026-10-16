@@ -1,0 +1,2726 @@
+{
+  "version": "3.0.0",
+  "description": "Quantitative aptitude, number series, letter coding and logical reasoning practice. Items are drawn from official sample papers for competitive recruitment examinations, plus original items written in the same format. General knowledge, comprehension, and current-affairs items were removed. Every answer was recomputed and the working is shown in the explanation.",
+  "questions": [
+    {
+      "id": "ex-001",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The value of 50.5 - 12.5 × 6.3 is _____.",
+      "options": [
+        "28.25",
+        "239.4",
+        "-28.25",
+        "-402.25"
+      ],
+      "answerIndex": 2,
+      "explanation": "Multiplication before subtraction: 12.5 × 6.3 = 78.75, then 50.5 − 78.75 = −28.25.",
+      "dedupeKey": "exam:ex-001"
+    },
+    {
+      "id": "ex-002",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "How much gold remains with the goldsmith when he removes 2.005 gm of wastage by melting a gold chain weighing 10.25 gm?",
+      "options": [
+        "8.125 gm",
+        "8.145 gm",
+        "8.225 gm",
+        "8.245 gm"
+      ],
+      "answerIndex": 3,
+      "explanation": "10.25 − 2.005 = 8.245 gm. Align the decimals: 10.250 − 2.005 = 8.245.",
+      "dedupeKey": "exam:ex-002"
+    },
+    {
+      "id": "ex-003",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The average of eight numbers is 24. If one number is removed, the average of the remaining numbers is 21. Find the number which is removed.",
+      "options": [
+        "43",
+        "44",
+        "45",
+        "46"
+      ],
+      "answerIndex": 2,
+      "explanation": "Total of 8 numbers = 8 × 24 = 192. Total of remaining 7 = 7 × 21 = 147. Removed number = 192 − 147 = 45.",
+      "dedupeKey": "exam:ex-003"
+    },
+    {
+      "id": "ex-004",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "How many minutes are in one day?",
+      "options": [
+        "1440",
+        "1260",
+        "86400",
+        "1400"
+      ],
+      "answerIndex": 0,
+      "explanation": "24 hours × 60 minutes = 1440 minutes. (86,400 is the number of seconds.)",
+      "dedupeKey": "exam:ex-004"
+    },
+    {
+      "id": "ex-005",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a music classroom, the number of benches and students are such that if each student occupies one bench, one student is left without a seat. However, if two students share each bench, one bench remains empty. How many students are in the classroom?",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "answerIndex": 2,
+      "explanation": "Students = benches + 1, and students = 2 × (benches − 1). So B + 1 = 2(B − 1), giving B = 3 benches and 4 students.",
+      "dedupeKey": "exam:ex-005"
+    },
+    {
+      "id": "ex-006",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "In a class of 270 students, 30% like cricket. How many students do not like cricket?",
+      "options": [
+        "178",
+        "189",
+        "81",
+        "90"
+      ],
+      "answerIndex": 1,
+      "explanation": "70% do not like cricket: 270 × 0.70 = 189 students.",
+      "dedupeKey": "exam:ex-006"
+    },
+    {
+      "id": "ex-007",
+      "category": "letter-coding",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In a certain language, CORK is written as BPQLK and SEEK is written as RFDLK. How will the word BOOT be written in that code language?",
+      "options": [
+        "CPNUT",
+        "APNUT",
+        "APNUK",
+        "CPNST"
+      ],
+      "answerIndex": 1,
+      "explanation": "Letters 1–3 shift −1, +1, −1 (C→B, O→P, R→Q; S→R, E→F, E→D). The last letter expands to (next letter)(itself): K→LK, so T→UT. BOOT → A-P-N-UT = APNUT.",
+      "dedupeKey": "exam:ex-007"
+    },
+    {
+      "id": "ex-008",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The string of a kite is 200 m long and makes an angle of 30° with the ground. The height of the kite above the ground is:",
+      "options": [
+        "175 m",
+        "150 m",
+        "100 m",
+        "75 m"
+      ],
+      "answerIndex": 2,
+      "explanation": "Height = 200 × sin 30° = 200 × 0.5 = 100 m.",
+      "dedupeKey": "exam:ex-008"
+    },
+    {
+      "id": "ex-009",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "If each side of a square is increased by 20%, then its area is increased by:",
+      "options": [
+        "25%",
+        "30%",
+        "40%",
+        "44%"
+      ],
+      "answerIndex": 3,
+      "explanation": "New side = 1.2s, new area = 1.44s², so the area increases by 44% (not 40%).",
+      "dedupeKey": "exam:ex-009"
+    },
+    {
+      "id": "ex-010",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The area of a square whose diagonal is 10 cm is _____.",
+      "options": [
+        "20 cm²",
+        "30 cm²",
+        "40 cm²",
+        "50 cm²"
+      ],
+      "answerIndex": 3,
+      "explanation": "Area = diagonal² / 2 = 10² / 2 = 50 cm².",
+      "dedupeKey": "exam:ex-010"
+    },
+    {
+      "id": "ex-011",
+      "category": "competitive-math",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "The sum of the squares of two numbers is 3341, and the difference of their squares is 891. Then the difference between the numbers is:",
+      "options": [
+        "11",
+        "13",
+        "17",
+        "21"
+      ],
+      "answerIndex": 0,
+      "explanation": "a² + b² = 3341 and a² − b² = 891 → a² = 2116, b² = 1225 → a = 46, b = 35 → a − b = 11.",
+      "dedupeKey": "exam:ex-011"
+    },
+    {
+      "id": "ex-012",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The sum of three numbers is 132. If the first is twice the second and the third is one third of the first, then the second number is:",
+      "options": [
+        "32",
+        "36",
+        "48",
+        "60"
+      ],
+      "answerIndex": 1,
+      "explanation": "Let the second number be x. First = 2x, third = 2x/3. Then 2x + x + 2x/3 = 132 → 11x/3 = 132 → x = 36.",
+      "dedupeKey": "exam:ex-012"
+    },
+    {
+      "id": "ex-013",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Two pipes X and Y can separately fill a tank in 2 hours and 3 hours respectively. If both pipes are opened simultaneously in the empty tank, in what time will the tank be filled?",
+      "options": [
+        "1 hour and 20 minutes",
+        "1 hour and 30 minutes",
+        "1 hour and 12 minutes",
+        "2 hours"
+      ],
+      "answerIndex": 2,
+      "explanation": "Combined rate = 1/2 + 1/3 = 5/6 of the tank per hour → time = 6/5 hours = 1 hour 12 minutes.",
+      "dedupeKey": "exam:ex-013"
+    },
+    {
+      "id": "ex-014",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The speed of a boat in still water is 10 km/hr. It is rowed upstream for a distance of 45 km in 6 hours. The speed of the stream (in km/hr) is _____.",
+      "options": [
+        "3.5",
+        "7.5",
+        "6",
+        "2.5"
+      ],
+      "answerIndex": 3,
+      "explanation": "Upstream speed = 45/6 = 7.5 km/hr. Stream speed = still-water speed − upstream speed = 10 − 7.5 = 2.5 km/hr.",
+      "dedupeKey": "exam:ex-014"
+    },
+    {
+      "id": "ex-015",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "If the sum of three consecutive even numbers is 150, then the numbers are:",
+      "options": [
+        "40, 42, 44",
+        "38, 40, 42",
+        "44, 46, 48",
+        "48, 50, 52"
+      ],
+      "answerIndex": 3,
+      "explanation": "Middle number = 150/3 = 50, so the numbers are 48, 50, 52.",
+      "dedupeKey": "exam:ex-015"
+    },
+    {
+      "id": "ex-016",
+      "category": "letter-coding",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a certain language, if TIGER is coded as VLIHT, then how will WORLD be coded?",
+      "options": [
+        "YRSOF",
+        "YRTOF",
+        "ZRTOF",
+        "ZRSOG"
+      ],
+      "answerIndex": 1,
+      "explanation": "Letters shift alternately +2, +3: T+2=V, I+3=L, G+2=I, E+3=H, R+2=T. So W+2=Y, O+3=R, R+2=T, L+3=O, D+2=F → YRTOF.",
+      "dedupeKey": "exam:ex-016"
+    },
+    {
+      "id": "ex-017",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The position of how many letters in the word \"HANDLE\" remain unchanged when they are arranged in alphabetical order?",
+      "options": [
+        "Nil",
+        "One",
+        "Two",
+        "Three"
+      ],
+      "answerIndex": 1,
+      "explanation": "Alphabetical order: A-D-E-H-L-N vs H-A-N-D-L-E. Only L (position 5) stays in place → one letter.",
+      "dedupeKey": "exam:ex-017"
+    },
+    {
+      "id": "ex-018",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the odd one out from the following options (shape: number of sides).",
+      "options": [
+        "Parallelogram: 4",
+        "Pentagon: 5",
+        "Triangle: 3",
+        "Rectangle: 2"
+      ],
+      "answerIndex": 3,
+      "explanation": "A rectangle has 4 sides, not 2. All other pairs correctly match the shape with its number of sides.",
+      "dedupeKey": "exam:ex-018"
+    },
+    {
+      "id": "ex-019",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The value of 5 × 8 + 32 ÷ 8 is _____.",
+      "options": [
+        "9",
+        "15",
+        "37",
+        "44"
+      ],
+      "answerIndex": 3,
+      "explanation": "BODMAS: 5 × 8 = 40 and 32 ÷ 8 = 4, so 40 + 4 = 44.",
+      "dedupeKey": "exam:ex-019"
+    },
+    {
+      "id": "ex-020",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "An athlete covers a distance of 1200 meters in 4 minutes and 48 seconds. His speed in kilometers per hour is _____.",
+      "options": [
+        "10",
+        "12",
+        "18",
+        "15"
+      ],
+      "answerIndex": 3,
+      "explanation": "4 min 48 s = 288 s. Speed = 1200/288 m/s = 4.167 m/s × 3.6 = 15 km/h.",
+      "dedupeKey": "exam:ex-020"
+    },
+    {
+      "id": "ex-021",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Which of the following numbers is divisible by 6?",
+      "options": [
+        "8555",
+        "8503",
+        "8532",
+        "8536"
+      ],
+      "answerIndex": 2,
+      "explanation": "A number divisible by 6 must be even and have a digit sum divisible by 3. 8532: even, 8+5+3+2 = 18 → divisible by 6.",
+      "dedupeKey": "exam:ex-021"
+    },
+    {
+      "id": "ex-022",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The least number that must be added to 2945 to make it a perfect square is _____.",
+      "options": [
+        "70",
+        "29",
+        "45",
+        "80"
+      ],
+      "answerIndex": 3,
+      "explanation": "54² = 2916 and 55² = 3025. Next perfect square after 2945 is 3025, so add 3025 − 2945 = 80.",
+      "dedupeKey": "exam:ex-022"
+    },
+    {
+      "id": "ex-023",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "A 500-watt lamp used for 10 hours will consume _____ of energy. (1 unit = 1 kWh)",
+      "options": [
+        "10 units",
+        "0.5 units",
+        "50 units",
+        "5 units"
+      ],
+      "answerIndex": 3,
+      "explanation": "Energy = 500 W × 10 h = 5000 Wh = 5 kWh = 5 units.",
+      "dedupeKey": "exam:ex-023"
+    },
+    {
+      "id": "ex-024",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A 2 kW water heater operates for 6 hours per day. If the cost of each unit (1 kWh) is ₹2, what is the total bill for one month of 30 days?",
+      "options": [
+        "₹1,000",
+        "₹720",
+        "₹840",
+        "₹1,140"
+      ],
+      "answerIndex": 1,
+      "explanation": "Daily use = 2 kW × 6 h = 12 kWh → 12 × 30 = 360 units → 360 × ₹2 = ₹720.",
+      "dedupeKey": "exam:ex-024"
+    },
+    {
+      "id": "ex-025",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A square board measuring 35 sq.m is to be polished. If Ravi polishes 7000 sq.cm each day, in how many days will he polish the whole board?",
+      "options": [
+        "5 days",
+        "20 days",
+        "25 days",
+        "50 days"
+      ],
+      "answerIndex": 3,
+      "explanation": "35 m² = 35 × 10,000 = 350,000 cm². Days = 350,000 ÷ 7000 = 50 days.",
+      "dedupeKey": "exam:ex-025"
+    },
+    {
+      "id": "ex-026",
+      "category": "competitive-math",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "The ratio of present ages of Mayur and his wife Lata is 7:6. After 6 years the ratio will be 8:7. During their marriage, the ratio of their ages was 4:3. How long ago did they get married?",
+      "options": [
+        "16 years",
+        "17 years",
+        "18 years",
+        "19 years"
+      ],
+      "answerIndex": 2,
+      "explanation": "(7x+6)/(6x+6) = 8/7 → x = 6, so ages are 42 and 36. Marriage y years ago: (42−y)/(36−y) = 4/3 → y = 18 years.",
+      "dedupeKey": "exam:ex-026"
+    },
+    {
+      "id": "ex-027",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Seven mason workers working for 5 hours a day can complete one fifth of the work. In how many days will the total task be completed if the mason workers work at the same rate?",
+      "options": [
+        "4 days",
+        "5 days",
+        "6 days",
+        "7 days"
+      ],
+      "answerIndex": 1,
+      "explanation": "One-fifth of the work is done per day, so the full task takes 1 ÷ (1/5) = 5 days.",
+      "dedupeKey": "exam:ex-027"
+    },
+    {
+      "id": "ex-028",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Statements: 1. Some professors are researchers. 2. All researchers are scholars. 3. No scholar is a politician. Conclusions: 1. Some professors are not politicians. 2. No professor is a politician. Which conclusion(s) logically follow?",
+      "options": [
+        "Only conclusion 1 follows",
+        "Only conclusion 2 follows",
+        "Both conclusions follow",
+        "Neither conclusion 1 nor 2 follows"
+      ],
+      "answerIndex": 0,
+      "explanation": "The professors who are researchers are scholars, and no scholar is a politician — so some professors are not politicians. But nothing proves ALL professors are not politicians, so only conclusion 1 follows.",
+      "dedupeKey": "exam:ex-028"
+    },
+    {
+      "id": "ex-030",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "It is 7:00 AM. Ravi is standing in a garden such that his shadow falls to his left. He walks 100 meters forward, turns right and walks 50 meters, turns right again and walks 100 meters, then turns left and walks 70 meters. In which direction is Ravi finally facing, and how far is he from the starting point?",
+      "options": [
+        "North, 120 m",
+        "East, 120 m",
+        "West, 100 m",
+        "South, 120 m"
+      ],
+      "answerIndex": 1,
+      "explanation": "Morning shadows point west; shadow on Ravi's left means he faces north. North 100 m → right (east) 50 m → right (south) 100 m → left (east) 70 m. North–south cancels; he is 120 m east of the start, facing East.",
+      "dedupeKey": "exam:ex-030"
+    },
+    {
+      "id": "ex-031",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Select the correct option that continues the pattern and replaces the question mark in the following series: 0, 2, 6, 14, 30, 62, ?",
+      "options": [
+        "126",
+        "146",
+        "120",
+        "84"
+      ],
+      "answerIndex": 0,
+      "explanation": "Differences double each step: +2, +4, +8, +16, +32 → next difference +64, so 62 + 64 = 126.",
+      "dedupeKey": "exam:ex-031"
+    },
+    {
+      "id": "gp-001",
+      "category": "competitive-math",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A person starts from point A and travels 3 km eastwards to B, then turns left and travels thrice that distance to reach C. He again turns left and travels five times the distance he covered between A and B to reach his destination D. What is the shortest distance between the starting point A and the destination D?",
+      "options": [
+        "12 km",
+        "15 km",
+        "16 km",
+        "18 km"
+      ],
+      "answerIndex": 1,
+      "explanation": "A→B is 3 km east. B→C turns left (north) for 9 km. C→D turns left (west) for 15 km. Taking A = (0,0): B = (3,0), C = (3,9), D = (−12,9). Distance AD = √(12² + 9²) = √225 = 15 km.",
+      "dedupeKey": "exam:gp-001"
+    },
+    {
+      "id": "gp-002",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Ankit is the son of Zubin. Manju is the daughter of Anil. Sheela is the mother of Manju. Mohan is the full brother of Manju (both are children of the same parents). How is Mohan related to Sheela?",
+      "options": [
+        "Brother",
+        "Father",
+        "Son",
+        "Cannot be determined"
+      ],
+      "answerIndex": 2,
+      "explanation": "Sheela is Manju's mother. Mohan is Manju's full brother, so he is also Sheela's child: Sheela's son.",
+      "dedupeKey": "exam:gp-002"
+    },
+    {
+      "id": "gp-003",
+      "category": "letter-coding",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Words in an artificial language: malgauper means peach cobbler; malgaport means peach juice; moggagrop means apple jelly. Which word could mean \"apple juice\"?",
+      "options": [
+        "malgauper",
+        "gropport",
+        "moggagrop",
+        "moggaport"
+      ],
+      "answerIndex": 3,
+      "explanation": "\"malga\" = peach (common to peach cobbler and peach juice), so \"port\" = juice. \"moggag\" = apple (from apple jelly, where \"grop\" = jelly). Apple juice = moggag + port = moggaport.",
+      "dedupeKey": "exam:gp-003"
+    },
+    {
+      "id": "gp-004",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "How many times in a day are the hands of a clock in a straight line but opposite in direction?",
+      "options": [
+        "20",
+        "22",
+        "24",
+        "48"
+      ],
+      "answerIndex": 1,
+      "explanation": "The hands are exactly opposite 11 times in 12 hours, so 22 times in a full day.",
+      "dedupeKey": "exam:gp-004"
+    },
+    {
+      "id": "gp-005",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The present ages of Sameer and Anand are in the ratio 5:4. Three years hence, the ratio of their ages will become 11:9. What is Anand's present age in years?",
+      "options": [
+        "24",
+        "27",
+        "40",
+        "Cannot be determined"
+      ],
+      "answerIndex": 0,
+      "explanation": "Let the ages be 5x and 4x. (5x + 3)/(4x + 3) = 11/9 → 45x + 27 = 44x + 33 → x = 6. Anand = 4 × 6 = 24.",
+      "dedupeKey": "exam:gp-005"
+    },
+    {
+      "id": "gp-006",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Choose the best alternative: 42 : 56 :: 110 : ?",
+      "options": [
+        "132",
+        "134",
+        "136",
+        "138"
+      ],
+      "answerIndex": 0,
+      "explanation": "42 = 6 × 7 and 56 = 7 × 8, so each number n maps to n × (n + 1) with the next n. 110 = 10 × 11, so the answer is 11 × 12 = 132.",
+      "dedupeKey": "exam:gp-006"
+    },
+    {
+      "id": "gp-007",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A is 1 km north of B, and C is 2 km east of B. H is 2 km south of A. G is 1 km west of H, and D is 3 km east of G. E is exactly halfway between H and D. What is the distance between E and G?",
+      "options": [
+        "1.5 km",
+        "2 km",
+        "3 km",
+        "4 km"
+      ],
+      "answerIndex": 1,
+      "explanation": "Taking B = (0,0): A = (0,1), H = (0,−1), G = (−1,−1), D = (2,−1), E = midpoint of H and D = (1,−1). EG = 1 − (−1) = 2 km.",
+      "dedupeKey": "exam:gp-007"
+    },
+    {
+      "id": "ex-032",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "What is the simple interest on ₹6,000 at 5% per annum for 4 years?",
+      "options": [
+        "₹1,000",
+        "₹1,200",
+        "₹1,400",
+        "₹1,600"
+      ],
+      "answerIndex": 1,
+      "explanation": "SI = P × R × T / 100 = ₹6,000 × 5 × 4 / 100 = ₹1,200.",
+      "dedupeKey": "exam:ex-032"
+    },
+    {
+      "id": "ex-033",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "What is the compound interest on ₹8,000 at 10% per annum, compounded annually, for 2 years?",
+      "options": [
+        "₹1,440",
+        "₹1,600",
+        "₹1,680",
+        "₹1,800"
+      ],
+      "answerIndex": 2,
+      "explanation": "Amount = ₹8,000 × 1.1 × 1.1 = ₹9,680. CI = ₹9,680 − ₹8,000 = ₹1,680.",
+      "dedupeKey": "exam:ex-033"
+    },
+    {
+      "id": "ex-034",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A shopkeeper gives successive discounts of 20% and then 10% on an article priced at ₹1,000. What is the final price?",
+      "options": [
+        "₹700",
+        "₹720",
+        "₹750",
+        "₹800"
+      ],
+      "answerIndex": 1,
+      "explanation": "₹1,000 × 0.80 = ₹800, then ₹800 × 0.90 = ₹720. (Successive discounts do not add to 30%: the total reduction is 28%.)",
+      "dedupeKey": "exam:ex-034"
+    },
+    {
+      "id": "ex-035",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "An article costs ₹250 and is sold for ₹300. What is the profit percentage?",
+      "options": [
+        "15%",
+        "20%",
+        "25%",
+        "30%"
+      ],
+      "answerIndex": 1,
+      "explanation": "Profit = ₹300 − ₹250 = ₹50. Profit % = ₹50 / ₹250 × 100 = 20%.",
+      "dedupeKey": "exam:ex-035"
+    },
+    {
+      "id": "ex-036",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A can finish a piece of work in 12 days and B can finish it in 24 days. Working together, in how many days will they finish it?",
+      "options": [
+        "6 days",
+        "7 days",
+        "8 days",
+        "9 days"
+      ],
+      "answerIndex": 2,
+      "explanation": "Combined rate = 1/12 + 1/24 = 3/24 = 1/8 of the work per day → 8 days.",
+      "dedupeKey": "exam:ex-036"
+    },
+    {
+      "id": "ex-037",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A car travels 240 km in 4 hours and then 180 km in 3 hours. What is its average speed for the whole journey?",
+      "options": [
+        "50 km/h",
+        "55 km/h",
+        "60 km/h",
+        "65 km/h"
+      ],
+      "answerIndex": 2,
+      "explanation": "Total distance = 420 km. Total time = 7 h. Average speed = 420 ÷ 7 = 60 km/h.",
+      "dedupeKey": "exam:ex-037"
+    },
+    {
+      "id": "ex-038",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The average of five numbers is 18. When one number, 10, is replaced by another number, the average becomes 20. What is the new number?",
+      "options": [
+        "18",
+        "20",
+        "22",
+        "24"
+      ],
+      "answerIndex": 1,
+      "explanation": "Original total = 5 × 18 = 90. New total = 5 × 20 = 100. New number = 100 − (90 − 10) = 20.",
+      "dedupeKey": "exam:ex-038"
+    },
+    {
+      "id": "ex-039",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Two numbers are in the ratio 3:5 and their sum is 96. What is the larger number?",
+      "options": [
+        "48",
+        "54",
+        "60",
+        "64"
+      ],
+      "answerIndex": 2,
+      "explanation": "Total parts = 8, so one part = 96 ÷ 8 = 12. Larger number = 5 × 12 = 60.",
+      "dedupeKey": "exam:ex-039"
+    },
+    {
+      "id": "ex-040",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "When a number is increased by 25%, the result is 150. What was the original number?",
+      "options": [
+        "100",
+        "110",
+        "120",
+        "125"
+      ],
+      "answerIndex": 2,
+      "explanation": "1.25 × N = 150 → N = 150 ÷ 1.25 = 120.",
+      "dedupeKey": "exam:ex-040"
+    },
+    {
+      "id": "ex-041",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "40 litres of a mixture contains milk and water in the ratio 7:3. How many litres of water are in the mixture?",
+      "options": [
+        "10 L",
+        "12 L",
+        "14 L",
+        "16 L"
+      ],
+      "answerIndex": 1,
+      "explanation": "Water = 3/10 of 40 = 12 litres.",
+      "dedupeKey": "exam:ex-041"
+    },
+    {
+      "id": "ex-042",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "A boat has a speed of 12 km/h in still water. The stream flows at 4 km/h. What is the boat's speed upstream?",
+      "options": [
+        "6 km/h",
+        "8 km/h",
+        "10 km/h",
+        "12 km/h"
+      ],
+      "answerIndex": 1,
+      "explanation": "Upstream speed = still-water speed − stream speed = 12 − 4 = 8 km/h.",
+      "dedupeKey": "exam:ex-042"
+    },
+    {
+      "id": "ex-043",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A 120 m long train moving at 36 km/h crosses a 180 m long bridge. How many seconds does it take from the moment its front reaches the bridge until its last coach leaves it?",
+      "options": [
+        "20 s",
+        "25 s",
+        "30 s",
+        "36 s"
+      ],
+      "answerIndex": 2,
+      "explanation": "Distance = 120 + 180 = 300 m. Speed = 36 km/h = 10 m/s. Time = 300 ÷ 10 = 30 s.",
+      "dedupeKey": "exam:ex-043"
+    },
+    {
+      "id": "ex-044",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "What is the LCM of 8, 12 and 18?",
+      "options": [
+        "36",
+        "48",
+        "72",
+        "144"
+      ],
+      "answerIndex": 2,
+      "explanation": "8 = 2³, 12 = 2² × 3, 18 = 2 × 3². LCM = 2³ × 3² = 8 × 9 = 72.",
+      "dedupeKey": "exam:ex-044"
+    },
+    {
+      "id": "ex-045",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "What is 35% of 420?",
+      "options": [
+        "135",
+        "142",
+        "147",
+        "152"
+      ],
+      "answerIndex": 2,
+      "explanation": "0.35 × 420 = 147.",
+      "dedupeKey": "exam:ex-045"
+    },
+    {
+      "id": "ex-046",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "What is the cube root of 1331?",
+      "options": [
+        "9",
+        "10",
+        "11",
+        "13"
+      ],
+      "answerIndex": 2,
+      "explanation": "11 × 11 × 11 = 1331, so the cube root is 11.",
+      "dedupeKey": "exam:ex-046"
+    },
+    {
+      "id": "ex-047",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "What is 2/3 of 3/4 of 80?",
+      "options": [
+        "36",
+        "40",
+        "44",
+        "48"
+      ],
+      "answerIndex": 1,
+      "explanation": "3/4 of 80 = 60. 2/3 of 60 = 40.",
+      "dedupeKey": "exam:ex-047"
+    },
+    {
+      "id": "ex-048",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "6 men can finish a job in 10 days. How many days will 4 men take to finish the same job, working at the same rate?",
+      "options": [
+        "12",
+        "15",
+        "18",
+        "20"
+      ],
+      "answerIndex": 1,
+      "explanation": "Total work = 6 × 10 = 60 man-days. Days for 4 men = 60 ÷ 4 = 15.",
+      "dedupeKey": "exam:ex-048"
+    },
+    {
+      "id": "ex-049",
+      "category": "competitive-math",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A father is 4 times as old as his son. Five years from now, the father will be 3 times as old as the son. What is the son's present age?",
+      "options": [
+        "8",
+        "10",
+        "12",
+        "15"
+      ],
+      "answerIndex": 1,
+      "explanation": "Let the son be S, father 4S. 4S + 5 = 3(S + 5) → 4S + 5 = 3S + 15 → S = 10. Father = 40; in five years 45 and 15, and 45 = 3 × 15.",
+      "dedupeKey": "exam:ex-049"
+    },
+    {
+      "id": "ex-050",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "The price of a book is ₹360. It is reduced by 15%. What is the new price?",
+      "options": [
+        "₹294",
+        "₹306",
+        "₹312",
+        "₹324"
+      ],
+      "answerIndex": 1,
+      "explanation": "15% of ₹360 = ₹54. New price = ₹360 − ₹54 = ₹306.",
+      "dedupeKey": "exam:ex-050"
+    },
+    {
+      "id": "ex-051",
+      "category": "number-series",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 3, 7, 15, 31, 63, ?",
+      "options": [
+        "117",
+        "125",
+        "127",
+        "131"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each term is double the previous term plus 1: 63 × 2 + 1 = 127.",
+      "dedupeKey": "exam:ex-051"
+    },
+    {
+      "id": "ex-052",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 5, 8, 14, 23, 35, ?",
+      "options": [
+        "48",
+        "50",
+        "52",
+        "56"
+      ],
+      "answerIndex": 1,
+      "explanation": "Differences are +3, +6, +9, +12, so the next difference is +15: 35 + 15 = 50.",
+      "dedupeKey": "exam:ex-052"
+    },
+    {
+      "id": "ex-053",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 2, 6, 18, 54, ?",
+      "options": [
+        "108",
+        "144",
+        "162",
+        "216"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each term is multiplied by 3: 54 × 3 = 162.",
+      "dedupeKey": "exam:ex-053"
+    },
+    {
+      "id": "ex-054",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 100, 96, 88, 72, 40, ?",
+      "options": [
+        "-24",
+        "-8",
+        "8",
+        "24"
+      ],
+      "answerIndex": 0,
+      "explanation": "Differences double with each step: −4, −8, −16, −32, so the next difference is −64. 40 − 64 = −24.",
+      "dedupeKey": "exam:ex-054"
+    },
+    {
+      "id": "ex-055",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 1, 3, 7, 13, 21, ?",
+      "options": [
+        "29",
+        "31",
+        "33",
+        "35"
+      ],
+      "answerIndex": 1,
+      "explanation": "Differences are +2, +4, +6, +8, so the next difference is +10: 21 + 10 = 31.",
+      "dedupeKey": "exam:ex-055"
+    },
+    {
+      "id": "ex-056",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "One number in the series 4, 9, 16, 25, 37, 49, 64 is wrong. Which number is wrong?",
+      "options": [
+        "16",
+        "25",
+        "37",
+        "49"
+      ],
+      "answerIndex": 2,
+      "explanation": "The series is the squares 2², 3², 4², … 8². The 5th term should be 6² = 36, so 37 is wrong.",
+      "dedupeKey": "exam:ex-056"
+    },
+    {
+      "id": "ex-057",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 10, 2, 20, 4, 40, 8, ?",
+      "options": [
+        "16",
+        "40",
+        "80",
+        "160"
+      ],
+      "answerIndex": 2,
+      "explanation": "The series alternates ÷5 and ×10: 10 ÷ 5 = 2, 2 × 10 = 20, 20 ÷ 5 = 4, 4 × 10 = 40, 40 ÷ 5 = 8, 8 × 10 = 80.",
+      "dedupeKey": "exam:ex-057"
+    },
+    {
+      "id": "ex-058",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 6, 11, 21, 36, 56, ?",
+      "options": [
+        "76",
+        "78",
+        "81",
+        "86"
+      ],
+      "answerIndex": 2,
+      "explanation": "Differences are +5, +10, +15, +20, so the next difference is +25: 56 + 25 = 81.",
+      "dedupeKey": "exam:ex-058"
+    },
+    {
+      "id": "ex-059",
+      "category": "letter-coding",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In a certain code, MOUSE is written as NQXWH. How will TABLE be written in the same code?",
+      "options": [
+        "UBEPJ",
+        "UCDPJ",
+        "UCEPJ",
+        "UCEOJ"
+      ],
+      "answerIndex": 2,
+      "explanation": "The shifts are +1, +2, +3, +4, +5 for the five letters. TABLE: T+1 = U, A+2 = C, B+3 = E, L+4 = P, E+5 = J → UCEPJ.",
+      "dedupeKey": "exam:ex-059"
+    },
+    {
+      "id": "ex-060",
+      "category": "letter-coding",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If CAB = 6 and BED = 11 when each letter is replaced by its alphabet position, what is the value of DEAF?",
+      "options": [
+        "14",
+        "15",
+        "16",
+        "18"
+      ],
+      "answerIndex": 2,
+      "explanation": "D = 4, E = 5, A = 1, F = 6. Total = 4 + 5 + 1 + 6 = 16.",
+      "dedupeKey": "exam:ex-060"
+    },
+    {
+      "id": "ex-061",
+      "category": "letter-coding",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If the alphabet is reversed (A = Z, B = Y, C = X, …), how is BOOK written?",
+      "options": [
+        "YLLP",
+        "YLPP",
+        "ZLLP",
+        "YLLO"
+      ],
+      "answerIndex": 0,
+      "explanation": "Reversal maps position p to 27 − p. B (2) → 25 = Y. O (15) → 12 = L. K (11) → 16 = P. BOOK → YLLP.",
+      "dedupeKey": "exam:ex-061"
+    },
+    {
+      "id": "ex-062",
+      "category": "letter-coding",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a certain code, 12 is written as 24 and 15 is written as 30. How is 21 written in the same code?",
+      "options": [
+        "36",
+        "40",
+        "42",
+        "45"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each number is doubled: 21 × 2 = 42.",
+      "dedupeKey": "exam:ex-062"
+    },
+    {
+      "id": "ex-063",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Pointing to a man, a woman says, \"His mother is the only daughter of my father.\" How is the woman related to the man?",
+      "options": [
+        "Aunt",
+        "Sister",
+        "Mother",
+        "Grandmother"
+      ],
+      "answerIndex": 2,
+      "explanation": "The only daughter of the woman's father is the woman herself, so the man's mother is the woman.",
+      "dedupeKey": "exam:ex-063"
+    },
+    {
+      "id": "ex-064",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Priya walks 5 km south, turns left and walks 3 km, then turns left again and walks 5 km. How far is she from her starting point, and in which direction?",
+      "options": [
+        "3 km east",
+        "3 km west",
+        "5 km east",
+        "2 km east"
+      ],
+      "answerIndex": 0,
+      "explanation": "Facing south, left is east: 3 km east. Facing east, left is north: 5 km north. The 5 km south and 5 km north cancel, so she is 3 km east of the start.",
+      "dedupeKey": "exam:ex-064"
+    },
+    {
+      "id": "ex-065",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a class of 40 students, Anil ranks 15th from the top. What is his rank from the bottom?",
+      "options": [
+        "24",
+        "25",
+        "26",
+        "27"
+      ],
+      "answerIndex": 2,
+      "explanation": "Rank from bottom = total − rank from top + 1 = 40 − 15 + 1 = 26.",
+      "dedupeKey": "exam:ex-065"
+    },
+    {
+      "id": "ex-066",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "If 15 August 2023 was a Tuesday, what day of the week was 15 August 2024? (The period includes 29 February 2024.)",
+      "options": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "answerIndex": 2,
+      "explanation": "From 15 August 2023 to 15 August 2024 is 366 days, because 29 February 2024 falls in between. 366 mod 7 = 2. Tuesday + 2 = Thursday.",
+      "dedupeKey": "exam:ex-066"
+    },
+    {
+      "id": "ex-067",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "What is the smaller angle between the hour hand and the minute hand of a clock at 2:20?",
+      "options": [
+        "40°",
+        "50°",
+        "60°",
+        "70°"
+      ],
+      "answerIndex": 1,
+      "explanation": "Hour hand at 2:20 = 2 × 30° + 20 × 0.5° = 70°. Minute hand at 20 minutes = 120°. Difference = 50°.",
+      "dedupeKey": "exam:ex-067"
+    },
+    {
+      "id": "ex-068",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Statements: 1. All roses are flowers. 2. Some flowers are red. Conclusions: I. Some roses are red. II. All roses are red. Which conclusion(s) logically follow?",
+      "options": [
+        "Only I follows",
+        "Only II follows",
+        "Both follow",
+        "Neither follows"
+      ],
+      "answerIndex": 3,
+      "explanation": "The red flowers might not include any rose, so I does not follow. II is not stated by the premises. Neither follows.",
+      "dedupeKey": "exam:ex-068"
+    },
+    {
+      "id": "ex-069",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Statements: 1. All doctors are engineers. 2. No engineer is a teacher. Conclusions: I. No doctor is a teacher. II. Some teachers are doctors. Which conclusion(s) logically follow?",
+      "options": [
+        "Only I follows",
+        "Only II follows",
+        "Both follow",
+        "Neither follows"
+      ],
+      "answerIndex": 0,
+      "explanation": "Every doctor is an engineer, and no engineer is a teacher, so no doctor is a teacher (I follows). II contradicts this, so it does not follow.",
+      "dedupeKey": "exam:ex-069"
+    },
+    {
+      "id": "ex-070",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the odd one out: 3, 11, 15, 17",
+      "options": [
+        "3",
+        "11",
+        "15",
+        "17"
+      ],
+      "answerIndex": 2,
+      "explanation": "3, 11 and 17 are prime. 15 = 3 × 5 is not.",
+      "dedupeKey": "exam:ex-070"
+    },
+    {
+      "id": "ex-071",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Five friends A, B, C, D and E sit in a row facing north. A is at the left end and E is at the right end. C sits immediately to the right of A. B sits between C and D. Who sits in the middle?",
+      "options": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "answerIndex": 1,
+      "explanation": "Positions from left: A = 1, C = 2 (right of A), E = 5 (right end). B is between C and D, so B = 3 and D = 4. The middle person (position 3) is B.",
+      "dedupeKey": "exam:ex-071"
+    },
+    {
+      "id": "ex-121",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Five runners finish a race. A finishes before C. E finishes immediately after C. D finishes after E, and B finishes after D. Who finishes in the middle?",
+      "options": [
+        "A",
+        "C",
+        "E",
+        "D"
+      ],
+      "answerIndex": 2,
+      "explanation": "The clues establish A before C, then E, then D, then B: A, C, E, D, B. The third of five positions is E.",
+      "dedupeKey": "exam:ex-121"
+    },
+    {
+      "id": "ex-122",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A fair coin is tossed twice. Given that at least one toss is heads, what is the probability that both tosses are heads?",
+      "options": [
+        "1/4",
+        "1/3",
+        "1/2",
+        "2/3"
+      ],
+      "answerIndex": 1,
+      "explanation": "The equally likely outcomes with at least one head are HH, HT and TH. Only HH has two heads, so the conditional probability is 1 out of 3.",
+      "dedupeKey": "exam:ex-122"
+    },
+    {
+      "id": "ex-123",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "One of A, B or C committed a theft. Exactly one of these statements is true: A says, “B did it.” B says, “C did it.” C says, “B did not do it.” Who could have committed the theft?",
+      "options": [
+        "A only",
+        "B only",
+        "C only",
+        "Either A or B"
+      ],
+      "answerIndex": 3,
+      "explanation": "If A did it, only C’s statement is true. If B did it, only A’s statement is true. If C did it, both B’s and C’s statements are true, contradicting the exactly-one condition. Therefore either A or B could be responsible; the clues do not distinguish between them.",
+      "dedupeKey": "exam:ex-123"
+    },
+    {
+      "id": "ex-124",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Four cards show A, D, 4 and 7. Each card has a letter on one side and a number on the other. To test the rule “If a card has a vowel on one side, it has an even number on the other,” which cards must be turned over?",
+      "options": [
+        "A and 4",
+        "A and 7",
+        "D and 4",
+        "D and 7"
+      ],
+      "answerIndex": 1,
+      "explanation": "Turn A to check that a vowel has an even number behind it. Turn 7 to check that an odd number does not have a vowel behind it. D can have either number, and 4 can have either letter without violating the rule.",
+      "dedupeKey": "exam:ex-124"
+    },
+    {
+      "id": "ex-125",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Ali, Bea and Chen are a doctor, an artist and a pilot, with each person having a different profession. Ali is not the doctor. Bea is not the artist. Chen is the pilot. What is Bea’s profession?",
+      "options": [
+        "Doctor",
+        "Artist",
+        "Pilot",
+        "Cannot be determined"
+      ],
+      "answerIndex": 0,
+      "explanation": "Chen is the pilot, so Ali and Bea must be the doctor and artist. Ali is not the doctor, so Ali is the artist. Bea must therefore be the doctor.",
+      "dedupeKey": "exam:ex-125"
+    },
+    {
+      "id": "ex-126",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In a group of 100 people, 55 like tea, 45 like coffee and 40 like juice. Twenty like both tea and coffee, 18 like both tea and juice, and 15 like both coffee and juice; each pair count includes people who like all three. Eight like all three. How many like none of these drinks?",
+      "options": [
+        "5",
+        "8",
+        "10",
+        "13"
+      ],
+      "answerIndex": 0,
+      "explanation": "By inclusion-exclusion, at least one = 55 + 45 + 40 − 20 − 18 − 15 + 8 = 95. Therefore 100 − 95 = 5 people like none.",
+      "dedupeKey": "exam:ex-126"
+    },
+    {
+      "id": "ex-127",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Statements: All poets are imaginative. No imaginative person is careless. Some teachers are poets. Conclusions: I. Some teachers are imaginative. II. No poet is careless. Which conclusions follow?",
+      "options": [
+        "Only I",
+        "Only II",
+        "Both I and II",
+        "Neither"
+      ],
+      "answerIndex": 2,
+      "explanation": "The teachers who are poets are imaginative, so conclusion I follows. Every poet is imaginative, and no imaginative person is careless, so no poet is careless; conclusion II also follows.",
+      "dedupeKey": "exam:ex-127"
+    },
+    {
+      "id": "ex-128",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A four-digit code is made by arranging 1, 2, 3 and 4 without repetition. How many possible codes have an even first digit?",
+      "options": [
+        "6",
+        "8",
+        "12",
+        "24"
+      ],
+      "answerIndex": 2,
+      "explanation": "The first digit can be 2 or 4 (2 choices). The other three digits can be arranged in 3! = 6 ways. Total = 2 × 6 = 12 codes.",
+      "dedupeKey": "exam:ex-128"
+    },
+    {
+      "id": "ex-129",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Assume these rules are always true: If the sensor detects smoke, the alarm sounds. The alarm did not sound. What must be true?",
+      "options": [
+        "The sensor detected smoke",
+        "The sensor did not detect smoke",
+        "The alarm is broken",
+        "There was no fire"
+      ],
+      "answerIndex": 1,
+      "explanation": "From “smoke detected → alarm sounds” and “alarm did not sound,” modus tollens gives “smoke was not detected.” The premises do not establish whether there was a fire or whether the alarm is broken.",
+      "dedupeKey": "exam:ex-129"
+    },
+    {
+      "id": "ex-130",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A survey asks 200 people leaving a cinema whether they enjoy films. The result is used to claim that most residents of the town enjoy films. What is the main problem with this conclusion?",
+      "options": [
+        "The sample is likely biased toward people who enjoy films",
+        "The sample is too large",
+        "The question is about films, not television",
+        "A survey cannot provide any evidence"
+      ],
+      "answerIndex": 0,
+      "explanation": "People leaving a cinema are more likely than the general population to enjoy films. This convenience sample is not representative of all town residents, so the conclusion is not justified by the survey.",
+      "dedupeKey": "exam:ex-130"
+    },
+    {
+      "id": "ex-131",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Four people A, B, C and D sit in a row. A is at the far left. C sits immediately to the left of D. B is not at the far right. Who sits second from the left?",
+      "options": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "answerIndex": 1,
+      "explanation": "A occupies the first seat. C-D must be consecutive. They cannot occupy seats 2–3, because then B would be fourth, which is ruled out. So C-D occupy seats 3–4 and B occupies seat 2.",
+      "dedupeKey": "exam:ex-131"
+    },
+    {
+      "id": "ex-132",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Three boxes are labeled Apples, Oranges and Mixed. Every label is wrong. You draw one fruit from the box labeled Mixed and it is an apple. Which box contains both apples and oranges?",
+      "options": [
+        "The box labeled Apples",
+        "The box labeled Oranges",
+        "The box labeled Mixed",
+        "It cannot be determined"
+      ],
+      "answerIndex": 1,
+      "explanation": "The box labeled Mixed cannot be mixed and the apple drawn shows it contains apples only. The box labeled Oranges cannot contain only oranges; it also cannot be apples-only because that box is already identified. Thus it must be the mixed box.",
+      "dedupeKey": "exam:ex-132"
+    },
+    {
+      "id": "ex-133",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Three switches outside a closed room each control one of three identical bulbs inside. You may operate the switches as you like, but may enter the room only once. The bulbs become warm when left on. How can you identify all three switch-to-bulb matches?",
+      "options": [
+        "Turn all switches on, then enter",
+        "Turn switch 1 on for several minutes, turn it off, turn switch 2 on, then enter",
+        "Turn switch 1 and 2 on, then enter",
+        "It is impossible"
+      ],
+      "answerIndex": 1,
+      "explanation": "After entering: the lit bulb belongs to switch 2; the unlit but warm bulb belongs to switch 1, which was on earlier; the unlit cool bulb belongs to switch 3.",
+      "dedupeKey": "exam:ex-133"
+    },
+    {
+      "id": "ex-134",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A three-digit code uses distinct digits. Clues: 682 has exactly one correct digit in the correct position; 614 has exactly one correct digit but in the wrong position; 206 has exactly two correct digits, both in the wrong positions; 738 has no correct digits; 780 has exactly one correct digit in the wrong position. What is the code?",
+      "options": [
+        "042",
+        "204",
+        "402",
+        "024"
+      ],
+      "answerIndex": 0,
+      "explanation": "738 excludes 7, 3 and 8. In 780, the one correct digit must be 0, but it is not in position 3. In 206, 0 and 2 are the two correct digits, both misplaced, so 0 is not position 2 and 2 is not position 1. Thus 0 is position 1 and 2 is position 3. From 682, the correctly placed digit is 2 in position 3; 6 is absent. The remaining digit is 4 in position 2, giving 042. It also satisfies 614.",
+      "dedupeKey": "exam:ex-134"
+    },
+    {
+      "id": "ex-135",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "All members of a hiking club completed the safety briefing. Nila completed the safety briefing. Does this prove that Nila is a member of the club?",
+      "options": [
+        "Yes, because all members completed it",
+        "No; a non-member could also have completed it",
+        "Yes, if the briefing was required",
+        "No; club members never take briefings"
+      ],
+      "answerIndex": 1,
+      "explanation": "The rule says membership implies briefing completion, but it does not say only members can complete the briefing. Concluding membership from completion reverses the implication, so Nila could be a non-member who also completed it.",
+      "dedupeKey": "exam:ex-135"
+    },
+    {
+      "id": "ex-136",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A farmer must take a wolf, a goat and a cabbage across a river. The boat carries the farmer and only one item. The wolf cannot be left alone with the goat, and the goat cannot be left alone with the cabbage. What is the minimum number of one-way crossings?",
+      "options": [
+        "5",
+        "6",
+        "7",
+        "9"
+      ],
+      "answerIndex": 2,
+      "explanation": "Seven crossings suffice: take the goat across; return alone; take the wolf across; bring the goat back; take the cabbage across; return alone; take the goat across. Fewer cannot work because the goat must be shuttled to prevent either forbidden pair being left together.",
+      "dedupeKey": "exam:ex-136"
+    },
+    {
+      "id": "ex-137",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "The only roads between four junctions have these distances: A–B 4 km, A–C 2 km, C–B 1 km, B–D 5 km and C–D 8 km. What is the shortest distance from A to D?",
+      "options": [
+        "7 km",
+        "8 km",
+        "9 km",
+        "10 km"
+      ],
+      "answerIndex": 1,
+      "explanation": "A–B–D = 4 + 5 = 9 km; A–C–D = 2 + 8 = 10 km; A–C–B–D = 2 + 1 + 5 = 8 km. The shortest route is 8 km.",
+      "dedupeKey": "exam:ex-137"
+    },
+    {
+      "id": "ex-138",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Is x greater than y? Statement I: x is greater than z. Statement II: z is greater than y. Which information is sufficient to answer the question?",
+      "options": [
+        "I alone is sufficient",
+        "II alone is sufficient",
+        "Either I or II alone is sufficient",
+        "Both together are sufficient, neither alone is sufficient"
+      ],
+      "answerIndex": 3,
+      "explanation": "I alone does not compare x with y, and II alone does not compare x with y. Together they give x > z > y, so x > y.",
+      "dedupeKey": "exam:ex-138"
+    },
+    {
+      "id": "ex-139",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A shop owner notices that ice-cream sales and sunburn cases both rise on hot days. He concludes that buying ice cream causes sunburn. Which factor best explains why this conclusion is weak?",
+      "options": [
+        "Hot weather can increase both independently",
+        "Ice cream is usually cold",
+        "Sunburn occurs outdoors",
+        "The two quantities cannot be measured"
+      ],
+      "answerIndex": 0,
+      "explanation": "A third factor—hot, sunny weather—can cause both higher ice-cream sales and more sunburn. The observed correlation alone does not show that one causes the other.",
+      "dedupeKey": "exam:ex-139"
+    },
+    {
+      "id": "ex-140",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In the Tower of Hanoi, one disk may be moved at a time and a larger disk may never be placed on a smaller one. What is the minimum number of moves needed to transfer four disks to another peg?",
+      "options": [
+        "12",
+        "14",
+        "15",
+        "16"
+      ],
+      "answerIndex": 2,
+      "explanation": "To move n disks, move n−1 disks aside, move the largest disk once, then move the n−1 disks onto it: T(n) = 2T(n−1) + 1. Starting with T(1)=1 gives T(2)=3, T(3)=7 and T(4)=15.",
+      "dedupeKey": "exam:ex-140"
+    },
+    {
+      "id": "ex-141",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A and B are each either truthful or always lying. A says, “B is lying.” B says, “A and I are different types.” Which description is consistent?",
+      "options": [
+        "A and B are both truthful",
+        "A is truthful and B is lying",
+        "A is lying and B is truthful",
+        "A and B are both lying"
+      ],
+      "answerIndex": 2,
+      "explanation": "If A were truthful, B would be lying, but B’s statement that they are different types would then be true—a contradiction. So A is lying and B is truthful; B’s statement is true because their types differ.",
+      "dedupeKey": "exam:ex-141"
+    },
+    {
+      "id": "ex-142",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "A is heavier than B. C is lighter than B. D is heavier than A. Who is the second heaviest?",
+      "options": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "answerIndex": 0,
+      "explanation": "The comparisons give D > A > B > C. Therefore A is second heaviest.",
+      "dedupeKey": "exam:ex-142"
+    },
+    {
+      "id": "ex-143",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Which statement is logically equivalent to “It is not true that both the key is red and the lock is open”?",
+      "options": [
+        "The key is not red, or the lock is not open (or both)",
+        "The key is not red and the lock is not open",
+        "The key is red or the lock is open",
+        "If the key is red, the lock is open"
+      ],
+      "answerIndex": 0,
+      "explanation": "By De Morgan’s law, not (P and Q) is equivalent to (not P) or (not Q). It does not require both conditions to be false.",
+      "dedupeKey": "exam:ex-143"
+    },
+    {
+      "id": "ex-144",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "A prize is equally likely to be behind any of three doors. You choose one. A host who knows where the prize is always opens one of the other doors to reveal a goat, then offers you a switch to the remaining closed door. What is the probability that switching wins the prize?",
+      "options": [
+        "1/3",
+        "1/2",
+        "2/3",
+        "1"
+      ],
+      "answerIndex": 2,
+      "explanation": "Your first choice is wrong with probability 2/3. When it is wrong, the host’s rules leave the prize behind the only other unopened door, so switching wins. Switching therefore wins with probability 2/3.",
+      "dedupeKey": "exam:ex-144"
+    },
+    {
+      "id": "ex-145",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "One of nine identical-looking coins is heavier than the others. Using a balance scale, what is the minimum number of weighings needed to guarantee identifying the heavier coin?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answerIndex": 1,
+      "explanation": "Divide the coins into three groups of three and weigh one group against another. The result identifies which group contains the heavier coin. Then weigh two coins from that group against each other; if balanced, the third is heavier, otherwise the heavier side identifies it. Two weighings suffice; one has only three possible outcomes and cannot distinguish nine coins.",
+      "dedupeKey": "exam:ex-145"
+    },
+    {
+      "id": "ex-146",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "A safety rule says: “A machine may operate only if its guard is locked and its operator is trained.” Machine M is operating. What must be true?",
+      "options": [
+        "Its guard is locked and its operator is trained",
+        "Its guard is locked, but the operator may be untrained",
+        "The operator is trained, but the guard may be unlocked",
+        "Nothing can be concluded"
+      ],
+      "answerIndex": 0,
+      "explanation": "“May operate only if P and Q” means operating implies both P and Q. Since M is operating, its guard is locked and its operator is trained.",
+      "dedupeKey": "exam:ex-146"
+    },
+    {
+      "id": "ex-147",
+      "category": "letter-coding",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "In a certain code, DELHI is written as EFMIJ. How is MUMBAI written in that code?",
+      "options": [
+        "NVNCBI",
+        "LTLAZH",
+        "NVNCBJ",
+        "NVNCAJ"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each letter moves one step forward: D→E, E→F, L→M, H→I, I→J. Applying the same shift to MUMBAI gives NVNCBJ.",
+      "dedupeKey": "exam:ex-147"
+    },
+    {
+      "id": "ex-148",
+      "category": "letter-coding",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "In a certain code, every word is written in reverse. How is MANGO written in that code?",
+      "options": [
+        "OGNMA",
+        "OAMGN",
+        "NGOMA",
+        "OGNAM"
+      ],
+      "answerIndex": 3,
+      "explanation": "Reversing the letters of MANGO gives O-G-N-A-M, which is OGNAM.",
+      "dedupeKey": "exam:ex-148"
+    },
+    {
+      "id": "ex-149",
+      "category": "letter-coding",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "If CAT is coded as 3-1-20 using each letter's position in the alphabet, how is DOG coded?",
+      "options": [
+        "4-15-7",
+        "4-14-7",
+        "3-15-7",
+        "4-15-8"
+      ],
+      "answerIndex": 0,
+      "explanation": "D is the 4th letter, O is the 15th and G is the 7th, so DOG is coded 4-15-7.",
+      "dedupeKey": "exam:ex-149"
+    },
+    {
+      "id": "ex-150",
+      "category": "letter-coding",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a certain code, DOWN is written as FQYP. How is HOLD written in that code?",
+      "options": [
+        "JQNE",
+        "JQNF",
+        "JQMF",
+        "IQNF"
+      ],
+      "answerIndex": 1,
+      "explanation": "Each letter moves two steps forward: D→F, O→Q, W→Y, N→P. Applying the same shift to HOLD gives JQNF.",
+      "dedupeKey": "exam:ex-150"
+    },
+    {
+      "id": "ex-151",
+      "category": "letter-coding",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "In a certain code, TEACHER is written as QBXZEBO. How is CHILD written in that code?",
+      "options": [
+        "ZEFJA",
+        "YEFIA",
+        "ZEFIA",
+        "ZEFIG"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each letter moves three steps back: T→Q, E→B, A→X, C→Z, H→E, E→B, R→O. Applying the same shift to CHILD gives ZEFIA.",
+      "dedupeKey": "exam:ex-151"
+    },
+    {
+      "id": "ex-152",
+      "category": "letter-coding",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "In a certain code, PENCIL is written as OFMDHK. How is ERASER written in that code?",
+      "options": [
+        "DSZTDS",
+        "DSTZDS",
+        "DSZTSD",
+        "ESZTDS"
+      ],
+      "answerIndex": 0,
+      "explanation": "The shifts alternate −1 and +1: P−1=O, E+1=F, N−1=M, C+1=D, I−1=H, L−1=K. Applying the same pattern to ERASER gives DSZTDS.",
+      "dedupeKey": "exam:ex-152"
+    },
+    {
+      "id": "ex-153",
+      "category": "number-series",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 2, 5, 10, 17, 26, ?",
+      "options": [
+        "35",
+        "36",
+        "37",
+        "38"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each term is n² + 1: 1²+1=2, 2²+1=5, 3²+1=10, 4²+1=17, 5²+1=26, so the next is 6²+1 = 37.",
+      "dedupeKey": "exam:ex-153"
+    },
+    {
+      "id": "ex-154",
+      "category": "number-series",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 121, 100, 81, 64, ?",
+      "options": [
+        "36",
+        "49",
+        "50",
+        "47"
+      ],
+      "answerIndex": 1,
+      "explanation": "Descending perfect squares: 11², 10², 9², 8², so the next is 7² = 49.",
+      "dedupeKey": "exam:ex-154"
+    },
+    {
+      "id": "ex-155",
+      "category": "number-series",
+      "difficulty": "easy",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 2, 6, 12, 20, 30, ?",
+      "options": [
+        "40",
+        "42",
+        "44",
+        "46"
+      ],
+      "answerIndex": 1,
+      "explanation": "Each term is n(n+1): 1×2, 2×3, 3×4, 4×5, 5×6, so the next is 6×7 = 42.",
+      "dedupeKey": "exam:ex-155"
+    },
+    {
+      "id": "ex-156",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 5, 6, 10, 19, 35, ?",
+      "options": [
+        "56",
+        "58",
+        "60",
+        "62"
+      ],
+      "answerIndex": 2,
+      "explanation": "Differences are perfect squares: +1, +4, +9, +16, so the next difference is +25, giving 35 + 25 = 60.",
+      "dedupeKey": "exam:ex-156"
+    },
+    {
+      "id": "ex-157",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 8, 24, 12, 36, 18, 54, ?",
+      "options": [
+        "24",
+        "27",
+        "30",
+        "36"
+      ],
+      "answerIndex": 1,
+      "explanation": "The operations alternate ×3 and ÷2: 8×3=24, 24÷2=12, 12×3=36, 36÷2=18, 18×3=54, so next is 54 ÷ 2 = 27.",
+      "dedupeKey": "exam:ex-157"
+    },
+    {
+      "id": "ex-158",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 1, 2, 6, 24, 120, ?",
+      "options": [
+        "240",
+        "480",
+        "600",
+        "720"
+      ],
+      "answerIndex": 3,
+      "explanation": "Each term is multiplied by an increasing factor: ×2, ×3, ×4, ×5, so the next is 120 × 6 = 720.",
+      "dedupeKey": "exam:ex-158"
+    },
+    {
+      "id": "ex-159",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 1, 4, 27, 256, ?",
+      "options": [
+        "625",
+        "1024",
+        "3125",
+        "4096"
+      ],
+      "answerIndex": 2,
+      "explanation": "Each term is n raised to n: 1¹ = 1, 2² = 4, 3³ = 27, 4⁴ = 256, so the next is 5⁵ = 3125.",
+      "dedupeKey": "exam:ex-159"
+    },
+    {
+      "id": "ex-160",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 4, 12, 28, 60, 124, ?",
+      "options": [
+        "248",
+        "252",
+        "256",
+        "260"
+      ],
+      "answerIndex": 1,
+      "explanation": "Each term = previous × 2 + 4: 4×2+4=12, 12×2+4=28, 28×2+4=60, 60×2+4=124, so the next is 124 × 2 + 4 = 252.",
+      "dedupeKey": "exam:ex-160"
+    },
+    {
+      "id": "ex-161",
+      "category": "number-series",
+      "difficulty": "hard",
+      "source": "curated",
+      "prompt": "Find the next number in the series: 6, 7, 15, 46, 185, ?",
+      "options": [
+        "926",
+        "925",
+        "930",
+        "920"
+      ],
+      "answerIndex": 0,
+      "explanation": "The multipliers increase by 1 each time with +1 added: 6×1+1=7, 7×2+1=15, 15×3+1=46, 46×4+1=185, so the next is 185 × 5 + 1 = 926.",
+      "dedupeKey": "exam:ex-161"
+    },
+    {
+      "id": "ex-162",
+      "category": "number-series",
+      "difficulty": "medium",
+      "source": "curated",
+      "prompt": "One number is wrong in the series 1, 8, 27, 64, 125, 216, 344. Which number is wrong?",
+      "options": [
+        "216",
+        "344",
+        "125",
+        "64"
+      ],
+      "answerIndex": 1,
+      "explanation": "The series is the cubes of 1 to 7: 1, 8, 27, 64, 125, 216, 343. Since 7³ = 343, the number 344 is wrong.",
+      "dedupeKey": "exam:ex-162"
+    },
+    {
+      "id": "ex-163",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "In a certain code, 'din chi pul' means 'God is great' and 'chi pul yam' means 'is great today'. Which word means 'God'?",
+      "options": [
+        "din",
+        "chi",
+        "pul",
+        "yam"
+      ],
+      "answerIndex": 0,
+      "explanation": "The two phrases share 'chi pul' and the words 'is great', so chi/pul map to is/great in some order. The only remaining code word in the first phrase is 'din', which must mean 'God'.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-163"
+    },
+    {
+      "id": "ex-164",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Complete the analogy: ACE : GIK :: MOQ : ?",
+      "options": [
+        "SUW",
+        "SUV",
+        "SVW",
+        "RTW"
+      ],
+      "answerIndex": 0,
+      "explanation": "Each letter moves six steps forward: A→G, C→I, E→K. Applying +6 to M, O, Q gives S, U, W — so the answer is SUW.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-164"
+    },
+    {
+      "id": "ex-165",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Which term continues the series: BDF, CFI, DHL, ?",
+      "options": [
+        "EJO",
+        "EKO",
+        "FJO",
+        "EJP"
+      ],
+      "answerIndex": 0,
+      "explanation": "Within each triplet the gap between letters grows: BDF is +2/+2, CFI is +3/+3, DHL is +4/+4, so the next is +5/+5: E, J, O — EJO.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-165"
+    },
+    {
+      "id": "ex-166",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A 3 × 3 grid is made of equal small squares (like a tic-tac-toe board). How many squares of all sizes does it contain?",
+      "options": [
+        "9",
+        "12",
+        "14",
+        "16"
+      ],
+      "answerIndex": 2,
+      "explanation": "Count by size: nine 1×1 squares, four 2×2 squares and one 3×3 square. Total = 9 + 4 + 1 = 14.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-166"
+    },
+    {
+      "id": "ex-167",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Four friends A, B, C and D sit at the four sides of a square table, all facing the centre. A sits on the east side and B sits opposite A. C sits to the left of A. Who sits on the north side?",
+      "options": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "answerIndex": 3,
+      "explanation": "A is on the east side facing west; a person facing west has south on the left, so C is on the south side. B is opposite A, so B is west. The remaining side, north, is occupied by D.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-167"
+    },
+    {
+      "id": "ex-168",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Ravi is free only on Monday and Wednesday, Sara only on Wednesday and Friday, and Anil only on Monday and Wednesday. On which day can all three meet?",
+      "options": [
+        "Monday",
+        "Wednesday",
+        "Friday",
+        "No common day"
+      ],
+      "answerIndex": 1,
+      "explanation": "The only day common to all three schedules is Wednesday: Ravi (Mon/Wed), Sara (Wed/Fri), Anil (Mon/Wed).",
+      "source": "curated",
+      "dedupeKey": "exam:ex-168"
+    },
+    {
+      "id": "ex-169",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "If 3 cats kill 3 mice in 3 minutes, how many cats are needed to kill 100 mice in 100 minutes?",
+      "options": [
+        "100",
+        "50",
+        "3",
+        "33"
+      ],
+      "answerIndex": 2,
+      "explanation": "Three cats kill 3 mice in 3 minutes, so together they kill 1 mouse per minute. In 100 minutes the same 3 cats kill 100 mice — so 3 cats are needed.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-169"
+    },
+    {
+      "id": "ex-170",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "Four people need to cross a bridge at night with one torch. At most two people can cross at once and they must carry the torch. Their crossing times are 1, 2, 5 and 10 minutes; two people move at the slower pace. What is the minimum total time?",
+      "options": [
+        "15 min",
+        "19 min",
+        "21 min",
+        "17 min"
+      ],
+      "answerIndex": 3,
+      "explanation": "Optimal plan: 1 and 2 cross (2 min), 1 returns (3), 5 and 10 cross (13), 2 returns (15), 1 and 2 cross (17). Total = 17 minutes.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-170"
+    },
+    {
+      "id": "ex-171",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "A farmer has 17 sheep. All but 9 of them die. How many sheep are left alive?",
+      "options": [
+        "8",
+        "9",
+        "10",
+        "17"
+      ],
+      "answerIndex": 1,
+      "explanation": "\"All but 9 die\" means 9 survive — 9 sheep are left alive.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-171"
+    },
+    {
+      "id": "ex-172",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A girl says, \"I have as many brothers as sisters.\" Her brother says, \"I have twice as many sisters as brothers.\" How many girls and boys are in the family?",
+      "options": [
+        "3 girls, 3 boys",
+        "3 girls, 4 boys",
+        "4 girls, 3 boys",
+        "5 girls, 3 boys"
+      ],
+      "answerIndex": 2,
+      "explanation": "Let girls = g and boys = b. The girl has b brothers and g−1 sisters: b = g−1. The boy has g sisters and b−1 brothers: g = 2(b−1). Solving gives b = 3 and g = 4 — 4 girls and 3 boys.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-172"
+    },
+    {
+      "id": "ex-173",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A clock shows 3:40. What time does its mirror image show?",
+      "options": [
+        "8:20",
+        "8:40",
+        "9:20",
+        "7:40"
+      ],
+      "answerIndex": 0,
+      "explanation": "For mirror reading subtract from 11:60: 11:60 − 3:40 = 8:20.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-173"
+    },
+    {
+      "id": "ex-174",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A seminar begins at 9:30 AM. It has three talks of 35 minutes each with a 10-minute break between consecutive talks. At what time does the last talk end?",
+      "options": [
+        "11:20 AM",
+        "11:45 AM",
+        "11:50 AM",
+        "11:35 AM"
+      ],
+      "answerIndex": 3,
+      "explanation": "Talk 1 ends 10:05; break to 10:15; talk 2 ends 10:50; break to 11:00; talk 3 ends 11:35 AM.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-174"
+    },
+    {
+      "id": "ex-175",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "K is the sister of L. M is the father of L. N is the brother of M. How is N related to K?",
+      "options": [
+        "Uncle",
+        "Father",
+        "Grandfather",
+        "Cousin"
+      ],
+      "answerIndex": 0,
+      "explanation": "Since K is the sister of L, M is also the father of K. N is the brother of K's father, so N is K's uncle.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-175"
+    },
+    {
+      "id": "ex-176",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Find the odd one out: BEH, JMP, RUX, DFI.",
+      "options": [
+        "BEH",
+        "JMP",
+        "RUX",
+        "DFI"
+      ],
+      "answerIndex": 3,
+      "explanation": "In BEH (B+3=E, E+3=H), JMP (J+3=M, M+3=P) and RUX (R+3=U, U+3=X) each letter is 3 ahead of the previous. In DFI the gaps are +2 and +3, so it is the odd one.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-176"
+    },
+    {
+      "id": "ex-177",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "It is given that A > B, B ≥ C and C > D. Which of the following must be true?",
+      "options": [
+        "A > D",
+        "B = C",
+        "D > B",
+        "A < C"
+      ],
+      "answerIndex": 0,
+      "explanation": "Chaining the relations gives A > B ≥ C > D, so A > D must hold. The other options either contradict the chain or are not required.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-177"
+    },
+    {
+      "id": "ex-178",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "To reach the market you must walk exactly 2 blocks east and 2 blocks north. Moving only east or north, how many different shortest routes are there?",
+      "options": [
+        "4",
+        "5",
+        "6",
+        "8"
+      ],
+      "answerIndex": 2,
+      "explanation": "Every shortest route has 4 moves: 2 east and 2 north. The number of arrangements is C(4,2) = 4!/2!2! = 6 routes.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-178"
+    },
+    {
+      "id": "ex-179",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "Six friends sit around a circular table facing the centre. A sits between B and C. D sits opposite A. E sits next to B on B's side away from A. Who sits opposite C?",
+      "options": [
+        "B",
+        "D",
+        "E",
+        "F"
+      ],
+      "answerIndex": 2,
+      "explanation": "Place A, with B and C on either side and D opposite A. E must sit adjacent to B on the far side from A — that seat is directly opposite C. So E sits opposite C (the same result holds whichever side of A has B).",
+      "source": "curated",
+      "dedupeKey": "exam:ex-179"
+    },
+    {
+      "id": "ex-180",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A three-digit number has digits summing to 9. Its hundreds digit is twice its tens digit, and the hundreds digit is 6. What is the number?",
+      "options": [
+        "630",
+        "216",
+        "243",
+        "612"
+      ],
+      "answerIndex": 0,
+      "explanation": "Hundreds digit = 6, so tens digit = 6 ÷ 2 = 3. Units digit = 9 − 6 − 3 = 0. The number is 630.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-180"
+    },
+    {
+      "id": "ex-181",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "A person climbs a staircase of 10 steps. Each move takes either 1 step or 2 steps. In how many different ways can the staircase be climbed?",
+      "options": [
+        "55",
+        "89",
+        "90",
+        "144"
+      ],
+      "answerIndex": 1,
+      "explanation": "Ways(n) = Ways(n−1) + Ways(n−2) with Ways(1)=1, Ways(2)=2: 1, 2, 3, 5, 8, 13, 21, 34, 55, 89. For 10 steps the answer is 89.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-181"
+    },
+    {
+      "id": "ex-182",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "In a knockout tennis tournament with 8 players, every loser is eliminated. How many matches are played in total?",
+      "options": [
+        "6",
+        "8",
+        "7",
+        "16"
+      ],
+      "answerIndex": 2,
+      "explanation": "Every match eliminates exactly one player. To leave one champion, 7 players must be eliminated, so 7 matches are played.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-182"
+    },
+    {
+      "id": "ex-183",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "How many people must be in a room to guarantee that at least two share the same birth month?",
+      "options": [
+        "12",
+        "24",
+        "13",
+        "14"
+      ],
+      "answerIndex": 2,
+      "explanation": "There are 12 months. With 12 people each could have a different month; the 13th person must share a month, so the answer is 13.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-183"
+    },
+    {
+      "id": "ex-184",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Find the odd one out: Tulip, Rose, Lily, Pepper.",
+      "options": [
+        "Tulip",
+        "Rose",
+        "Lily",
+        "Pepper"
+      ],
+      "answerIndex": 3,
+      "explanation": "Tulip, rose and lily are flowers. Pepper is a plant grown for its fruit/spice, not a flower — it is the odd one.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-184"
+    },
+    {
+      "id": "ex-185",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "prompt": "In an election, a losing candidate received 40% of the votes and lost by 3,600 votes. How many votes were cast in total?",
+      "options": [
+        "14,400",
+        "16,000",
+        "18,000",
+        "20,000"
+      ],
+      "answerIndex": 2,
+      "explanation": "The winner received 60%, so the margin was 20% of total votes. 20% = 3,600 votes → total = 3,600 ÷ 0.20 = 18,000.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-185"
+    },
+    {
+      "id": "ex-186",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "A shop sells pens at ₹5 each and pencils at ₹2 each. Ram buys 10 items in total for ₹38. How many pens did he buy?",
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "answerIndex": 2,
+      "explanation": "Let pens = p, pencils = 10 − p. Then 5p + 2(10 − p) = 38 → 3p = 18 → p = 6 pens. Check: 6 × ₹5 + 4 × ₹2 = ₹30 + ₹8 = ₹38.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-186"
+    },
+    {
+      "id": "ex-187",
+      "category": "competitive-math",
+      "difficulty": "medium",
+      "prompt": "A phone priced at ₹800 has its price reduced by 20% and then increased by 20%. What is the new price?",
+      "options": [
+        "₹800",
+        "₹784",
+        "₹720",
+        "₹768"
+      ],
+      "answerIndex": 3,
+      "explanation": "₹800 × 0.80 = ₹640; then ₹640 × 1.20 = ₹768. The 20% increase applies to the reduced price, so the final price is less than ₹800.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-187"
+    },
+    {
+      "id": "ex-188",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "Two numbers differ by 18 and are in the ratio 4:7. What is their sum?",
+      "options": [
+        "60",
+        "66",
+        "72",
+        "78"
+      ],
+      "answerIndex": 1,
+      "explanation": "Let the numbers be 4x and 7x: 7x − 4x = 18 → x = 6. The numbers are 24 and 42; sum = 66.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-188"
+    },
+    {
+      "id": "ex-189",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "₹4,000 earns ₹600 in simple interest over 3 years. What is the annual rate of interest?",
+      "options": [
+        "4%",
+        "5%",
+        "6%",
+        "7.5%"
+      ],
+      "answerIndex": 1,
+      "explanation": "SI = P × R × T / 100 → 600 = 4000 × R × 3 / 100 = 120R, so R = 5%.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-189"
+    },
+    {
+      "id": "ex-190",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "What is the value of 1/2 + 1/4 + 1/8 + 1/16?",
+      "options": [
+        "15/16",
+        "7/8",
+        "1",
+        "3/4"
+      ],
+      "answerIndex": 0,
+      "explanation": "Common denominator 16: 8/16 + 4/16 + 2/16 + 1/16 = 15/16.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-190"
+    },
+    {
+      "id": "ex-191",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "What is the square root of 1.44?",
+      "options": [
+        "1.2",
+        "1.44",
+        "12",
+        "0.12"
+      ],
+      "answerIndex": 0,
+      "explanation": "1.2 × 1.2 = 1.44, so √1.44 = 1.2.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-191"
+    },
+    {
+      "id": "ex-192",
+      "category": "competitive-math",
+      "difficulty": "easy",
+      "prompt": "What is the median of the numbers 3, 8, 4, 9, 6?",
+      "options": [
+        "4",
+        "8",
+        "6",
+        "9"
+      ],
+      "answerIndex": 2,
+      "explanation": "Sorted order: 3, 4, 6, 8, 9. With 5 values, the median is the 3rd value, which is 6.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-192"
+    },
+    {
+      "id": "ex-193",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "If 'A + B' means 'A is the son of B' and 'A − B' means 'A is the daughter of B', which expression means 'R is the daughter of P'?",
+      "options": [
+        "R − P",
+        "P − R",
+        "R + P",
+        "P + R"
+      ],
+      "answerIndex": 0,
+      "explanation": "R is the daughter of P translates directly as 'R − P'.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-193"
+    },
+    {
+      "id": "ex-194",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "If 'P × Q' means 'P is the father of Q', 'P ÷ Q' means 'P is the mother of Q' and 'P − Q' means 'P is the brother of Q', then in the expression 'M × N − O ÷ P', how is M related to P?",
+      "options": [
+        "Father",
+        "Grandfather",
+        "Uncle",
+        "Cousin"
+      ],
+      "answerIndex": 1,
+      "explanation": "M × N: M is the father of N. N − O: N is the brother of O, so M is also the father of O. O ÷ P: O is the mother of P. So M is the father of P’s mother — M is P’s grandfather.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-194"
+    },
+    {
+      "id": "ex-195",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Pointing to a photograph, Rajesh says, \"She is the daughter of my grandfather's only son.\" How is the woman in the photograph related to Rajesh?",
+      "options": [
+        "Daughter",
+        "Sister",
+        "Mother",
+        "Aunt"
+      ],
+      "answerIndex": 1,
+      "explanation": "Rajesh’s grandfather’s only son is Rajesh’s father. The father’s daughter is Rajesh’s sister.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-195"
+    },
+    {
+      "id": "ex-196",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Pointing to a man, a woman said, \"He is the only son of my mother's father.\" How is the woman related to the man?",
+      "options": [
+        "Sister",
+        "Daughter",
+        "Niece",
+        "Mother"
+      ],
+      "answerIndex": 2,
+      "explanation": "Her mother’s father is her maternal grandfather; his only son is her maternal uncle. So the woman is the man’s niece.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-196"
+    },
+    {
+      "id": "ex-197",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A is the sister of B. C is the mother of B. D is the father of C. How is D related to A?",
+      "options": [
+        "Father",
+        "Uncle",
+        "Grandfather",
+        "Brother"
+      ],
+      "answerIndex": 2,
+      "explanation": "A is B’s sister, so C is also the mother of A. D is the father of A’s mother — D is A’s grandfather.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-197"
+    },
+    {
+      "id": "ex-198",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Ravi is the brother of Sunita. Sunita is the mother of Anil. How is Anil related to Ravi?",
+      "options": [
+        "Son",
+        "Nephew",
+        "Cousin",
+        "Brother"
+      ],
+      "answerIndex": 1,
+      "explanation": "Anil is the son of Ravi’s sister Sunita. A sister’s son is a nephew.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-198"
+    },
+    {
+      "id": "ex-199",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A family consists of a grandfather, grandmother, their two married sons with their wives, the elder son’s son and daughter, and the younger son’s daughter. How many female members are in the family?",
+      "options": [
+        "4",
+        "6",
+        "5",
+        "7"
+      ],
+      "answerIndex": 2,
+      "explanation": "Females: the grandmother, the two sons’ wives, the elder son’s daughter and the younger son’s daughter — 1 + 2 + 1 + 1 = 5.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-199"
+    },
+    {
+      "id": "ex-200",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "F is the brother of A. C is the daughter of A. K is the sister of F. G is the brother of C. Who is the uncle of G?",
+      "options": [
+        "K",
+        "A",
+        "F",
+        "C"
+      ],
+      "answerIndex": 2,
+      "explanation": "G is the brother of C, so G is also a child of A. A’s brother is F, so F is G’s uncle (K is the aunt).",
+      "source": "curated",
+      "dedupeKey": "exam:ex-200"
+    },
+    {
+      "id": "ex-201",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "A is the brother of the husband of C, and C is the daughter-in-law of P. How is A related to P?",
+      "options": [
+        "Nephew",
+        "Son",
+        "Son-in-law",
+        "Cousin"
+      ],
+      "answerIndex": 1,
+      "explanation": "C, as the daughter-in-law of P, is the wife of P’s son. A is the brother of that son, so A is also a son of P.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-201"
+    },
+    {
+      "id": "ex-202",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A and B are a married couple. X and Y are brothers. X is the brother of A. How is Y related to B?",
+      "options": [
+        "Brother",
+        "Cousin",
+        "Uncle",
+        "Brother-in-law"
+      ],
+      "answerIndex": 3,
+      "explanation": "Since X and Y are brothers and X is A’s brother, Y is also a brother of A. The brother of one’s spouse is a brother-in-law, so Y is B’s brother-in-law.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-202"
+    },
+    {
+      "id": "ex-203",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Pointing to a lady, Mohan said, \"She is the daughter of the only child of my father.\" How is the lady related to Mohan?",
+      "options": [
+        "Sister",
+        "Daughter",
+        "Mother",
+        "Aunt"
+      ],
+      "answerIndex": 1,
+      "explanation": "The only child of Mohan’s father is Mohan himself. The lady is Mohan’s daughter.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-203"
+    },
+    {
+      "id": "ex-204",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Reena is the sister of Atul. Sushant is the son of Reena. Deepak is the brother of Sushant. How is Deepak related to Reena?",
+      "options": [
+        "Nephew",
+        "Brother",
+        "Cousin",
+        "Son"
+      ],
+      "answerIndex": 3,
+      "explanation": "Deepak is the brother of Sushant, and Sushant is Reena’s son — so Deepak is also Reena’s son.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-204"
+    },
+    {
+      "id": "ex-205",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Sushant is the son of Prem. Bimal is Prem’s father. Chinmay is the brother of Sushant. How is Chinmay related to Bimal?",
+      "options": [
+        "Son",
+        "Brother",
+        "Uncle",
+        "Grandson"
+      ],
+      "answerIndex": 3,
+      "explanation": "Chinmay, like Sushant, is a son of Prem. A son of Bimal’s son is Bimal’s grandson.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-205"
+    },
+    {
+      "id": "ex-206",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "Anil introduces Rohit as the son of the only brother of his father's wife. How is Rohit related to Anil?",
+      "options": [
+        "Brother",
+        "Uncle",
+        "Nephew",
+        "Cousin"
+      ],
+      "answerIndex": 3,
+      "explanation": "The wife of Anil’s father is Anil’s mother. Her only brother is Anil’s maternal uncle, and the uncle’s son is Anil’s cousin.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-206"
+    },
+    {
+      "id": "ex-207",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "E is the son of A. D is the son of B. E is married to C. C is B’s daughter. How is D related to E?",
+      "options": [
+        "Brother",
+        "Uncle",
+        "Father-in-law",
+        "Brother-in-law"
+      ],
+      "answerIndex": 3,
+      "explanation": "C is B’s daughter and D is B’s son, so D is C’s brother. Since E is married to C, D is E’s brother-in-law.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-207"
+    },
+    {
+      "id": "ex-208",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "X is the brother of the son of Y’s son. How is X related to Y?",
+      "options": [
+        "Son",
+        "Brother",
+        "Grandson",
+        "Nephew"
+      ],
+      "answerIndex": 2,
+      "explanation": "The son of Y’s son is Y’s grandson. X is the brother of that grandson, so X is also a grandson of Y.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-208"
+    },
+    {
+      "id": "ex-209",
+      "category": "logical-reasoning",
+      "difficulty": "medium",
+      "prompt": "A is the mother of B. C is the son of A. D is the brother of E. E is the daughter of B. Who is the grandmother of D?",
+      "options": [
+        "B",
+        "C",
+        "A",
+        "E"
+      ],
+      "answerIndex": 2,
+      "explanation": "D is the brother of E, and E is B’s daughter, so D is a child of B. B’s mother is A — A is D’s grandmother.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-209"
+    },
+    {
+      "id": "ex-210",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Meena is the sister of Ram. Gopal is the husband of Meena. How is Gopal related to Ram?",
+      "options": [
+        "Brother",
+        "Brother-in-law",
+        "Uncle",
+        "Cousin"
+      ],
+      "answerIndex": 1,
+      "explanation": "Gopal married Ram’s sister Meena. A sister’s husband is a brother-in-law.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-210"
+    },
+    {
+      "id": "ex-211",
+      "category": "logical-reasoning",
+      "difficulty": "hard",
+      "prompt": "Pointing to a lady, a man said, \"The son of her only brother is the brother of my wife.\" How is the lady related to the man?",
+      "options": [
+        "Sister",
+        "Mother-in-law",
+        "Cousin",
+        "Aunt"
+      ],
+      "answerIndex": 3,
+      "explanation": "The son of the lady’s brother is the brother of the man’s wife, so the man’s wife is the daughter of the lady’s brother — the lady is the wife’s paternal aunt, i.e., the man’s aunt.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-211"
+    },
+    {
+      "id": "ex-212",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Sita is the mother of Ramesh. Ramesh is the father of Kavita. How is Sita related to Kavita?",
+      "options": [
+        "Mother",
+        "Aunt",
+        "Sister",
+        "Grandmother"
+      ],
+      "answerIndex": 3,
+      "explanation": "Kavita is the daughter of Sita’s son Ramesh, so Sita is Kavita’s grandmother.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-212"
+    },
+    {
+      "id": "ex-213",
+      "category": "logical-reasoning",
+      "difficulty": "easy",
+      "prompt": "Rakesh is the brother of Vinod. Meena is the wife of Vinod. How is Meena related to Rakesh?",
+      "options": [
+        "Sister",
+        "Aunt",
+        "Mother",
+        "Sister-in-law"
+      ],
+      "answerIndex": 3,
+      "explanation": "Meena is the wife of Rakesh’s brother Vinod. A brother’s wife is a sister-in-law.",
+      "source": "curated",
+      "dedupeKey": "exam:ex-213"
+    }
+  ]
+}

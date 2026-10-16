@@ -715,19 +715,22 @@ describe('REGRESSION: competitive-math distractor collisions', () => {
     });
   });
 
-  it('genMixture: target is not the midpoint (meaningful ratio)', () => {
+  it('genMixture: target is not the midpoint and total quantity is never 0', () => {
     repeat(300, () => {
       const q = generateOne('competitive-math', 'medium')!;
       if (!q.prompt.includes('mixes rice costing')) return;
       assertValidQuestion(q);
       assertUniqueOptions(q);
-      // Parse cheap, dear, target
-      const m = q.prompt.match(/₹(\d+)\/kg with rice costing ₹(\d+)\/kg to get a mixture worth ₹(\d+)\/kg/);
+      // Parse cheap, dear, target, total kg
+      const m = q.prompt.match(/₹(\d+)\/kg with rice costing ₹(\d+)\/kg to get a mixture worth ₹(\d+)\/kg\. If they make (\d+) kg/);
       if (!m) return;
       const cheap = Number(m[1]);
       const dear = Number(m[2]);
       const target = Number(m[3]);
+      const totalKg = Number(m[4]);
       expect(target).not.toBe((cheap + dear) / 2);
+      expect(totalKg).toBeGreaterThan(0);
+      expect(Number(q.options[q.answerIndex])).toBeGreaterThan(0);
     });
   });
 
